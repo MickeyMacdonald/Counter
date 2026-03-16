@@ -37,6 +37,9 @@ struct ToDoTask: Identifiable {
 // MARK: - To Do View
 
 struct ToDoView: View {
+    /// When `true` the view is embedded inside `SessionsTabView` — no `NavigationStack` wrapper.
+    var embedded: Bool = false
+
     @Query private var pieces: [Piece]
     @Query private var bookings: [Booking]
 
@@ -163,19 +166,27 @@ struct ToDoView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if allTasks.isEmpty {
-                    emptyState
-                } else {
-                    taskList
-                }
+        if embedded {
+            toDoContent
+        } else {
+            NavigationStack { toDoContent }
+        }
+    }
+
+    @ViewBuilder
+    private var toDoContent: some View {
+        Group {
+            if allTasks.isEmpty {
+                emptyState
+            } else {
+                taskList
             }
-            .navigationTitle("To Do")
-            .navigationDestination(item: $navigateToPiece) { piece in
-                PieceDetailView(piece: piece)
-            }
-            .toolbar {
+        }
+        .navigationTitle("To Do")
+        .navigationDestination(item: $navigateToPiece) { piece in
+            PieceDetailView(piece: piece)
+        }
+        .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button {
@@ -200,7 +211,6 @@ struct ToDoView: View {
                     }
                 }
             }
-        }
     }
 
     // MARK: - Task List

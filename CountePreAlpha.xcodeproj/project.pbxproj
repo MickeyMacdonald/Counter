@@ -80,6 +80,14 @@
 		AA000070 /* FlashPriceTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000070 /* FlashPriceTier.swift */; };
 		AA000071 /* FlashPortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000071 /* FlashPortfolioView.swift */; };
 		AA000072 /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000072 /* ToDoView.swift */; };
+		AA000073 /* SessionRateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000073 /* SessionRateConfig.swift */; };
+		AA000074 /* SettingsSessionRatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000074 /* SettingsSessionRatesView.swift */; };
+		AA000075 /* SessionsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000075 /* SessionsTabView.swift */; };
+		AA000076 /* WorksTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000076 /* WorksTabView.swift */; };
+		AA000077 /* AvailableFlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000077 /* AvailableFlashGalleryView.swift */; };
+		AA000078 /* SettingsReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000078 /* SettingsReportsView.swift */; };
+		AA000079 /* DonationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000079 /* DonationStore.swift */; };
+		AA000080 /* SettingsDonationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000080 /* SettingsDonationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -156,6 +164,14 @@
 		AB000070 /* FlashPriceTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPriceTier.swift; sourceTree = "<group>"; };
 		AB000071 /* FlashPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPortfolioView.swift; sourceTree = "<group>"; };
 		AB000072 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
+		AB000073 /* SessionRateConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRateConfig.swift; sourceTree = "<group>"; };
+		AB000074 /* SettingsSessionRatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSessionRatesView.swift; sourceTree = "<group>"; };
+		AB000075 /* SessionsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsTabView.swift; sourceTree = "<group>"; };
+		AB000076 /* WorksTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksTabView.swift; sourceTree = "<group>"; };
+		AB000077 /* AvailableFlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableFlashGalleryView.swift; sourceTree = "<group>"; };
+		AB000078 /* SettingsReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReportsView.swift; sourceTree = "<group>"; };
+		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationStore.swift; sourceTree = "<group>"; };
+		AB000080 /* SettingsDonationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDonationView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -220,6 +236,7 @@
 				AB000067 /* AvailabilityOverride.swift */,
 				AB000069 /* CustomSessionType.swift */,
 				AB000070 /* FlashPriceTier.swift */,
+				AB000073 /* SessionRateConfig.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -236,8 +253,18 @@
 				AE000015 /* Financial */,
 				AE000016 /* Gallery */,
 				AE000018 /* ToDo */,
+				AE000019 /* Sessions */,
+				AE000020 /* Works */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		AE000019 /* Sessions */ = {
+			isa = PBXGroup;
+			children = (
+				AB000075 /* SessionsTabView.swift */,
+			);
+			path = Sessions;
 			sourceTree = "<group>";
 		};
 		AE000006 /* Clients */ = {
@@ -283,6 +310,7 @@
 				AB000033 /* ExportService.swift */,
 				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
 				AB000061 /* BusinessLockManager.swift */,
+				AB000079 /* DonationStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -330,6 +358,9 @@
 				AB000065 /* EmailTemplateEditorView.swift */,
 				AB000066 /* SettingsEmailTemplatesView.swift */,
 				AB000068 /* SettingsBookingView.swift */,
+				AB000074 /* SettingsSessionRatesView.swift */,
+				AB000078 /* SettingsReportsView.swift */,
+				AB000080 /* SettingsDonationView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -366,6 +397,7 @@
 				AB000057 /* GalleryByClientView.swift */,
 				AB000058 /* GalleryByRatingView.swift */,
 				AB000059 /* GalleryByPlacementView.swift */,
+				AB000077 /* AvailableFlashGalleryView.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -384,6 +416,14 @@
 				AB000072 /* ToDoView.swift */,
 			);
 			path = ToDo;
+			sourceTree = "<group>";
+		};
+		AE000020 /* Works */ = {
+			isa = PBXGroup;
+			children = (
+				AB000076 /* WorksTabView.swift */,
+			);
+			path = Works;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -527,6 +567,14 @@
 				AA000070 /* FlashPriceTier.swift in Sources */,
 				AA000071 /* FlashPortfolioView.swift in Sources */,
 				AA000072 /* ToDoView.swift in Sources */,
+				AA000073 /* SessionRateConfig.swift in Sources */,
+				AA000074 /* SettingsSessionRatesView.swift in Sources */,
+				AA000075 /* SessionsTabView.swift in Sources */,
+				AA000076 /* WorksTabView.swift in Sources */,
+				AA000077 /* AvailableFlashGalleryView.swift in Sources */,
+				AA000078 /* SettingsReportsView.swift in Sources */,
+				AA000079 /* DonationStore.swift in Sources */,
+				AA000080 /* SettingsDonationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

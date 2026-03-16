@@ -25,7 +25,8 @@ final class PreviewContainer {
             CustomEmailTemplate.self,
             AvailabilityOverride.self,
             CustomSessionType.self,
-            FlashPriceTier.self
+            FlashPriceTier.self,
+            SessionRateConfig.self
         ])
         let config = ModelConfiguration(
             schema: schema,

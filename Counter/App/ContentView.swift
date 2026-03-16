@@ -5,7 +5,7 @@ struct ContentView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
-    @State private var selectedTab: AppTab = .clients
+    @State private var selectedTab: AppTab = .works
 
     private var hasProfile: Bool {
         profiles.first != nil
@@ -16,76 +16,38 @@ struct ContentView: View {
             if lockManager.isLocked {
                 // Client mode: only Gallery + Unlock
                 TabView(selection: $selectedTab) {
-                    GalleryTabView()
-                        .tabItem {
-                            Label("Gallery", systemImage: "photo.on.rectangle.angled")
+                    Tab("Gallery", systemImage: "photo.on.rectangle.angled", value: AppTab.gallery) {
+                        GalleryTabView()
+                    }
+                    Tab("Unlock", systemImage: "lock.fill", value: AppTab.settings) {
+                        NavigationStack {
+                            BusinessLockView()
+                                .navigationTitle("Unlock")
                         }
-                        .tag(AppTab.gallery)
-
-                    NavigationStack {
-                        BusinessLockView()
-                            .navigationTitle("Unlock")
                     }
-                    .tabItem {
-                        Label("Unlock", systemImage: "lock.fill")
-                    }
-                    .tag(AppTab.settings)
                 }
+                .tabViewStyle(.sidebarAdaptable)
                 .tint(.primary)
                 .onAppear {
                     selectedTab = .gallery
                 }
             } else {
-                // Full app: all tabs — icon-only to fit all 8 without overflow
+                // Full app: Settings, Works, Gallery, Sessions
                 TabView(selection: $selectedTab) {
-                    SettingsView()
-                        .tabItem {
-                            Image(systemName: "gearshape.fill")
-                        }
-                        .tag(AppTab.settings)
-
-                    ClientListView()
-                        .tabItem {
-                            Image(systemName: "person.crop.rectangle.stack.fill")
-                        }
-                        .tag(AppTab.clients)
-
-                    PieceListView()
-                        .tabItem {
-                            Image(systemName: "paintbrush.pointed.fill")
-                        }
-                        .tag(AppTab.pieces)
-
-                    FlashPortfolioView()
-                        .tabItem {
-                            Image(systemName: "bolt.fill")
-                        }
-                        .tag(AppTab.flashPortfolio)
-
-                    GalleryTabView()
-                        .tabItem {
-                            Image(systemName: "photo.fill")
-                        }
-                        .tag(AppTab.gallery)
-
-                    BookingCalendarView()
-                        .tabItem {
-                            Image(systemName: "calendar")
-                        }
-                        .tag(AppTab.calendar)
-
-                    ToDoView()
-                        .tabItem {
-                            Image(systemName: "checklist")
-                        }
-                        .tag(AppTab.todo)
-
-                    FinancialDashboardView()
-                        .tabItem {
-                            Image(systemName: "dollarsign")
-                        }
-                        .tag(AppTab.financial)
+                    Tab("Settings", systemImage: "gearshape.fill", value: AppTab.settings) {
+                        SettingsView()
+                    }
+                    Tab("Works", systemImage: "person.crop.rectangle.stack.fill", value: AppTab.works) {
+                        WorksTabView()
+                    }
+                    Tab("Gallery", systemImage: "photo.fill", value: AppTab.gallery) {
+                        GalleryTabView()
+                    }
+                    Tab("Sessions", systemImage: "calendar.badge.clock", value: AppTab.sessions) {
+                        SessionsTabView()
+                    }
                 }
+                .tabViewStyle(.sidebarAdaptable)
                 .tint(.primary)
             }
         } else {
@@ -254,13 +216,9 @@ struct WelcomeSetupView: View {
 }
 
 enum AppTab: String {
-    case clients
-    case pieces
-    case flashPortfolio
+    case works
     case gallery
-    case calendar
-    case todo
-    case financial
+    case sessions
     case settings
 }
 

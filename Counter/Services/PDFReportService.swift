@@ -166,6 +166,161 @@ actor PDFReportService {
         }
     }
 
+    // MARK: - Financial Report
+
+    func generateFinancialReport(pieces: [Piece], profile: UserProfile?, period: String) -> Data {
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize))
+
+        let totalBilled    = pieces.reduce(Decimal.zero) { $0 + $1.totalCost }
+        let totalCollected = pieces.reduce(Decimal.zero) { $0 + $1.totalPaymentsReceived }
+        let totalOutstanding = pieces.reduce(Decimal.zero) { $0 + max($1.outstandingBalance, 0) }
+        let settledPieces  = pieces.filter { $0.outstandingBalance <= 0 && $0.totalCost > 0 }
+        let unsettledPieces = pieces.filter { $0.outstandingBalance > 0 }
+
+        return renderer.pdfData { context in
+            context.beginPage()
+            var y = margin
+
+            y = drawHeader(context: context.cgContext, y: y, text: "FINANCIAL REPORT")
+            if let name = profile?.fullName { y = drawSubheader(context: context.cgContext, y: y, text: name) }
+            y = drawDivider(context: context.cgContext, y: y)
+
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Period", value: period)
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Generated", value: Date().formatted(date: .long, time: .shortened))
+            y += 12
+
+            y = drawSectionTitle(context: context.cgContext, y: y, text: "SUMMARY")
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Total Pieces", value: "\(pieces.count)")
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Total Billed", value: totalBilled.currencyFormatted)
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Total Collected", value: totalCollected.currencyFormatted)
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Outstanding", value: totalOutstanding.currencyFormatted)
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Settled Pieces", value: "\(settledPieces.count)")
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Unsettled Pieces", value: "\(unsettledPieces.count)")
+            y += 12
+
+            if !unsettledPieces.isEmpty {
+                y = drawSectionTitle(context: context.cgContext, y: y, text: "OUTSTANDING BALANCES")
+                for piece in unsettledPieces.sorted(by: { $0.outstandingBalance > $1.outstandingBalance }) {
+                    if y > pageSize.height - 80 { context.beginPage(); y = margin }
+                    let clientName = piece.client?.fullName ?? "Unknown"
+                    let line = "\(piece.title) — \(clientName)"
+                    y = drawLabelValue(context: context.cgContext, y: y, label: line, value: piece.outstandingBalance.currencyFormatted)
+                }
+                y += 12
+            }
+
+            if !settledPieces.isEmpty {
+                if y > pageSize.height - 200 { context.beginPage(); y = margin }
+                y = drawSectionTitle(context: context.cgContext, y: y, text: "SETTLED PIECES")
+                for piece in settledPieces {
+                    if y > pageSize.height - 80 { context.beginPage(); y = margin }
+                    let clientName = piece.client?.fullName ?? "Unknown"
+                    let line = "\(piece.title) — \(clientName)"
+                    y = drawLabelValue(context: context.cgContext, y: y, label: line, value: piece.totalPaymentsReceived.currencyFormatted)
+                }
+            }
+
+            drawFooter(context: context.cgContext, text: "Counter — Financial Report — \(Date().formatted())")
+        }
+    }
+
+    // MARK: - Finished Pieces Report
+
+    func generateFinishedPiecesReport(pieces: [Piece], profile: UserProfile?) -> Data {
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize))
+        let finished = pieces
+            .filter { [PieceStatus.completed, .healed, .touchUp].contains($0.status) }
+            .sorted { ($0.completedAt ?? $0.updatedAt) > ($1.completedAt ?? $1.updatedAt) }
+
+        return renderer.pdfData { context in
+            context.beginPage()
+            var y = margin
+
+            y = drawHeader(context: context.cgContext, y: y, text: "FINISHED PIECES")
+            if let name = profile?.fullName { y = drawSubheader(context: context.cgContext, y: y, text: name) }
+            y = drawDivider(context: context.cgContext, y: y)
+
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Generated", value: Date().formatted(date: .long, time: .shortened))
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Total Finished", value: "\(finished.count)")
+            y += 12
+
+            if finished.isEmpty {
+                y = drawBodyText(context: context.cgContext, y: y, text: "No finished pieces found.")
+            } else {
+                for piece in finished {
+                    if y > pageSize.height - 120 { context.beginPage(); y = margin }
+
+                    y = drawSectionTitle(context: context.cgContext, y: y, text: piece.title.uppercased())
+                    if let client = piece.client {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Client", value: client.fullName)
+                    }
+                    y = drawLabelValue(context: context.cgContext, y: y, label: "Status", value: piece.status.rawValue)
+                    if !piece.bodyPlacement.isEmpty {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Placement", value: piece.bodyPlacement)
+                    }
+                    let sessions = piece.sessions.count
+                    if sessions > 0 {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Sessions", value: "\(sessions)")
+                    }
+                    y = drawLabelValue(context: context.cgContext, y: y, label: "Total Cost", value: piece.totalCost.currencyFormatted)
+                    if let completedAt = piece.completedAt {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Completed", value: completedAt.formatted(date: .long, time: .omitted))
+                    }
+                    if let rating = piece.rating {
+                        let stars = String(repeating: "\u{2605}", count: rating) + String(repeating: "\u{2606}", count: 5 - rating)
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Rating", value: stars)
+                    }
+                    y += 6
+                }
+            }
+
+            drawFooter(context: context.cgContext, text: "Counter — Finished Pieces — \(Date().formatted())")
+        }
+    }
+
+    // MARK: - Flash Portfolio Report
+
+    func generateFlashReport(pieces: [Piece], profile: UserProfile?) -> Data {
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize))
+        let flash = pieces.sorted { $0.updatedAt > $1.updatedAt }
+
+        return renderer.pdfData { context in
+            context.beginPage()
+            var y = margin
+
+            y = drawHeader(context: context.cgContext, y: y, text: "FLASH PORTFOLIO")
+            if let name = profile?.fullName { y = drawSubheader(context: context.cgContext, y: y, text: name) }
+            y = drawDivider(context: context.cgContext, y: y)
+
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Generated", value: Date().formatted(date: .long, time: .shortened))
+            y = drawLabelValue(context: context.cgContext, y: y, label: "Total Designs", value: "\(flash.count)")
+            y += 12
+
+            if flash.isEmpty {
+                y = drawBodyText(context: context.cgContext, y: y, text: "No flash designs found.")
+            } else {
+                for piece in flash {
+                    if y > pageSize.height - 100 { context.beginPage(); y = margin }
+
+                    y = drawSectionTitle(context: context.cgContext, y: y, text: piece.title.uppercased())
+                    y = drawLabelValue(context: context.cgContext, y: y, label: "Status", value: piece.status.rawValue)
+                    if let flat = piece.flatRate {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Price", value: flat.currencyFormatted)
+                    }
+                    if !piece.tags.isEmpty {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Tags", value: piece.tags.joined(separator: ", "))
+                    }
+                    if !piece.descriptionText.isEmpty {
+                        y = drawLabelValue(context: context.cgContext, y: y, label: "Description", value: piece.descriptionText)
+                    }
+                    y += 6
+                }
+            }
+
+            drawFooter(context: context.cgContext, text: "Counter — Flash Portfolio — \(Date().formatted())")
+        }
+    }
+
     // MARK: - Agreement PDF
 
     func generateAgreementPDF(agreement: Agreement, signatureImage: UIImage?) -> Data {

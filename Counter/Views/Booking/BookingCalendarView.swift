@@ -2,12 +2,23 @@ import SwiftUI
 import SwiftData
 
 struct BookingCalendarView: View {
+    /// When `true` the view is embedded inside `SessionsTabView` — no `NavigationStack`
+    /// wrapper and no mode picker (the sidebar handles mode selection).
+    var embedded: Bool = false
+    var initialMode: CalendarDisplayMode = .list
+
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Booking.date) private var allBookings: [Booking]
 
     @State private var selectedDate: Date = Date()
     @State private var showingAddBooking = false
-    @State private var displayMode: CalendarDisplayMode = .list
+    @State private var displayMode: CalendarDisplayMode
+
+    init(embedded: Bool = false, initialMode: CalendarDisplayMode = .list) {
+        self.embedded = embedded
+        self.initialMode = initialMode
+        _displayMode = State(initialValue: initialMode)
+    }
 
     private var calendar: Calendar { Calendar.current }
 
@@ -118,9 +129,18 @@ struct BookingCalendarView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Display mode picker
+        if embedded {
+            calendarContent
+        } else {
+            NavigationStack { calendarContent }
+        }
+    }
+
+    @ViewBuilder
+    private var calendarContent: some View {
+        VStack(spacing: 0) {
+            // Mode picker — hidden when embedded (sidebar handles selection)
+            if !embedded {
                 Picker("View", selection: $displayMode) {
                     ForEach(CalendarDisplayMode.allCases) { mode in
                         Text(mode.rawValue).tag(mode)
@@ -129,8 +149,9 @@ struct BookingCalendarView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 .padding(.top, 8)
+            }
 
-                switch displayMode {
+            switch displayMode {
                 case .list:
                     // All upcoming bookings grouped by time period
                     let sections = groupedUpcomingBookings
@@ -247,7 +268,6 @@ struct BookingCalendarView: View {
             }
         }
     }
-}
 
 // MARK: - Week Strip View
 

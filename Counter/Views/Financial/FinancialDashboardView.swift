@@ -2,6 +2,9 @@ import SwiftUI
 import SwiftData
 
 struct FinancialDashboardView: View {
+    /// When `true` the view is embedded inside `SettingsView` — no `NavigationSplitView` wrapper.
+    var embedded: Bool = false
+
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Query private var profiles: [UserProfile]
     @Environment(BusinessLockManager.self) private var lockManager
@@ -42,45 +45,55 @@ struct FinancialDashboardView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationSplitView {
-            sidebar
-                .navigationTitle("Financial")
-                .toolbar {
-                    if lockManager.isEnabled && !lockManager.isLocked {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                lockManager.lock()
-                            } label: {
-                                Image(systemName: "lock.open.fill")
-                                    .font(.caption)
-                            }
-                        }
+        if embedded {
+            financialContent
+        } else {
+            NavigationSplitView {
+                financialContent
+            } detail: {
+                if let selectedPiece {
+                    NavigationStack {
+                        PieceFinancialDetailView(piece: selectedPiece)
                     }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showingLogPayment = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                    }
+                    .id(selectedPiece.persistentModelID)
+                } else {
+                    ContentUnavailableView(
+                        "Select a Piece",
+                        systemImage: "dollarsign.circle",
+                        description: Text("Choose a piece from the list to view its financial details.")
+                    )
                 }
-        } detail: {
-            if let selectedPiece {
-                NavigationStack {
-                    PieceFinancialDetailView(piece: selectedPiece)
-                }
-                .id(selectedPiece.persistentModelID)
-            } else {
-                ContentUnavailableView(
-                    "Select a Piece",
-                    systemImage: "dollarsign.circle",
-                    description: Text("Choose a piece from the list to view its financial details.")
-                )
+            }
+            .sheet(isPresented: $showingLogPayment) {
+                PaymentLogView()
             }
         }
-        .sheet(isPresented: $showingLogPayment) {
-            PaymentLogView()
-        }
+    }
+
+    @ViewBuilder
+    private var financialContent: some View {
+        sidebar
+            .navigationTitle("Financial")
+            .navigationDestination(for: Piece.self) { piece in
+                PieceFinancialDetailView(piece: piece)
+            }
+            .toolbar {
+                if lockManager.isEnabled && !lockManager.isLocked {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button { lockManager.lock() } label: {
+                            Image(systemName: "lock.open.fill").font(.caption)
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showingLogPayment = true } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingLogPayment) {
+                PaymentLogView()
+            }
     }
 
     // MARK: - Sidebar
