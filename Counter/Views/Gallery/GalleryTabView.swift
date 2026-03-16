@@ -89,6 +89,7 @@ struct GalleryTabView: View {
                 Divider()
                 SidebarSearchField(text: $searchText, prompt: "Search...")
             }
+            .toolbarBackground(AppTab.gallery.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Gallery")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {

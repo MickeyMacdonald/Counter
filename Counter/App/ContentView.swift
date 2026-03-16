@@ -26,10 +26,11 @@ struct ContentView: View {
                         SettingsView(selectedTab: $selectedTab)
                     case .works:
                         WorksTabView(selectedTab: $selectedTab)
-                    case .gallery:
-                        GalleryTabView(selectedTab: $selectedTab)
                     case .sessions:
                         SessionsTabView(selectedTab: $selectedTab)
+                    case .gallery:
+                        GalleryTabView(selectedTab: $selectedTab)
+
                     }
                 }
             } else {
@@ -216,15 +217,15 @@ struct WelcomeSetupView: View {
 enum AppTab: String, CaseIterable {
     case settings
     case works
-    case gallery
     case sessions
+    case gallery
 
     var label: String {
         switch self {
         case .settings: "Admin"
         case .works:    "Works"
-        case .gallery:  "Gallery"
         case .sessions: "Sessions"
+        case .gallery:  "Gallery"
         }
     }
 
@@ -234,6 +235,15 @@ enum AppTab: String, CaseIterable {
         case .works:    "person.crop.rectangle.stack.fill"
         case .gallery:  "photo.fill"
         case .sessions: "calendar.badge.clock"
+        }
+    }
+
+    var sidebarTint: Color {
+        switch self {
+        case .settings: Color(hue: 0.615, saturation: 0.30, brightness: 0.68)
+        case .works:    Color(hue: 0.610, saturation: 0.22, brightness: 0.80)
+        case .sessions: Color(hue: 0.600, saturation: 0.14, brightness: 0.90)
+        case .gallery:  Color(hue: 0.590, saturation: 0.08, brightness: 0.97)
         }
     }
 }

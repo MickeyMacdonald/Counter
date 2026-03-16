@@ -91,6 +91,7 @@ struct SettingsView: View {
                 Divider()
                 SidebarSearchField(text: $searchText, prompt: "Search...")
             }
+            .toolbarBackground(AppTab.settings.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Admin")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: adminFilter) {
@@ -385,14 +386,344 @@ struct SettingsAboutView: View {
 // MARK: - Statistics
 
 struct SettingsStatisticsView: View {
+    @Query private var allClients: [Client]
+    @Query private var allPieces: [Piece]
+    @Query private var allSessions: [TattooSession]
+    @Query private var allBookings: [Booking]
+    @Query private var allPayments: [Payment]
+
+    // MARK: Derived
+
+    private var clients: [Client]         { allClients.filter { !$0.isFlashPortfolioClient } }
+    private var customPieces: [Piece]     { allPieces.filter { $0.pieceType != .flash && $0.client?.isFlashPortfolioClient != true } }
+    private var flashPieces: [Piece]      { allPieces.filter { $0.pieceType == .flash } }
+    private var completedCustom: [Piece]  { customPieces.filter { $0.status == .completed } }
+    private var completedFlash: [Piece]   { flashPieces.filter { $0.status == .completed } }
+
+    private var totalProcessPhotos: Int {
+        allPieces.reduce(0) { $0 + $1.allImages.count }
+    }
+
+    private var avgRating: Double? {
+        let rated = completedCustom.compactMap(\.rating)
+        guard !rated.isEmpty else { return nil }
+        return Double(rated.reduce(0, +)) / Double(rated.count)
+    }
+
+    private var ratingDistribution: [(label: String, count: Int)] {
+        (1...5).map { star in
+            (label: String(repeating: "★", count: star), count: completedCustom.filter { $0.rating == star }.count)
+        }
+    }
+
+    private var avgCostCustom: Decimal? {
+        let priced = completedCustom.filter { $0.totalCost > 0 }
+        guard !priced.isEmpty else { return nil }
+        return priced.reduce(Decimal(0)) { $0 + $1.totalCost } / Decimal(priced.count)
+    }
+
+    private var avgCostFlash: Decimal? {
+        let priced = completedFlash.filter { $0.totalCost > 0 }
+        guard !priced.isEmpty else { return nil }
+        return priced.reduce(Decimal(0)) { $0 + $1.totalCost } / Decimal(priced.count)
+    }
+
+    private var totalRevenue: Decimal {
+        allPayments.reduce(Decimal(0)) { $0 + $1.amount }
+    }
+
+    private var totalOutstanding: Decimal {
+        (customPieces + flashPieces).reduce(Decimal(0)) { $0 + $1.outstandingBalance }
+    }
+
+    private var avgHoursPerPiece: Double? {
+        let timed = completedCustom.filter { $0.totalHours > 0 }
+        guard !timed.isEmpty else { return nil }
+        return timed.reduce(0.0) { $0 + $1.totalHours } / Double(timed.count)
+    }
+
+    private var totalHours: Double {
+        allSessions.reduce(0.0) { $0 + $1.durationHours }
+    }
+
+    private var pieceStatusBreakdown: [(label: String, count: Int, color: Color)] {
+        let statuses: [(PieceStatus, String, Color)] = [
+            (.completed,         "Completed",     .green),
+            (.inProgress,        "In Progress",   .blue),
+            (.designInProgress,  "Designing",     .purple),
+            (.scheduled,         "Scheduled",     .orange),
+            (.approved,          "Approved",      .teal),
+            (.touchUp,           "Touch-Up",      .yellow),
+            (.healed,            "Healed",        .mint),
+            (.concept,           "Concept",       .indigo),
+            (.archived,          "Archived",      .gray),
+        ]
+        return statuses.compactMap { (status, label, color) in
+            let count = customPieces.filter { $0.status == status }.count
+            return count > 0 ? (label, count, color) : nil
+        }
+    }
+
+    private var bookingTypeBreakdown: [(label: String, count: Int)] {
+        let types: [(BookingType, String)] = [
+            (.session,      "Session"),
+            (.consultation, "Consult"),
+            (.touchUp,      "Touch-Up"),
+            (.flashPickup,  "Flash"),
+        ]
+        return types.compactMap { (type, label) in
+            let count = allBookings.filter { $0.bookingType == type }.count
+            return count > 0 ? (label, count) : nil
+        }
+    }
+
+    private var repeatClients: Int {
+        clients.filter { $0.pieces.count > 1 }.count
+    }
+
+    private var noShowCount: Int {
+        allBookings.filter { $0.status == .noShow }.count
+    }
+
+    // MARK: Body
+
     var body: some View {
-        ContentUnavailableView {
-            Label("Statistics", systemImage: "chart.bar.fill")
-        } description: {
-            Text("Booking and client statistics coming soon.")
+        ScrollView {
+            LazyVStack(spacing: 20) {
+
+                // Clients
+                StatSection(title: "Clients", systemImage: "person.2.fill") {
+                    StatGrid {
+                        StatCard(value: "\(clients.count)",          label: "Total Clients")
+                        StatCard(value: "\(repeatClients)",          label: "Repeat Clients")
+                        StatCard(
+                            value: "\(clients.filter { Calendar.current.isDate($0.createdAt, equalTo: .now, toGranularity: .month) }.count)",
+                            label: "New This Month"
+                        )
+                        StatCard(
+                            value: "\(clients.filter { Calendar.current.isDate($0.createdAt, equalTo: .now, toGranularity: .year) }.count)",
+                            label: "New This Year"
+                        )
+                    }
+                }
+
+                // Pieces
+                StatSection(title: "Custom Pieces", systemImage: "pencil.and.ruler.fill") {
+                    StatGrid {
+                        StatCard(value: "\(customPieces.count)",    label: "Total")
+                        StatCard(value: "\(completedCustom.count)", label: "Completed")
+                        StatCard(value: totalProcessPhotos.formatted(), label: "Process Photos")
+                        StatCard(
+                            value: avgHoursPerPiece.map { String(format: "%.1fh", $0) } ?? "—",
+                            label: "Avg Hours/Piece"
+                        )
+                    }
+                    if !pieceStatusBreakdown.isEmpty {
+                        StatusBreakdownRow(items: pieceStatusBreakdown)
+                    }
+                }
+
+                // Flash
+                StatSection(title: "Flash", systemImage: "bolt.fill") {
+                    StatGrid {
+                        StatCard(value: "\(flashPieces.count)",    label: "Total Flash")
+                        StatCard(value: "\(completedFlash.count)", label: "Sold")
+                        StatCard(
+                            value: avgCostFlash.map { "$\(NSDecimalNumber(decimal: $0).intValue)" } ?? "—",
+                            label: "Avg Price"
+                        )
+                        StatCard(
+                            value: "\(flashPieces.filter { $0.status != .completed }.count)",
+                            label: "Available"
+                        )
+                    }
+                }
+
+                // Time & Sessions
+                StatSection(title: "Time & Sessions", systemImage: "clock.fill") {
+                    StatGrid {
+                        StatCard(value: String(format: "%.0fh", totalHours),  label: "Total Hours")
+                        StatCard(value: "\(allSessions.count)",                label: "Sessions")
+                        StatCard(value: "\(allBookings.count)",                label: "Bookings")
+                        StatCard(value: "\(noShowCount)",                      label: "No-Shows")
+                    }
+                    if !bookingTypeBreakdown.isEmpty {
+                        BreakdownPillRow(items: bookingTypeBreakdown)
+                    }
+                }
+
+                // Financials
+                StatSection(title: "Financials", systemImage: "dollarsign.circle.fill") {
+                    StatGrid {
+                        StatCard(
+                            value: "$\(NSDecimalNumber(decimal: totalRevenue).intValue)",
+                            label: "Total Revenue"
+                        )
+                        StatCard(
+                            value: "$\(NSDecimalNumber(decimal: totalOutstanding).intValue)",
+                            label: "Outstanding"
+                        )
+                        StatCard(
+                            value: avgCostCustom.map { "$\(NSDecimalNumber(decimal: $0).intValue)" } ?? "—",
+                            label: "Avg Custom Cost"
+                        )
+                        StatCard(
+                            value: avgCostFlash.map { "$\(NSDecimalNumber(decimal: $0).intValue)" } ?? "—",
+                            label: "Avg Flash Cost"
+                        )
+                    }
+                }
+
+                // Ratings
+                if !ratingDistribution.allSatisfy({ $0.count == 0 }) {
+                    StatSection(title: "Ratings", systemImage: "star.fill") {
+                        if let avg = avgRating {
+                            HStack(spacing: 6) {
+                                Text(String(format: "%.1f", avg))
+                                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(String(repeating: "★", count: Int(avg.rounded())))
+                                        .foregroundStyle(.yellow)
+                                        .font(.title3)
+                                    Text("avg across \(completedCustom.compactMap(\.rating).count) pieces")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 4)
+                        }
+                        VStack(spacing: 6) {
+                            ForEach(ratingDistribution.reversed(), id: \.label) { item in
+                                HStack(spacing: 8) {
+                                    Text(item.label)
+                                        .font(.caption)
+                                        .frame(width: 56, alignment: .leading)
+                                        .foregroundStyle(.secondary)
+                                    GeometryReader { geo in
+                                        let maxCount = ratingDistribution.map(\.count).max() ?? 1
+                                        let width = maxCount > 0 ? geo.size.width * CGFloat(item.count) / CGFloat(maxCount) : 0
+                                        RoundedRectangle(cornerRadius: 3)
+                                            .fill(Color.yellow.opacity(0.7))
+                                            .frame(width: max(width, item.count > 0 ? 4 : 0))
+                                    }
+                                    .frame(height: 16)
+                                    Text("\(item.count)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .frame(width: 24, alignment: .trailing)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                    }
+                }
+            }
+            .padding(.vertical, 16)
+        }
+        .navigationTitle("Statistics")
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+// MARK: - Stat Sub-views
+
+private struct StatSection<Content: View>: View {
+    let title: String
+    let systemImage: String
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+                .padding(.horizontal, 20)
+                .foregroundStyle(.secondary)
+            VStack(spacing: 0) {
+                content
+            }
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal, 16)
         }
     }
 }
+
+private struct StatGrid<Content: View>: View {
+    @ViewBuilder let content: Content
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
+            content
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+private struct StatCard: View {
+    let value: String
+    let label: String
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+    }
+}
+
+private struct StatusBreakdownRow: View {
+    let items: [(label: String, count: Int, color: Color)]
+
+    var body: some View {
+        Divider().padding(.horizontal, 12)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 6)], spacing: 6) {
+            ForEach(items, id: \.label) { item in
+                HStack(spacing: 4) {
+                    Circle().fill(item.color).frame(width: 7, height: 7)
+                    Text("\(item.label) \(item.count)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(item.color.opacity(0.08), in: Capsule())
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+    }
+}
+
+private struct BreakdownPillRow: View {
+    let items: [(label: String, count: Int)]
+
+    var body: some View {
+        Divider().padding(.horizontal, 12)
+        HStack(spacing: 12) {
+            ForEach(items, id: \.label) { item in
+                VStack(spacing: 2) {
+                    Text("\(item.count)").font(.headline)
+                    Text(item.label).font(.caption).foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+    }
+}
+
 
 // MARK: - Shared
 

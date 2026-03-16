@@ -1,43 +1,54 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Task Model (derived from SwiftData, not persisted separately)
+// MARK: - Category
 
 enum ToDoCategory: String, CaseIterable {
-    case design = "Design"
-    case photos  = "Photos"
-    case admin   = "Admin"
+    case drafts        = "Drafts"
+    case forms         = "Form Requirements"
+    case healedPhotos  = "Healed Photos"
+    case touchUps      = "Touch-Ups"
+    case payments      = "Outstanding Payments"
+    case processPhotos = "Process Photos"
 
     var systemImage: String {
         switch self {
-        case .design:  "pencil.tip"
-        case .photos:  "camera.fill"
-        case .admin:   "doc.text.fill"
+        case .drafts:        "pencil.tip"
+        case .forms:         "doc.text.fill"
+        case .healedPhotos:  "camera.fill"
+        case .touchUps:      "bandage.fill"
+        case .payments:      "dollarsign.circle.fill"
+        case .processPhotos: "camera.aperture"
         }
     }
 
     var color: Color {
         switch self {
-        case .design:  .orange
-        case .photos:  .blue
-        case .admin:   .purple
+        case .drafts:        .orange
+        case .forms:         .purple
+        case .healedPhotos:  .teal
+        case .touchUps:      .yellow
+        case .payments:      .red
+        case .processPhotos: .blue
         }
     }
 }
 
+// MARK: - Task Model
+
 struct ToDoTask: Identifiable {
-    let id: String              // Stable identifier for persistence / comparison
+    let id: String
     let category: ToDoCategory
     let title: String
     let subtitle: String
     let piece: Piece?
     let booking: Booking?
+    let client: Client?
 }
 
 // MARK: - To Do View
 
 struct ToDoView: View {
-    /// When `true` the view is embedded inside `SessionsTabView` — no `NavigationStack` wrapper.
     var embedded: Bool = false
 
     @Query private var pieces: [Piece]
@@ -46,14 +57,13 @@ struct ToDoView: View {
     @State private var selectedFilter: ToDoCategory? = nil
     @State private var navigateToPiece: Piece?
 
-    // Dismissed task IDs stored in UserDefaults
     @AppStorage("todo.dismissedIDs") private var dismissedRaw: String = ""
 
     private var dismissedIDs: Set<String> {
         Set(dismissedRaw.split(separator: ",").map(String.init))
     }
 
-    // MARK: - Task Derivation
+    // MARK: Derived
 
     private var activePieces: [Piece] {
         pieces.filter { $0.client?.isFlashPortfolioClient != true }
@@ -63,29 +73,94 @@ struct ToDoView: View {
         var result: [ToDoTask] = []
         let now = Date()
 
-        // ── Design tasks ──────────────────────────────────────────────────────
-        for piece in activePieces where piece.status == .designInProgress {
+        // ── Drafts ───────────────────────────────────────────────────────────
+        for piece in activePieces where [PieceStatus.concept, .designInProgress].contains(piece.status) {
+            let label = piece.status == .designInProgress ? "Draft in progress" : "Design not started"
             result.append(ToDoTask(
                 id: "draft_\(stableID(piece))",
-                category: .design,
-                title: "Draft needed",
+                category: .drafts,
+                title: label,
                 subtitle: pieceSubtitle(piece),
-                piece: piece, booking: nil
+                piece: piece, booking: nil, client: piece.client
             ))
         }
 
-        for piece in activePieces where piece.status == .concept && !piece.sessions.isEmpty {
+        // ── Form Requirements ────────────────────────────────────────────────
+        let thirtyDays = Calendar.current.date(byAdding: .day, value: 30, to: now) ?? now
+        let upcomingBookings = bookings.filter {
+            $0.date >= now && $0.date <= thirtyDays && $0.status != .cancelled
+        }
+        let requiredForms: [(AgreementType, String)] = [
+            (.consent,     "Tattoo Consent"),
+            (.photoRelease,"Photo Release"),
+            (.liability,   "Liability Waiver"),
+        ]
+        for booking in upcomingBookings {
+            guard let client = booking.client else { continue }
+            let signedTypes = Set(client.agreements.filter(\.isSigned).map(\.agreementType))
+            let dateStr = booking.date.formatted(date: .abbreviated, time: .omitted)
+            for (type, label) in requiredForms where !signedTypes.contains(type) {
+                result.append(ToDoTask(
+                    id: "form_\(type.rawValue)_\(client.fullName.hashValue)_\(Int(booking.date.timeIntervalSince1970))",
+                    category: .forms,
+                    title: "\(label) missing",
+                    subtitle: "\(client.fullName) · \(dateStr)",
+                    piece: booking.piece, booking: booking, client: client
+                ))
+            }
+        }
+
+        // ── Healed Photos ────────────────────────────────────────────────────
+        let healCandidates = activePieces.filter {
+            [PieceStatus.completed, .healed, .touchUp].contains($0.status)
+        }
+        for piece in healCandidates {
+            let hasHealedPhotos = piece.sessions.flatMap { $0.imageGroups }.contains {
+                ($0.stage == .healed || $0.stage == .finalResult) && !$0.images.isEmpty
+            }
+            if !hasHealedPhotos {
+                result.append(ToDoTask(
+                    id: "healedphoto_\(stableID(piece))",
+                    category: .healedPhotos,
+                    title: "Healed photos needed",
+                    subtitle: pieceSubtitle(piece),
+                    piece: piece, booking: nil, client: piece.client
+                ))
+            }
+        }
+
+        // ── Touch-Ups ────────────────────────────────────────────────────────
+        for piece in activePieces where piece.status == .touchUp {
             result.append(ToDoTask(
-                id: "concept_\(stableID(piece))",
-                category: .design,
-                title: "Design not started",
+                id: "touchup_\(stableID(piece))",
+                category: .touchUps,
+                title: "Touch-up required",
                 subtitle: pieceSubtitle(piece),
-                piece: piece, booking: nil
+                piece: piece, booking: nil, client: piece.client
             ))
         }
 
-        // ── Photo tasks ───────────────────────────────────────────────────────
-        // Process photos: sessions in the past but no freshly-tattooed images
+        // ── Outstanding Payments ─────────────────────────────────────────────
+        let unpaidPieces = activePieces.filter {
+            $0.outstandingBalance > 0 &&
+            $0.status != .archived &&
+            $0.status != .concept
+        }
+        for piece in unpaidPieces {
+            let amount = piece.outstandingBalance
+            let formatted = NumberFormatter.localizedString(
+                from: NSDecimalNumber(decimal: amount), number: .currency
+            )
+            result.append(ToDoTask(
+                id: "payment_\(stableID(piece))",
+                category: .payments,
+                title: "\(formatted) outstanding",
+                subtitle: pieceSubtitle(piece),
+                piece: piece, booking: nil, client: piece.client
+            ))
+        }
+
+        // ── Process Photos ───────────────────────────────────────────────────
         let inProgressPieces = activePieces.filter {
             [PieceStatus.inProgress, .completed, .touchUp].contains($0.status)
         }
@@ -97,59 +172,17 @@ struct ToDoView: View {
             if !hasFreshPhotos && hasPastSessions {
                 result.append(ToDoTask(
                     id: "freshphoto_\(stableID(piece))",
-                    category: .photos,
+                    category: .processPhotos,
                     title: "Process photos needed",
                     subtitle: pieceSubtitle(piece),
-                    piece: piece, booking: nil
+                    piece: piece, booking: nil, client: piece.client
                 ))
             }
         }
 
-        // Healed photos: completed or healed pieces with no healed-stage images
-        let healCandidates = activePieces.filter {
-            [PieceStatus.completed, .healed, .touchUp].contains($0.status)
-        }
-        for piece in healCandidates {
-            let hasHealedPhotos = piece.sessions.flatMap { $0.imageGroups }.contains {
-                ($0.stage == .healed || $0.stage == .finalResult) && !$0.images.isEmpty
-            }
-            if !hasHealedPhotos {
-                result.append(ToDoTask(
-                    id: "healedphoto_\(stableID(piece))",
-                    category: .photos,
-                    title: "Healed photos needed",
-                    subtitle: pieceSubtitle(piece),
-                    piece: piece, booking: nil
-                ))
-            }
-        }
-
-        // ── Admin tasks ───────────────────────────────────────────────────────
-        let thirtyDaysOut = Calendar.current.date(byAdding: .day, value: 30, to: now) ?? now
-        let upcomingBookings = bookings.filter {
-            $0.date >= now &&
-            $0.date <= thirtyDaysOut &&
-            $0.status != .cancelled
-        }
-        for booking in upcomingBookings {
-            let clientAgreements = booking.client?.agreements ?? []
-            if clientAgreements.isEmpty {
-                let clientName = booking.client?.fullName ?? "Unknown Client"
-                let dateStr = booking.date.formatted(date: .abbreviated, time: .omitted)
-                result.append(ToDoTask(
-                    id: "agreement_\(Int(booking.date.timeIntervalSince1970))_\(clientName.hashValue)",
-                    category: .admin,
-                    title: "Agreement needed",
-                    subtitle: "\(clientName) · \(dateStr)",
-                    piece: booking.piece, booking: booking
-                ))
-            }
-        }
-
-        // ── Apply filter + dismiss ─────────────────────────────────────────────
+        // ── Filter + dismiss ─────────────────────────────────────────────────
         let dismissed = dismissedIDs
         let undismissed = result.filter { !dismissed.contains($0.id) }
-
         if let filter = selectedFilter {
             return undismissed.filter { $0.category == filter }
         }
@@ -163,7 +196,7 @@ struct ToDoView: View {
         }
     }
 
-    // MARK: - Body
+    // MARK: Body
 
     var body: some View {
         if embedded {
@@ -187,33 +220,27 @@ struct ToDoView: View {
             PieceDetailView(piece: piece)
         }
         .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button {
-                            selectedFilter = nil
-                        } label: {
-                            Label("All Categories", systemImage: "tray.2")
-                        }
-
-                        Divider()
-
-                        ForEach(ToDoCategory.allCases, id: \.self) { cat in
-                            Button {
-                                selectedFilter = cat
-                            } label: {
-                                Label(cat.rawValue, systemImage: cat.systemImage)
-                            }
-                        }
-                    } label: {
-                        Image(systemName: selectedFilter == nil
-                              ? "line.3.horizontal.decrease.circle"
-                              : "line.3.horizontal.decrease.circle.fill")
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button { selectedFilter = nil } label: {
+                        Label("All", systemImage: "tray.2")
                     }
+                    Divider()
+                    ForEach(ToDoCategory.allCases, id: \.self) { cat in
+                        Button { selectedFilter = cat } label: {
+                            Label(cat.rawValue, systemImage: cat.systemImage)
+                        }
+                    }
+                } label: {
+                    Image(systemName: selectedFilter == nil
+                          ? "line.3.horizontal.decrease.circle"
+                          : "line.3.horizontal.decrease.circle.fill")
                 }
             }
+        }
     }
 
-    // MARK: - Task List
+    // MARK: Task List
 
     @ViewBuilder
     private var taskList: some View {
@@ -228,16 +255,23 @@ struct ToDoView: View {
                         )
                     }
                 } header: {
-                    Label(group.category.rawValue, systemImage: group.category.systemImage)
-                        .foregroundStyle(group.category.color)
-                        .font(.subheadline.weight(.semibold))
+                    HStack(spacing: 6) {
+                        Image(systemName: group.category.systemImage)
+                        Text(group.category.rawValue)
+                        Spacer()
+                        Text("\(group.tasks.count)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                    .foregroundStyle(group.category.color)
+                    .font(.subheadline.weight(.semibold))
                 }
             }
         }
         .listStyle(.insetGrouped)
     }
 
-    // MARK: - Empty State
+    // MARK: Empty State
 
     @ViewBuilder
     private var emptyState: some View {
@@ -256,11 +290,11 @@ struct ToDoView: View {
         }
     }
 
-    // MARK: - Helpers
+    // MARK: Helpers
 
     private func pieceSubtitle(_ piece: Piece) -> String {
-        let clientPart = piece.client.map { $0.fullName } ?? ""
-        return clientPart.isEmpty ? piece.title : "\(piece.title) · \(clientPart)"
+        let client = piece.client.map { $0.fullName } ?? ""
+        return client.isEmpty ? piece.title : "\(piece.title) · \(client)"
     }
 
     private func stableID(_ piece: Piece) -> String {
@@ -283,7 +317,6 @@ private struct ToDoRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Category icon badge
             ZStack {
                 Circle()
                     .fill(task.category.color.opacity(0.12))
@@ -292,7 +325,6 @@ private struct ToDoRow: View {
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(task.category.color)
             }
-
             VStack(alignment: .leading, spacing: 2) {
                 Text(task.title)
                     .font(.subheadline.weight(.medium))
@@ -301,10 +333,8 @@ private struct ToDoRow: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
-
             Spacer(minLength: 0)
-
-            if task.piece != nil {
+            if task.piece != nil || task.booking != nil {
                 Image(systemName: "chevron.right")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
@@ -312,9 +342,7 @@ private struct ToDoRow: View {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            if let piece = task.piece {
-                onNavigate(piece)
-            }
+            if let piece = task.piece { onNavigate(piece) }
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {

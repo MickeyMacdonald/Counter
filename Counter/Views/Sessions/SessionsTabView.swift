@@ -1,24 +1,36 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Sessions Group (top-level picker)
+
+enum SessionsGroup: String, CaseIterable {
+    case tasks    = "Tasks"
+    case schedule = "Schedule"
+}
+
 // MARK: - Sessions Sidebar Section
 
 enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
-    case availability = "Availability"
-    case todo         = "To Do"
-    case list         = "List View"
-    case nextWeek     = "Next Week"
-    case month        = "Month View"
+    case todo    = "To Do"
+    case list    = "List View"
+    case weekly  = "Weekly View"
+    case monthly = "Monthly View"
 
     var id: String { rawValue }
 
     var systemImage: String {
         switch self {
-        case .availability: "clock"
-        case .todo:         "checklist"
-        case .list:         "list.bullet"
-        case .nextWeek:     "calendar.badge.clock"
-        case .month:        "calendar"
+        case .todo:    "checklist"
+        case .list:    "list.bullet"
+        case .weekly:  "calendar.badge.clock"
+        case .monthly: "calendar"
+        }
+    }
+
+    var group: SessionsGroup {
+        switch self {
+        case .todo, .list:      .tasks
+        case .weekly, .monthly: .schedule
         }
     }
 }
@@ -27,14 +39,14 @@ enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
 
 struct SessionsTabView: View {
     @Binding var selectedTab: AppTab
+    @State private var group: SessionsGroup = .tasks
     @State private var selectedSection: SessionsSection? = .list
     @State private var searchText = ""
 
-    private var filteredSections: [SessionsSection] {
-        guard !searchText.isEmpty else { return SessionsSection.allCases }
-        return SessionsSection.allCases.filter {
-            $0.rawValue.localizedCaseInsensitiveContains(searchText)
-        }
+    private var visibleSections: [SessionsSection] {
+        let base = SessionsSection.allCases.filter { $0.group == group }
+        guard !searchText.isEmpty else { return base }
+        return base.filter { $0.rawValue.localizedCaseInsensitiveContains(searchText) }
     }
 
     var body: some View {
@@ -42,7 +54,16 @@ struct SessionsTabView: View {
             VStack(spacing: 0) {
                 AppTabSwitcher(selectedTab: $selectedTab)
                 Divider()
-                List(filteredSections, selection: $selectedSection) { section in
+                Picker("Group", selection: $group) {
+                    ForEach(SessionsGroup.allCases, id: \.self) { g in
+                        Text(g.rawValue).tag(g)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                Divider()
+                List(visibleSections, selection: $selectedSection) { section in
                     Label(section.rawValue, systemImage: section.systemImage)
                         .tag(section)
                 }
@@ -50,6 +71,7 @@ struct SessionsTabView: View {
                 Divider()
                 SidebarSearchField(text: $searchText, prompt: "Search...")
             }
+            .toolbarBackground(AppTab.sessions.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Sessions")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
@@ -65,21 +87,19 @@ struct SessionsTabView: View {
                 }
             }
         }
+        .onChange(of: group) {
+            selectedSection = visibleSections.first
+            searchText = ""
+        }
     }
 
     @ViewBuilder
     private func detailView(for section: SessionsSection) -> some View {
         switch section {
-        case .availability:
-            SettingsBookingView()
-        case .todo:
-            ToDoView(embedded: true)
-        case .list:
-            BookingCalendarView(embedded: true, initialMode: .list)
-        case .nextWeek:
-            BookingCalendarView(embedded: true, initialMode: .week)
-        case .month:
-            BookingCalendarView(embedded: true, initialMode: .month)
+        case .todo:    ToDoView(embedded: true)
+        case .list:    BookingCalendarView(embedded: true, initialMode: .list)
+        case .weekly:  BookingCalendarView(embedded: true, initialMode: .week)
+        case .monthly: BookingCalendarView(embedded: true, initialMode: .month)
         }
     }
 }

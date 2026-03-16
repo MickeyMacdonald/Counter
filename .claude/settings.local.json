@@ -11,7 +11,8 @@
       "Bash(xcodebuild -project /Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj -scheme Counter -destination 'platform=iOS Simulator,name=iPad Pro 13-inch \\(M4\\)' build)",
       "Bash(plutil -lint \"/Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj/project.pbxproj\")",
       "Bash(plutil -lint /Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj/project.pbxproj)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(grep -r SettingsStatisticsView /Users/mickeymacdonald/Documents/Code/Counter --include=*.swift)"
     ]
   }
 }

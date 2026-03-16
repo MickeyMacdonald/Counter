@@ -30,22 +30,20 @@ struct WorksTabView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-
                 Divider()
-
                 switch section {
                 case .clients:
                     WorksClientsList(selectedClient: $selectedClient, searchText: $searchText)
                 case .pieces:
                     WorksPiecesList(selectedPiece: $selectedPiece, searchText: $searchText)
                 }
-
                 Divider()
                 SidebarSearchField(
                     text: $searchText,
                     prompt: section == .clients ? "Search clients..." : "Search pieces..."
                 )
             }
+            .toolbarBackground(AppTab.works.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Works")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
