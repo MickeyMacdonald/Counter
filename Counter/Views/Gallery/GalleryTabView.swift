@@ -58,11 +58,13 @@ struct GalleryTabView: View {
     @State private var galleryFilter: GalleryFilter = .all
 
     private var filteredSections: [GallerySection] {
+        let base: [GallerySection]
         switch galleryFilter {
-        case .all:    return GallerySection.allCases
-        case .custom: return [.byClient, .byStage, .byPlacement]
-        case .flash:  return [.flash]
+        case .all:    base = GallerySection.allCases
+        case .custom: base = [.byClient, .byStage, .byPlacement]
+        case .flash:  base = [.flash]
         }
+        return lockManager.isLocked ? base.filter { $0 != .byClient } : base
     }
 
     var body: some View {
@@ -90,44 +92,49 @@ struct GalleryTabView: View {
             .navigationTitle("Gallery")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
-            NavigationStack {
-                if let section = selectedSection {
-                    detailView(for: section)
-                        .navigationTitle(section.rawValue)
-                        .toolbar {
-                            if section != .flash {
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    Menu {
-                                        Picker("Sort", selection: $sortOrder) {
-                                            ForEach(GallerySortOrder.allCases, id: \.self) { order in
-                                                Label(order.rawValue, systemImage: order.systemImage)
-                                                    .tag(order)
+            VStack(spacing: 0) {
+                if lockManager.isEnabled {
+                    ClientLockBanner(lockManager: lockManager)
+                }
+                NavigationStack {
+                    if let section = selectedSection {
+                        detailView(for: section)
+                            .navigationTitle(section.rawValue)
+                            .toolbar {
+                                if section != .flash {
+                                    ToolbarItem(placement: .topBarTrailing) {
+                                        Menu {
+                                            Picker("Sort", selection: $sortOrder) {
+                                                ForEach(GallerySortOrder.allCases, id: \.self) { order in
+                                                    Label(order.rawValue, systemImage: order.systemImage)
+                                                        .tag(order)
+                                                }
                                             }
+                                        } label: {
+                                            Image(systemName: sortOrder == .chronological
+                                                  ? "arrow.up.arrow.down"
+                                                  : "star.fill")
                                         }
-                                    } label: {
-                                        Image(systemName: sortOrder == .chronological
-                                              ? "arrow.up.arrow.down"
-                                              : "star.fill")
                                     }
                                 }
                             }
-                            if lockManager.isEnabled {
-                                ToolbarItem(placement: .topBarLeading) {
-                                    lockToggleButton
-                                }
-                            }
-                        }
-                } else {
-                    ContentUnavailableView(
-                        "Select a Category",
-                        systemImage: "photo.on.rectangle.angled",
-                        description: Text("Choose a category from the sidebar.")
-                    )
+                    } else {
+                        ContentUnavailableView(
+                            "Select a Category",
+                            systemImage: "photo.on.rectangle.angled",
+                            description: Text("Choose a category from the sidebar.")
+                        )
+                    }
                 }
             }
         }
         .onChange(of: galleryFilter) {
             if let current = selectedSection, !filteredSections.contains(current) {
+                selectedSection = filteredSections.first
+            }
+        }
+        .onChange(of: lockManager.isLocked) {
+            if lockManager.isLocked && selectedSection == .byClient {
                 selectedSection = filteredSections.first
             }
         }
@@ -198,33 +205,64 @@ struct GalleryTabView: View {
         }
     }
 
-    // MARK: - Lock Toggle
+}
 
-    private var lockToggleButton: some View {
+// MARK: - Client Lock Banner
+
+struct ClientLockBanner: View {
+    let lockManager: BusinessLockManager
+    @State private var showPINEntry = false
+    @State private var pinInput = ""
+    @State private var pinError = false
+
+    var body: some View {
         Button {
             if lockManager.isLocked {
-                Task { await lockManager.unlockWithBiometrics() }
+                Task {
+                    let success = await lockManager.unlockWithBiometrics()
+                    if !success { showPINEntry = true }
+                }
             } else {
                 lockManager.lock()
             }
         } label: {
-            HStack(spacing: 5) {
-                Image(systemName: lockManager.isLocked ? "eye.slash.fill" : "eye.fill")
-                    .font(.caption)
-                Text(lockManager.isLocked ? "Client Mode" : "Artist Mode")
-                    .font(.caption.weight(.medium))
+            HStack(spacing: 10) {
+                Image(systemName: lockManager.isLocked ? "lock.fill" : "lock.open.fill")
+                    .font(.system(size: 15, weight: .semibold))
+                Text(lockManager.isLocked ? "Exit Client Mode" : "Enter Client Mode")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Image(systemName: lockManager.isLocked
+                      ? "faceid"
+                      : "chevron.right")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(lockManager.isLocked ? .primary : .tertiary)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
             .background(
                 lockManager.isLocked
-                    ? Color.orange.opacity(0.15)
-                    : Color.accentColor.opacity(0.15),
-                in: Capsule()
+                    ? Color.orange.opacity(0.12)
+                    : Color.accentColor.opacity(0.1)
             )
-            .foregroundStyle(lockManager.isLocked ? .orange : .accentColor)
+            .foregroundStyle(lockManager.isLocked ? Color.orange : Color.accentColor)
         }
         .buttonStyle(.plain)
+        .alert("Enter PIN", isPresented: $showPINEntry) {
+            SecureField("PIN", text: $pinInput)
+                .keyboardType(.numberPad)
+            Button("Unlock") {
+                if !lockManager.unlockWithPIN(pinInput) {
+                    pinInput = ""
+                    pinError = true
+                }
+            }
+            Button("Cancel", role: .cancel) { pinInput = "" }
+        }
+        .alert("Incorrect PIN", isPresented: $pinError) {
+            Button("Try Again") { showPINEntry = true }
+            Button("Cancel", role: .cancel) {}
+        }
     }
 }
 

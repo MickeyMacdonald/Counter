@@ -90,7 +90,6 @@ struct WorksTabView: View {
 
 private struct WorksClientsList: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(BusinessLockManager.self) private var lockManager
     @Query(sort: \Client.lastName) private var clients: [Client]
     @Binding var selectedClient: Client?
     @Binding var searchText: String
@@ -147,13 +146,6 @@ private struct WorksClientsList: View {
             }
         }
         .toolbar {
-            if lockManager.isEnabled && !lockManager.isLocked {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button { lockManager.lock() } label: {
-                        Image(systemName: "lock.open.fill").font(.caption)
-                    }
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showingAddClient = true } label: {
                     Image(systemName: "plus").fontWeight(.semibold)

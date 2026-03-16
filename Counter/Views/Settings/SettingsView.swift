@@ -51,7 +51,6 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 struct SettingsView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
-    @Environment(BusinessLockManager.self) private var lockManager
     @Binding var selectedTab: AppTab
     @State private var selectedCategory: SettingsCategory? = .profile
     @State private var searchText = ""
@@ -98,18 +97,6 @@ struct SettingsView: View {
                 if let current = selectedCategory,
                    !visibleCategories.contains(current) {
                     selectedCategory = visibleCategories.first
-                }
-            }
-            .toolbar {
-                if lockManager.isEnabled {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            lockManager.lock()
-                        } label: {
-                            Image(systemName: "lock.open.fill")
-                                .font(.caption)
-                        }
-                    }
                 }
             }
         } detail: {

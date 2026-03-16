@@ -5,6 +5,7 @@ struct ContentView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
+    @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab: AppTab = .works
 
     private var hasProfile: Bool {
@@ -12,26 +13,43 @@ struct ContentView: View {
     }
 
     var body: some View {
-        if hasProfile {
-            if lockManager.isLocked {
-                // Client mode: Gallery only (no tab bar)
-                GalleryTabView(selectedTab: $selectedTab)
-                    .onAppear { selectedTab = .gallery }
-            } else {
-                // Full app — no TabView; AppTabSwitcher inside each sidebar drives navigation
-                switch selectedTab {
-                case .settings:
-                    SettingsView(selectedTab: $selectedTab)
-                case .works:
-                    WorksTabView(selectedTab: $selectedTab)
-                case .gallery:
+        Group {
+            if hasProfile {
+                if lockManager.isLocked {
+                    // Client mode: Gallery only (no tab bar)
                     GalleryTabView(selectedTab: $selectedTab)
-                case .sessions:
-                    SessionsTabView(selectedTab: $selectedTab)
+                        .onAppear { selectedTab = .gallery }
+                } else {
+                    // Full app — no TabView; AppTabSwitcher inside each sidebar drives navigation
+                    switch selectedTab {
+                    case .settings:
+                        SettingsView(selectedTab: $selectedTab)
+                    case .works:
+                        WorksTabView(selectedTab: $selectedTab)
+                    case .gallery:
+                        GalleryTabView(selectedTab: $selectedTab)
+                    case .sessions:
+                        SessionsTabView(selectedTab: $selectedTab)
+                    }
                 }
+            } else {
+                WelcomeSetupView()
             }
-        } else {
-            WelcomeSetupView()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard lockManager.isEnabled else { return }
+            switch newPhase {
+            case .background, .inactive:
+                // Auto-lock whenever the app leaves the foreground
+                lockManager.lock()
+            case .active:
+                // Prompt for biometrics immediately on return if locked
+                if lockManager.isLocked {
+                    Task { await lockManager.unlockWithBiometrics() }
+                }
+            @unknown default:
+                break
+            }
         }
     }
 }
