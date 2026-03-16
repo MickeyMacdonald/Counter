@@ -1,0 +1,731 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		79481E2F2F65F2A100349BEA /* SeedDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79481E2E2F65F2A100349BEA /* SeedDataService.swift */; };
+		AA000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000001 /* CounterApp.swift */; };
+		AA000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000002 /* ContentView.swift */; };
+		AA000003 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003 /* Client.swift */; };
+		AA000004 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004 /* Piece.swift */; };
+		AA000005 /* ImageGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005 /* ImageGroup.swift */; };
+		AA000006 /* PieceImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006 /* PieceImage.swift */; };
+		AA000007 /* TattooSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007 /* TattooSession.swift */; };
+		AA000008 /* Agreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008 /* Agreement.swift */; };
+		AA000009 /* CommunicationLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009 /* CommunicationLog.swift */; };
+		AA000010 /* ImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010 /* ImageStorageService.swift */; };
+		AA000011 /* PreviewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000011 /* PreviewContainer.swift */; };
+		AA000012 /* ClientListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000012 /* ClientListView.swift */; };
+		AA000013 /* ClientRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000013 /* ClientRowView.swift */; };
+		AA000014 /* ClientEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000014 /* ClientEditView.swift */; };
+		AA000015 /* ClientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015 /* ClientDetailView.swift */; };
+		AA000016 /* PieceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016 /* PieceRowView.swift */; };
+		AA000017 /* PieceEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017 /* PieceEditView.swift */; };
+		AA000018 /* PieceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018 /* PieceDetailView.swift */; };
+		AA000019 /* SessionEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019 /* SessionEditView.swift */; };
+		AA000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000020 /* Assets.xcassets */; };
+		AA000021 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000021 /* Preview Assets.xcassets */; };
+		AA000022 /* PhotoImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022 /* PhotoImportService.swift */; };
+		AA000023 /* ImageGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023 /* ImageGalleryView.swift */; };
+		AA000024 /* FullScreenImageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000024 /* FullScreenImageViewer.swift */; };
+		AA000025 /* StageManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000025 /* StageManagerView.swift */; };
+		AA000026 /* TimeLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000026 /* TimeLogView.swift */; };
+		AA000027 /* SignatureCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000027 /* SignatureCaptureView.swift */; };
+		AA000028 /* AgreementEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000028 /* AgreementEditView.swift */; };
+		AA000029 /* AgreementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000029 /* AgreementDetailView.swift */; };
+		AA000030 /* EmailTemplateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000030 /* EmailTemplateService.swift */; };
+		AA000031 /* EmailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000031 /* EmailService.swift */; };
+		AA000032 /* PDFReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000032 /* PDFReportService.swift */; };
+		AA000033 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000033 /* ExportService.swift */; };
+		AA000034 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000034 /* UserProfile.swift */; };
+		AA000035 /* Booking.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000035 /* Booking.swift */; };
+		AA000036 /* AvailabilitySlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000036 /* AvailabilitySlot.swift */; };
+		AA000037 /* BookingCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000037 /* BookingCalendarView.swift */; };
+		AA000038 /* BookingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000038 /* BookingDetailView.swift */; };
+		AA000039 /* BookingEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* BookingEditView.swift */; };
+		AA000040 /* DayBookingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* DayBookingListView.swift */; };
+		AA000041 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* SettingsView.swift */; };
+		AA000042 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000042 /* ProfileEditView.swift */; };
+		AA000043 /* AvailabilityEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* AvailabilityEditView.swift */; };
+		AA000044 /* SessionDraftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000044 /* SessionDraftView.swift */; };
+		AA000045 /* FlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000045 /* FlashGalleryView.swift */; };
+		AA000046 /* InspirationGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000046 /* InspirationGalleryView.swift */; };
+		AA000047 /* AddSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000047 /* AddSessionView.swift */; };
+		AA000048 /* InspirationImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000048 /* InspirationImage.swift */; };
+		AA000049 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000049 /* Payment.swift */; };
+		AA000050 /* FinancialDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000050 /* FinancialDashboardView.swift */; };
+		AA000051 /* PaymentLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000051 /* PaymentLogView.swift */; };
+		AA000052 /* PaymentHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000052 /* PaymentHistoryView.swift */; };
+		AA000053 /* PieceFinancialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000053 /* PieceFinancialDetailView.swift */; };
+		AA000054 /* GalleryTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000054 /* GalleryTabView.swift */; };
+		AA000055 /* GalleryImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000055 /* GalleryImageCell.swift */; };
+		AA000056 /* GalleryByStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000056 /* GalleryByStageView.swift */; };
+		AA000057 /* GalleryByClientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000057 /* GalleryByClientView.swift */; };
+		AA000058 /* GalleryByRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000058 /* GalleryByRatingView.swift */; };
+		AA000059 /* GalleryByPlacementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000059 /* GalleryByPlacementView.swift */; };
+		AA000060 /* ClientGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000060 /* ClientGalleryView.swift */; };
+		AA000061 /* BusinessLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000061 /* BusinessLockManager.swift */; };
+		AA000062 /* BusinessLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000062 /* BusinessLockView.swift */; };
+		AA000063 /* PieceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000063 /* PieceListView.swift */; };
+		AA000064 /* CustomEmailTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000064 /* CustomEmailTemplate.swift */; };
+		AA000065 /* EmailTemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000065 /* EmailTemplateEditorView.swift */; };
+		AA000066 /* SettingsEmailTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsEmailTemplatesView.swift */; };
+		AA000067 /* AvailabilityOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000067 /* AvailabilityOverride.swift */; };
+		AA000068 /* SettingsBookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000068 /* SettingsBookingView.swift */; };
+		AA000069 /* CustomSessionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000069 /* CustomSessionType.swift */; };
+		AA000070 /* FlashPriceTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000070 /* FlashPriceTier.swift */; };
+		AA000071 /* FlashPortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000071 /* FlashPortfolioView.swift */; };
+		AA000072 /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000072 /* ToDoView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		79481E2E2F65F2A100349BEA /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
+		AB000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
+		AB000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AB000003 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		AB000004 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		AB000005 /* ImageGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGroup.swift; sourceTree = "<group>"; };
+		AB000006 /* PieceImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceImage.swift; sourceTree = "<group>"; };
+		AB000007 /* TattooSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TattooSession.swift; sourceTree = "<group>"; };
+		AB000008 /* Agreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agreement.swift; sourceTree = "<group>"; };
+		AB000009 /* CommunicationLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationLog.swift; sourceTree = "<group>"; };
+		AB000010 /* ImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStorageService.swift; sourceTree = "<group>"; };
+		AB000011 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContainer.swift; sourceTree = "<group>"; };
+		AB000012 /* ClientListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListView.swift; sourceTree = "<group>"; };
+		AB000013 /* ClientRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRowView.swift; sourceTree = "<group>"; };
+		AB000014 /* ClientEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEditView.swift; sourceTree = "<group>"; };
+		AB000015 /* ClientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailView.swift; sourceTree = "<group>"; };
+		AB000016 /* PieceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceRowView.swift; sourceTree = "<group>"; };
+		AB000017 /* PieceEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceEditView.swift; sourceTree = "<group>"; };
+		AB000018 /* PieceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceDetailView.swift; sourceTree = "<group>"; };
+		AB000019 /* SessionEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEditView.swift; sourceTree = "<group>"; };
+		AB000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AB000021 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AB000022 /* PhotoImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportService.swift; sourceTree = "<group>"; };
+		AB000023 /* ImageGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryView.swift; sourceTree = "<group>"; };
+		AB000024 /* FullScreenImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageViewer.swift; sourceTree = "<group>"; };
+		AB000025 /* StageManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageManagerView.swift; sourceTree = "<group>"; };
+		AB000026 /* TimeLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLogView.swift; sourceTree = "<group>"; };
+		AB000027 /* SignatureCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureCaptureView.swift; sourceTree = "<group>"; };
+		AB000028 /* AgreementEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementEditView.swift; sourceTree = "<group>"; };
+		AB000029 /* AgreementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementDetailView.swift; sourceTree = "<group>"; };
+		AB000030 /* EmailTemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateService.swift; sourceTree = "<group>"; };
+		AB000031 /* EmailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
+		AB000032 /* PDFReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReportService.swift; sourceTree = "<group>"; };
+		AB000033 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		AB000034 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		AB000035 /* Booking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Booking.swift; sourceTree = "<group>"; };
+		AB000036 /* AvailabilitySlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySlot.swift; sourceTree = "<group>"; };
+		AB000037 /* BookingCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingCalendarView.swift; sourceTree = "<group>"; };
+		AB000038 /* BookingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailView.swift; sourceTree = "<group>"; };
+		AB000039 /* BookingEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingEditView.swift; sourceTree = "<group>"; };
+		AB000040 /* DayBookingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayBookingListView.swift; sourceTree = "<group>"; };
+		AB000041 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AB000042 /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
+		AB000043 /* AvailabilityEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityEditView.swift; sourceTree = "<group>"; };
+		AB000044 /* SessionDraftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDraftView.swift; sourceTree = "<group>"; };
+		AB000045 /* FlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashGalleryView.swift; sourceTree = "<group>"; };
+		AB000046 /* InspirationGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationGalleryView.swift; sourceTree = "<group>"; };
+		AB000047 /* AddSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSessionView.swift; sourceTree = "<group>"; };
+		AB000048 /* InspirationImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationImage.swift; sourceTree = "<group>"; };
+		AB000049 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
+		AB000050 /* FinancialDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialDashboardView.swift; sourceTree = "<group>"; };
+		AB000051 /* PaymentLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentLogView.swift; sourceTree = "<group>"; };
+		AB000052 /* PaymentHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentHistoryView.swift; sourceTree = "<group>"; };
+		AB000053 /* PieceFinancialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceFinancialDetailView.swift; sourceTree = "<group>"; };
+		AB000054 /* GalleryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryTabView.swift; sourceTree = "<group>"; };
+		AB000055 /* GalleryImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryImageCell.swift; sourceTree = "<group>"; };
+		AB000056 /* GalleryByStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByStageView.swift; sourceTree = "<group>"; };
+		AB000057 /* GalleryByClientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByClientView.swift; sourceTree = "<group>"; };
+		AB000058 /* GalleryByRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByRatingView.swift; sourceTree = "<group>"; };
+		AB000059 /* GalleryByPlacementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPlacementView.swift; sourceTree = "<group>"; };
+		AB000060 /* ClientGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientGalleryView.swift; sourceTree = "<group>"; };
+		AB000061 /* BusinessLockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockManager.swift; sourceTree = "<group>"; };
+		AB000062 /* BusinessLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockView.swift; sourceTree = "<group>"; };
+		AB000063 /* PieceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceListView.swift; sourceTree = "<group>"; };
+		AB000064 /* CustomEmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmailTemplate.swift; sourceTree = "<group>"; };
+		AB000065 /* EmailTemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateEditorView.swift; sourceTree = "<group>"; };
+		AB000066 /* SettingsEmailTemplatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsEmailTemplatesView.swift; sourceTree = "<group>"; };
+		AB000067 /* AvailabilityOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityOverride.swift; sourceTree = "<group>"; };
+		AB000068 /* SettingsBookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBookingView.swift; sourceTree = "<group>"; };
+		AB000069 /* CustomSessionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSessionType.swift; sourceTree = "<group>"; };
+		AB000070 /* FlashPriceTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPriceTier.swift; sourceTree = "<group>"; };
+		AB000071 /* FlashPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPortfolioView.swift; sourceTree = "<group>"; };
+		AB000072 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
+		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AD000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AE000001 = {
+			isa = PBXGroup;
+			children = (
+				AE000002 /* Counter */,
+				AE000010 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AE000002 /* Counter */ = {
+			isa = PBXGroup;
+			children = (
+				AE000003 /* App */,
+				AE000004 /* Models */,
+				AE000005 /* Views */,
+				AE000008 /* Services */,
+				AE000009 /* Utilities */,
+				AB000020 /* Assets.xcassets */,
+				AE000011 /* Preview Content */,
+			);
+			path = Counter;
+			sourceTree = "<group>";
+		};
+		AE000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AB000001 /* CounterApp.swift */,
+				AB000002 /* ContentView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AE000004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AB000003 /* Client.swift */,
+				AB000004 /* Piece.swift */,
+				AB000005 /* ImageGroup.swift */,
+				AB000006 /* PieceImage.swift */,
+				AB000007 /* TattooSession.swift */,
+				AB000008 /* Agreement.swift */,
+				AB000009 /* CommunicationLog.swift */,
+				AB000034 /* UserProfile.swift */,
+				AB000035 /* Booking.swift */,
+				AB000036 /* AvailabilitySlot.swift */,
+				AB000048 /* InspirationImage.swift */,
+				AB000049 /* Payment.swift */,
+				AB000064 /* CustomEmailTemplate.swift */,
+				AB000067 /* AvailabilityOverride.swift */,
+				AB000069 /* CustomSessionType.swift */,
+				AB000070 /* FlashPriceTier.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AE000005 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AE000006 /* Clients */,
+				AE000014 /* Booking */,
+				AE000007 /* Pieces */,
+				AE000017 /* FlashPortfolio */,
+				AE000012 /* Components */,
+				AE000013 /* Settings */,
+				AE000015 /* Financial */,
+				AE000016 /* Gallery */,
+				AE000018 /* ToDo */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AE000006 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				AB000012 /* ClientListView.swift */,
+				AB000013 /* ClientRowView.swift */,
+				AB000014 /* ClientEditView.swift */,
+				AB000015 /* ClientDetailView.swift */,
+				AB000060 /* ClientGalleryView.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		AE000007 /* Pieces */ = {
+			isa = PBXGroup;
+			children = (
+				AB000063 /* PieceListView.swift */,
+				AB000016 /* PieceRowView.swift */,
+				AB000017 /* PieceEditView.swift */,
+				AB000018 /* PieceDetailView.swift */,
+				AB000019 /* SessionEditView.swift */,
+				AB000023 /* ImageGalleryView.swift */,
+				AB000024 /* FullScreenImageViewer.swift */,
+				AB000025 /* StageManagerView.swift */,
+				AB000026 /* TimeLogView.swift */,
+				AB000044 /* SessionDraftView.swift */,
+				AB000045 /* FlashGalleryView.swift */,
+				AB000046 /* InspirationGalleryView.swift */,
+			);
+			path = Pieces;
+			sourceTree = "<group>";
+		};
+		AE000008 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AB000010 /* ImageStorageService.swift */,
+				AB000011 /* PreviewContainer.swift */,
+				AB000022 /* PhotoImportService.swift */,
+				AB000030 /* EmailTemplateService.swift */,
+				AB000031 /* EmailService.swift */,
+				AB000032 /* PDFReportService.swift */,
+				AB000033 /* ExportService.swift */,
+				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
+				AB000061 /* BusinessLockManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		AE000009 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		AE000010 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AC000001 /* Counter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE000011 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				AB000021 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AE000012 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AB000027 /* SignatureCaptureView.swift */,
+				AB000028 /* AgreementEditView.swift */,
+				AB000029 /* AgreementDetailView.swift */,
+				AB000062 /* BusinessLockView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AE000013 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AB000041 /* SettingsView.swift */,
+				AB000042 /* ProfileEditView.swift */,
+				AB000043 /* AvailabilityEditView.swift */,
+				AB000065 /* EmailTemplateEditorView.swift */,
+				AB000066 /* SettingsEmailTemplatesView.swift */,
+				AB000068 /* SettingsBookingView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		AE000014 /* Booking */ = {
+			isa = PBXGroup;
+			children = (
+				AB000037 /* BookingCalendarView.swift */,
+				AB000038 /* BookingDetailView.swift */,
+				AB000039 /* BookingEditView.swift */,
+				AB000040 /* DayBookingListView.swift */,
+				AB000047 /* AddSessionView.swift */,
+			);
+			path = Booking;
+			sourceTree = "<group>";
+		};
+		AE000015 /* Financial */ = {
+			isa = PBXGroup;
+			children = (
+				AB000050 /* FinancialDashboardView.swift */,
+				AB000051 /* PaymentLogView.swift */,
+				AB000052 /* PaymentHistoryView.swift */,
+				AB000053 /* PieceFinancialDetailView.swift */,
+			);
+			path = Financial;
+			sourceTree = "<group>";
+		};
+		AE000016 /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000054 /* GalleryTabView.swift */,
+				AB000055 /* GalleryImageCell.swift */,
+				AB000056 /* GalleryByStageView.swift */,
+				AB000057 /* GalleryByClientView.swift */,
+				AB000058 /* GalleryByRatingView.swift */,
+				AB000059 /* GalleryByPlacementView.swift */,
+			);
+			path = Gallery;
+			sourceTree = "<group>";
+		};
+		AE000017 /* FlashPortfolio */ = {
+			isa = PBXGroup;
+			children = (
+				AB000071 /* FlashPortfolioView.swift */,
+			);
+			path = FlashPortfolio;
+			sourceTree = "<group>";
+		};
+		AE000018 /* ToDo */ = {
+			isa = PBXGroup;
+			children = (
+				AB000072 /* ToDoView.swift */,
+			);
+			path = ToDo;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AF000001 /* Counter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AG000003 /* Build configuration list for PBXNativeTarget "Counter" */;
+			buildPhases = (
+				AF000002 /* Sources */,
+				AD000001 /* Frameworks */,
+				AF000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Counter;
+			productName = Counter;
+			productReference = AC000001 /* Counter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AH000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					AF000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = AG000001 /* Build configuration list for PBXProject "CountePreAlpha" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AE000001;
+			productRefGroup = AE000010 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AF000001 /* Counter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AF000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000020 /* Assets.xcassets in Resources */,
+				AA000021 /* Preview Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AF000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001 /* CounterApp.swift in Sources */,
+				AA000002 /* ContentView.swift in Sources */,
+				AA000003 /* Client.swift in Sources */,
+				AA000004 /* Piece.swift in Sources */,
+				AA000005 /* ImageGroup.swift in Sources */,
+				AA000006 /* PieceImage.swift in Sources */,
+				AA000007 /* TattooSession.swift in Sources */,
+				AA000008 /* Agreement.swift in Sources */,
+				AA000009 /* CommunicationLog.swift in Sources */,
+				AA000034 /* UserProfile.swift in Sources */,
+				AA000035 /* Booking.swift in Sources */,
+				AA000036 /* AvailabilitySlot.swift in Sources */,
+				AA000010 /* ImageStorageService.swift in Sources */,
+				AA000011 /* PreviewContainer.swift in Sources */,
+				AA000012 /* ClientListView.swift in Sources */,
+				AA000013 /* ClientRowView.swift in Sources */,
+				79481E2F2F65F2A100349BEA /* SeedDataService.swift in Sources */,
+				AA000014 /* ClientEditView.swift in Sources */,
+				AA000015 /* ClientDetailView.swift in Sources */,
+				AA000016 /* PieceRowView.swift in Sources */,
+				AA000017 /* PieceEditView.swift in Sources */,
+				AA000018 /* PieceDetailView.swift in Sources */,
+				AA000019 /* SessionEditView.swift in Sources */,
+				AA000022 /* PhotoImportService.swift in Sources */,
+				AA000023 /* ImageGalleryView.swift in Sources */,
+				AA000024 /* FullScreenImageViewer.swift in Sources */,
+				AA000025 /* StageManagerView.swift in Sources */,
+				AA000026 /* TimeLogView.swift in Sources */,
+				AA000027 /* SignatureCaptureView.swift in Sources */,
+				AA000028 /* AgreementEditView.swift in Sources */,
+				AA000029 /* AgreementDetailView.swift in Sources */,
+				AA000030 /* EmailTemplateService.swift in Sources */,
+				AA000031 /* EmailService.swift in Sources */,
+				AA000032 /* PDFReportService.swift in Sources */,
+				AA000033 /* ExportService.swift in Sources */,
+				AA000037 /* BookingCalendarView.swift in Sources */,
+				AA000038 /* BookingDetailView.swift in Sources */,
+				AA000039 /* BookingEditView.swift in Sources */,
+				AA000040 /* DayBookingListView.swift in Sources */,
+				AA000041 /* SettingsView.swift in Sources */,
+				AA000042 /* ProfileEditView.swift in Sources */,
+				AA000043 /* AvailabilityEditView.swift in Sources */,
+				AA000044 /* SessionDraftView.swift in Sources */,
+				AA000045 /* FlashGalleryView.swift in Sources */,
+				AA000046 /* InspirationGalleryView.swift in Sources */,
+				AA000047 /* AddSessionView.swift in Sources */,
+				AA000048 /* InspirationImage.swift in Sources */,
+				AA000049 /* Payment.swift in Sources */,
+				AA000050 /* FinancialDashboardView.swift in Sources */,
+				AA000051 /* PaymentLogView.swift in Sources */,
+				AA000052 /* PaymentHistoryView.swift in Sources */,
+				AA000053 /* PieceFinancialDetailView.swift in Sources */,
+				AA000054 /* GalleryTabView.swift in Sources */,
+				AA000055 /* GalleryImageCell.swift in Sources */,
+				AA000056 /* GalleryByStageView.swift in Sources */,
+				AA000057 /* GalleryByClientView.swift in Sources */,
+				AA000058 /* GalleryByRatingView.swift in Sources */,
+				AA000059 /* GalleryByPlacementView.swift in Sources */,
+				AA000060 /* ClientGalleryView.swift in Sources */,
+				AA000061 /* BusinessLockManager.swift in Sources */,
+				AA000062 /* BusinessLockView.swift in Sources */,
+				AA000063 /* PieceListView.swift in Sources */,
+				AA000064 /* CustomEmailTemplate.swift in Sources */,
+				AA000065 /* EmailTemplateEditorView.swift in Sources */,
+				AA000066 /* SettingsEmailTemplatesView.swift in Sources */,
+				AA000067 /* AvailabilityOverride.swift in Sources */,
+				AA000068 /* SettingsBookingView.swift in Sources */,
+				AA000069 /* CustomSessionType.swift in Sources */,
+				AA000070 /* FlashPriceTier.swift in Sources */,
+				AA000071 /* FlashPortfolioView.swift in Sources */,
+				AA000072 /* ToDoView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AG000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = KFYTN6G853;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AG000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = KFYTN6G853;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AG000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		AG000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AG000001 /* Build configuration list for PBXProject "CountePreAlpha" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AG000002 /* Debug */,
+				AG000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AG000003 /* Build configuration list for PBXNativeTarget "Counter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AG000005 /* Debug */,
+				AG000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AH000001 /* Project object */;
+}

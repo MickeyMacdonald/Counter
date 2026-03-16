@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(FILE=\"/Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj/project.pbxproj\")",
+      "Read(//Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/**)",
+      "Bash(grep -E \"\\\\.\\(swift\\)$\")",
+      "Bash(xargs grep:*)",
+      "Bash(xcodebuild -project CountePreAlpha.xcodeproj -scheme Counter -destination 'platform=iOS Simulator,name=iPad Pro 13-inch \\(M4\\)' build)",
+      "Bash(sudo xcode-select:*)",
+      "Bash(xcodebuild -project /Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj -scheme Counter -destination 'platform=iOS Simulator,name=iPad Pro 13-inch \\(M4\\)' build)",
+      "Bash(plutil -lint \"/Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj/project.pbxproj\")",
+      "Bash(plutil -lint /Users/mickeymacdonald/Documents/Code/Counter_PreAlpha_0.1/CountePreAlpha.xcodeproj/project.pbxproj)"
+    ]
+  }
+}
