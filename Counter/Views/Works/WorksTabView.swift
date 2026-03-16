@@ -11,13 +11,17 @@ enum WorksSection: String, CaseIterable {
 // MARK: - Works Tab
 
 struct WorksTabView: View {
+    @Binding var selectedTab: AppTab
     @State private var section: WorksSection = .clients
     @State private var selectedClient: Client?
     @State private var selectedPiece: Piece?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
+                AppTabSwitcher(selectedTab: $selectedTab)
+                Divider()
                 Picker("Section", selection: $section) {
                     ForEach(WorksSection.allCases, id: \.self) { s in
                         Text(s.rawValue).tag(s)
@@ -31,12 +35,19 @@ struct WorksTabView: View {
 
                 switch section {
                 case .clients:
-                    WorksClientsList(selectedClient: $selectedClient)
+                    WorksClientsList(selectedClient: $selectedClient, searchText: $searchText)
                 case .pieces:
-                    WorksPiecesList(selectedPiece: $selectedPiece)
+                    WorksPiecesList(selectedPiece: $selectedPiece, searchText: $searchText)
                 }
+
+                Divider()
+                SidebarSearchField(
+                    text: $searchText,
+                    prompt: section == .clients ? "Search clients..." : "Search pieces..."
+                )
             }
             .navigationTitle("Works")
+            .navigationBarTitleDisplayMode(.inline)
         } detail: {
             switch section {
             case .clients:
@@ -70,6 +81,7 @@ struct WorksTabView: View {
         .onChange(of: section) {
             selectedClient = nil
             selectedPiece = nil
+            searchText = ""
         }
     }
 }
@@ -81,7 +93,7 @@ private struct WorksClientsList: View {
     @Environment(BusinessLockManager.self) private var lockManager
     @Query(sort: \Client.lastName) private var clients: [Client]
     @Binding var selectedClient: Client?
-    @State private var searchText = ""
+    @Binding var searchText: String
     @State private var sortOrder: ClientSortOrder = .name
     @State private var showingAddClient = false
 
@@ -134,7 +146,6 @@ private struct WorksClientsList: View {
                 .listStyle(.sidebar)
             }
         }
-        .searchable(text: $searchText, prompt: "Search clients...")
         .toolbar {
             if lockManager.isEnabled && !lockManager.isLocked {
                 ToolbarItem(placement: .topBarLeading) {
@@ -172,7 +183,7 @@ private struct WorksPiecesList: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Binding var selectedPiece: Piece?
-    @State private var searchText = ""
+    @Binding var searchText: String
     @State private var sortOrder: PieceSortOrder = .recent
     @State private var filterType: PieceTypeFilter = .all
     @State private var filterStatus: PieceStatusFilter = .all
@@ -237,7 +248,6 @@ private struct WorksPiecesList: View {
                 .listStyle(.sidebar)
             }
         }
-        .searchable(text: $searchText, prompt: "Search pieces...")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showAddPieceWizard = true } label: {
@@ -279,7 +289,7 @@ private struct WorksPiecesList: View {
 }
 
 #Preview {
-    WorksTabView()
+    WorksTabView(selectedTab: .constant(.works))
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

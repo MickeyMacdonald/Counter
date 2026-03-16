@@ -26,16 +26,32 @@ enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
 // MARK: - Sessions Tab
 
 struct SessionsTabView: View {
+    @Binding var selectedTab: AppTab
     @State private var selectedSection: SessionsSection? = .list
+    @State private var searchText = ""
+
+    private var filteredSections: [SessionsSection] {
+        guard !searchText.isEmpty else { return SessionsSection.allCases }
+        return SessionsSection.allCases.filter {
+            $0.rawValue.localizedCaseInsensitiveContains(searchText)
+        }
+    }
 
     var body: some View {
         NavigationSplitView {
-            List(SessionsSection.allCases, selection: $selectedSection) { section in
-                Label(section.rawValue, systemImage: section.systemImage)
-                    .tag(section)
+            VStack(spacing: 0) {
+                AppTabSwitcher(selectedTab: $selectedTab)
+                Divider()
+                List(filteredSections, selection: $selectedSection) { section in
+                    Label(section.rawValue, systemImage: section.systemImage)
+                        .tag(section)
+                }
+                .listStyle(.sidebar)
+                Divider()
+                SidebarSearchField(text: $searchText, prompt: "Search...")
             }
-            .listStyle(.sidebar)
             .navigationTitle("Sessions")
+            .navigationBarTitleDisplayMode(.inline)
         } detail: {
             NavigationStack {
                 if let section = selectedSection {
@@ -69,7 +85,7 @@ struct SessionsTabView: View {
 }
 
 #Preview {
-    SessionsTabView()
+    SessionsTabView(selectedTab: .constant(.sessions))
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

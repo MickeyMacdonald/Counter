@@ -1,28 +1,49 @@
 import SwiftUI
 import SwiftData
 
+enum AdminFilter: String, CaseIterable {
+    case settings  = "Settings"
+    case analytics = "Analytics"
+}
+
 enum SettingsCategory: String, CaseIterable, Identifiable {
+    // Settings
     case profile        = "Profile"
-    case sessionRates   = "Session Rates"
     case emailTemplates = "Email Templates"
-    case clientMode     = "Client Mode"
-    case financial      = "Financial"
-    case reports        = "Reports"
     case about          = "About"
     case support        = "Support Counter"
+    // Analytics
+    case statistics     = "Statistics"
+    case financial      = "Financials"
+    case reports        = "Reports"
+    // Hidden (accessible elsewhere)
+    case sessionRates   = "Session Rates"
+    case clientMode     = "Client Mode"
 
     var id: String { rawValue }
+
+    var adminFilter: AdminFilter {
+        switch self {
+        case .profile, .emailTemplates, .about, .support:
+            return .settings
+        case .statistics, .financial, .reports:
+            return .analytics
+        case .sessionRates, .clientMode:
+            return .settings
+        }
+    }
 
     var systemImage: String {
         switch self {
         case .profile:        "person.crop.circle"
-        case .sessionRates:   "banknote"
         case .emailTemplates: "envelope.open.fill"
-        case .clientMode:     "lock.shield"
-        case .financial:      "dollarsign.circle.fill"
-        case .reports:        "doc.text.magnifyingglass"
         case .about:          "info.circle"
         case .support:        "heart.fill"
+        case .statistics:     "chart.bar.fill"
+        case .financial:      "dollarsign.circle.fill"
+        case .reports:        "doc.text.magnifyingglass"
+        case .sessionRates:   "banknote"
+        case .clientMode:     "lock.shield"
         }
     }
 }
@@ -31,20 +52,54 @@ struct SettingsView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
+    @Binding var selectedTab: AppTab
     @State private var selectedCategory: SettingsCategory? = .profile
+    @State private var searchText = ""
+    @State private var adminFilter: AdminFilter = .settings
 
     private var profile: UserProfile? { profiles.first }
 
+    private static let settingsItems:  [SettingsCategory] = [.profile, .emailTemplates, .about, .support]
+    private static let analyticsItems: [SettingsCategory] = [.statistics, .financial, .reports]
+
+    private var visibleCategories: [SettingsCategory] {
+        let base = adminFilter == .settings ? Self.settingsItems : Self.analyticsItems
+        guard !searchText.isEmpty else { return base }
+        return base.filter { $0.rawValue.localizedCaseInsensitiveContains(searchText) }
+    }
+
     var body: some View {
         NavigationSplitView {
-            List(SettingsCategory.allCases, selection: $selectedCategory) { category in
-                NavigationLink(value: category) {
-                    Label(category.rawValue, systemImage: category.systemImage)
-                        .foregroundStyle(category == .support ? Color.pink : Color.primary)
+            VStack(spacing: 0) {
+                AppTabSwitcher(selectedTab: $selectedTab)
+                Divider()
+                Picker("Admin Filter", selection: $adminFilter) {
+                    ForEach(AdminFilter.allCases, id: \.self) { f in
+                        Text(f.rawValue).tag(f)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                Divider()
+                List(visibleCategories, selection: $selectedCategory) { category in
+                    NavigationLink(value: category) {
+                        Label(category.rawValue, systemImage: category.systemImage)
+                            .foregroundStyle(category == .support ? Color.pink : Color.primary)
+                    }
+                }
+                .listStyle(.sidebar)
+                Divider()
+                SidebarSearchField(text: $searchText, prompt: "Search...")
+            }
+            .navigationTitle("Admin")
+            .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: adminFilter) {
+                if let current = selectedCategory,
+                   !visibleCategories.contains(current) {
+                    selectedCategory = visibleCategories.first
                 }
             }
-            .listStyle(.sidebar)
-            .navigationTitle("Settings")
             .toolbar {
                 if lockManager.isEnabled {
                     ToolbarItem(placement: .topBarLeading) {
@@ -77,20 +132,22 @@ struct SettingsView: View {
         switch category {
         case .profile:
             SettingsProfileView(profile: profile)
-        case .sessionRates:
-            SettingsSessionRatesView()
         case .emailTemplates:
             SettingsEmailTemplatesView()
-        case .clientMode:
-            SettingsClientModeView()
-        case .financial:
-            FinancialDashboardView(embedded: true)
-        case .reports:
-            SettingsReportsView()
         case .about:
             SettingsAboutView()
         case .support:
             SettingsDonationView()
+        case .statistics:
+            SettingsStatisticsView()
+        case .financial:
+            FinancialDashboardView(embedded: true)
+        case .reports:
+            SettingsReportsView()
+        case .sessionRates:
+            SettingsSessionRatesView()
+        case .clientMode:
+            SettingsClientModeView()
         }
     }
 }
@@ -338,6 +395,18 @@ struct SettingsAboutView: View {
     }
 }
 
+// MARK: - Statistics
+
+struct SettingsStatisticsView: View {
+    var body: some View {
+        ContentUnavailableView {
+            Label("Statistics", systemImage: "chart.bar.fill")
+        } description: {
+            Text("Booking and client statistics coming soon.")
+        }
+    }
+}
+
 // MARK: - Shared
 
 var noProfileView: some View {
@@ -349,7 +418,7 @@ var noProfileView: some View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(selectedTab: .constant(.settings))
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

@@ -21,6 +21,14 @@ enum GallerySection: String, CaseIterable, Hashable, Identifiable {
     }
 }
 
+// MARK: - Gallery Filter
+
+enum GalleryFilter: String, CaseIterable {
+    case all    = "All"
+    case custom = "Custom"
+    case flash  = "Flash"
+}
+
 // MARK: - Gallery Sort Order
 
 enum GallerySortOrder: String, CaseIterable {
@@ -42,25 +50,50 @@ struct GalleryTabView: View {
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Query(sort: \Client.lastName) private var allClients: [Client]
     @Environment(BusinessLockManager.self) private var lockManager
+    @Binding var selectedTab: AppTab
 
     @State private var selectedSection: GallerySection? = .byStage
     @State private var sortOrder: GallerySortOrder = .chronological
     @State private var searchText = ""
+    @State private var galleryFilter: GalleryFilter = .all
+
+    private var filteredSections: [GallerySection] {
+        switch galleryFilter {
+        case .all:    return GallerySection.allCases
+        case .custom: return [.byClient, .byStage, .byPlacement]
+        case .flash:  return [.flash]
+        }
+    }
 
     var body: some View {
         NavigationSplitView {
-            List(GallerySection.allCases, selection: $selectedSection) { section in
-                Label(section.rawValue, systemImage: section.systemImage)
-                    .tag(section)
+            VStack(spacing: 0) {
+                AppTabSwitcher(selectedTab: $selectedTab)
+                Divider()
+                Picker("Filter", selection: $galleryFilter) {
+                    ForEach(GalleryFilter.allCases, id: \.self) { f in
+                        Text(f.rawValue).tag(f)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                Divider()
+                List(filteredSections, selection: $selectedSection) { section in
+                    Label(section.rawValue, systemImage: section.systemImage)
+                        .tag(section)
+                }
+                .listStyle(.sidebar)
+                Divider()
+                SidebarSearchField(text: $searchText, prompt: "Search...")
             }
-            .listStyle(.sidebar)
             .navigationTitle("Gallery")
+            .navigationBarTitleDisplayMode(.inline)
         } detail: {
             NavigationStack {
                 if let section = selectedSection {
                     detailView(for: section)
                         .navigationTitle(section.rawValue)
-                        .searchable(text: $searchText, prompt: "Search...")
                         .toolbar {
                             if section != .flash {
                                 ToolbarItem(placement: .topBarTrailing) {
@@ -91,6 +124,11 @@ struct GalleryTabView: View {
                         description: Text("Choose a category from the sidebar.")
                     )
                 }
+            }
+        }
+        .onChange(of: galleryFilter) {
+            if let current = selectedSection, !filteredSections.contains(current) {
+                selectedSection = filteredSections.first
             }
         }
     }
@@ -222,7 +260,7 @@ enum GalleryCategory: String, CaseIterable {
 }
 
 #Preview {
-    GalleryTabView()
+    GalleryTabView(selectedTab: .constant(.gallery))
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

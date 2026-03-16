@@ -14,41 +14,21 @@ struct ContentView: View {
     var body: some View {
         if hasProfile {
             if lockManager.isLocked {
-                // Client mode: only Gallery + Unlock
-                TabView(selection: $selectedTab) {
-                    Tab("Gallery", systemImage: "photo.on.rectangle.angled", value: AppTab.gallery) {
-                        GalleryTabView()
-                    }
-                    Tab("Unlock", systemImage: "lock.fill", value: AppTab.settings) {
-                        NavigationStack {
-                            BusinessLockView()
-                                .navigationTitle("Unlock")
-                        }
-                    }
-                }
-                .tabViewStyle(.sidebarAdaptable)
-                .tint(.primary)
-                .onAppear {
-                    selectedTab = .gallery
-                }
+                // Client mode: Gallery only (no tab bar)
+                GalleryTabView(selectedTab: $selectedTab)
+                    .onAppear { selectedTab = .gallery }
             } else {
-                // Full app: Settings, Works, Gallery, Sessions
-                TabView(selection: $selectedTab) {
-                    Tab("Settings", systemImage: "gearshape.fill", value: AppTab.settings) {
-                        SettingsView()
-                    }
-                    Tab("Works", systemImage: "person.crop.rectangle.stack.fill", value: AppTab.works) {
-                        WorksTabView()
-                    }
-                    Tab("Gallery", systemImage: "photo.fill", value: AppTab.gallery) {
-                        GalleryTabView()
-                    }
-                    Tab("Sessions", systemImage: "calendar.badge.clock", value: AppTab.sessions) {
-                        SessionsTabView()
-                    }
+                // Full app — no TabView; AppTabSwitcher inside each sidebar drives navigation
+                switch selectedTab {
+                case .settings:
+                    SettingsView(selectedTab: $selectedTab)
+                case .works:
+                    WorksTabView(selectedTab: $selectedTab)
+                case .gallery:
+                    GalleryTabView(selectedTab: $selectedTab)
+                case .sessions:
+                    SessionsTabView(selectedTab: $selectedTab)
                 }
-                .tabViewStyle(.sidebarAdaptable)
-                .tint(.primary)
             }
         } else {
             WelcomeSetupView()
@@ -215,11 +195,98 @@ struct WelcomeSetupView: View {
     }
 }
 
-enum AppTab: String {
+enum AppTab: String, CaseIterable {
+    case settings
     case works
     case gallery
     case sessions
-    case settings
+
+    var label: String {
+        switch self {
+        case .settings: "Admin"
+        case .works:    "Works"
+        case .gallery:  "Gallery"
+        case .sessions: "Sessions"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .settings: "gearshape.fill"
+        case .works:    "person.crop.rectangle.stack.fill"
+        case .gallery:  "photo.fill"
+        case .sessions: "calendar.badge.clock"
+        }
+    }
+}
+
+// MARK: - Sidebar Search Field
+
+struct SidebarSearchField: View {
+    @Binding var text: String
+    var prompt: String = "Search..."
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
+            TextField(prompt, text: $text)
+                .font(.subheadline)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                        .font(.subheadline)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+    }
+}
+
+// MARK: - App Tab Switcher
+
+struct AppTabSwitcher: View {
+    @Binding var selectedTab: AppTab
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(AppTab.allCases, id: \.self) { tab in
+                Button {
+                    selectedTab = tab
+                } label: {
+                    VStack(spacing: 3) {
+                        Image(systemName: tab.systemImage)
+                            .font(.system(size: 13, weight: .semibold))
+                        Text(tab.label)
+                            .font(.caption2.weight(.medium))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(selectedTab == tab ? Color.primary : Color.secondary)
+                    .background(
+                        selectedTab == tab
+                            ? Color.primary.opacity(0.08)
+                            : Color.clear,
+                        in: RoundedRectangle(cornerRadius: 8)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 4)
+    }
 }
 
 #Preview {

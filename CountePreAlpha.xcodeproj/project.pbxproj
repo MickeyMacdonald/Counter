@@ -259,14 +259,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		AE000019 /* Sessions */ = {
-			isa = PBXGroup;
-			children = (
-				AB000075 /* SessionsTabView.swift */,
-			);
-			path = Sessions;
-			sourceTree = "<group>";
-		};
 		AE000006 /* Clients */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,8 +348,8 @@
 				AB000042 /* ProfileEditView.swift */,
 				AB000043 /* AvailabilityEditView.swift */,
 				AB000065 /* EmailTemplateEditorView.swift */,
-				AB000066 /* SettingsEmailTemplatesView.swift */,
 				AB000068 /* SettingsBookingView.swift */,
+				AB000066 /* SettingsEmailTemplatesView.swift */,
 				AB000074 /* SettingsSessionRatesView.swift */,
 				AB000078 /* SettingsReportsView.swift */,
 				AB000080 /* SettingsDonationView.swift */,
@@ -416,6 +408,14 @@
 				AB000072 /* ToDoView.swift */,
 			);
 			path = ToDo;
+			sourceTree = "<group>";
+		};
+		AE000019 /* Sessions */ = {
+			isa = PBXGroup;
+			children = (
+				AB000075 /* SessionsTabView.swift */,
+			);
+			path = Sessions;
 			sourceTree = "<group>";
 		};
 		AE000020 /* Works */ = {
@@ -627,7 +627,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -677,7 +677,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -698,12 +698,12 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -731,12 +731,12 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

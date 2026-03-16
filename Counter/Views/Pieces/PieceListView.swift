@@ -186,7 +186,26 @@ struct PieceListRowView: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            // Left: piece info
+            // Left: primary image thumbnail
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.primary.opacity(0.05))
+                    .frame(width: 52, height: 52)
+
+                if let thumb = thumbnail {
+                    Image(uiImage: thumb)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 52, height: 52)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    Image(systemName: piece.pieceType.systemImage)
+                        .font(.system(size: 18))
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            // Right: piece info
             VStack(alignment: .leading, spacing: 4) {
                 Text(piece.title)
                     .font(.body.weight(.semibold))
@@ -216,26 +235,7 @@ struct PieceListRowView: View {
                 }
             }
 
-            Spacer(minLength: 4)
-
-            // Right: primary image thumbnail
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.primary.opacity(0.05))
-                    .frame(width: 52, height: 52)
-
-                if let thumb = thumbnail {
-                    Image(uiImage: thumb)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 52, height: 52)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                } else {
-                    Image(systemName: piece.pieceType.systemImage)
-                        .font(.system(size: 18))
-                        .foregroundStyle(.tertiary)
-                }
-            }
+            Spacer(minLength: 0)
         }
         .padding(.vertical, 4)
         .task { await loadThumbnail() }
