@@ -4,9 +4,18 @@ import SwiftData
 struct PieceRowView: View {
     let piece: Piece
     @Query private var profiles: [UserProfile]
+    @AppStorage("pieceSizeMode") private var sizeMode:     PieceSizeMode = .categorical
+    @AppStorage("dimensionUnit") private var dimensionUnit: DimensionUnit = .inches
 
     private var chargeableTypes: [String] {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
+    }
+
+    private var sizeLabel: String? {
+        switch sizeMode {
+        case .categorical:  return piece.size?.rawValue
+        case .dimensional:  return piece.sizeDimensions?.displayString(unit: dimensionUnit)
+        }
     }
 
     var body: some View {
@@ -41,6 +50,13 @@ struct PieceRowView: View {
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(.primary.opacity(0.08), in: Capsule())
+
+                if let label = sizeLabel {
+                    Text(label)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
 
                 if let rating = piece.rating {
                     HStack(spacing: 1) {

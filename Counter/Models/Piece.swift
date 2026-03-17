@@ -16,8 +16,10 @@ final class Piece {
     // Internal artist rating (1–5), nil if not yet rated
     var rating: Int?
 
-    // Tattoo size category
+    // Size — one of two representations depending on the global PieceSizeMode setting.
+    // Categorical: stored in `size`; dimensional: stored in `sizeDimensions` (width/height in inches).
     var size: TattooSize?
+    var sizeDimensions: PieceDimensions?
 
     // Fee structure
     var hourlyRate: Decimal
@@ -152,19 +154,64 @@ final class Piece {
 }
 
 enum TattooSize: String, Codable, CaseIterable {
-    case small      = "Small"
-    case medium     = "Medium"
-    case large      = "Large"
-    case extraLarge = "Extra Large"
+    case tiny       = "Tiny"         // e.g. finger, behind-ear
+    case small      = "Small"        // e.g. < 2 in
+    case medium     = "Medium"       // e.g. 2–4 in
+    case large      = "Large"        // e.g. 4–6 in
+    case extraLarge = "Extra Large"  // e.g. > 6 in
+    case halfSleeve = "Half Sleeve"
+    case sleeve     = "Sleeve"
+    case backpiece  = "Back Piece"
 
     var systemImage: String {
         switch self {
+        case .tiny:       "circle"
         case .small:      "s.circle.fill"
         case .medium:     "m.circle.fill"
         case .large:      "l.circle.fill"
         case .extraLarge: "xl.circle.fill"
+        case .halfSleeve: "hand.raised.fill"
+        case .sleeve:     "hand.wave.fill"
+        case .backpiece:  "figure.arms.open"
         }
     }
+}
+
+/// Exact piece dimensions, always stored in inches for consistency.
+struct PieceDimensions: Codable, Hashable {
+    var widthInches: Double
+    var heightInches: Double
+
+    /// Returns a display string formatted for the given unit.
+    func displayString(unit: DimensionUnit) -> String {
+        switch unit {
+        case .inches:
+            return String(format: "%.1f\" × %.1f\"", widthInches, heightInches)
+        case .centimeters:
+            return String(format: "%.0f × %.0f cm", widthInches * 2.54, heightInches * 2.54)
+        }
+    }
+}
+
+/// How piece sizes are expressed across the app — set once globally in Settings.
+enum PieceSizeMode: String {
+    case categorical = "categorical"
+    case dimensional = "dimensional"
+}
+
+/// Unit system used when displaying / entering dimensional measurements.
+enum DimensionUnit: String {
+    case inches      = "in"
+    case centimeters = "cm"
+
+    var label: String {
+        switch self {
+        case .inches:      "Inches"
+        case .centimeters: "Centimeters"
+        }
+    }
+
+    var symbol: String { rawValue }
 }
 
 enum PieceType: String, Codable, CaseIterable {

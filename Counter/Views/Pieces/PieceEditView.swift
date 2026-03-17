@@ -7,15 +7,15 @@ struct PieceEditView: View {
         case add(client: Client)
         case edit(Piece)
     }
-
+    
     let mode: Mode
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-
+    
     // MARK: - Photos
     @State private var draftPhotos: [DraftPhoto] = []
     @State private var showPhotoImporter = false
-
+    
     // MARK: - Piece fields
     @State private var rating: Int = 3
     @State private var title = ""
@@ -24,22 +24,29 @@ struct PieceEditView: View {
     @State private var pieceType: PieceType = .custom
     @State private var hourlyRate: Decimal = 150
     @State private var depositAmount: Decimal = 0
-
+    
+    // MARK: - Size fields
+    @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
+    @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
+    @State private var sizeCategory: TattooSize? = nil
+    @State private var sizeWidth  = ""
+    @State private var sizeHeight = ""
+    
     // MARK: - Sessions
     @State private var draftSessions: [DraftSession] = []
     @State private var activeDraftSession: DraftSession? = nil
     @State private var showSessionTypePicker = false
     @State private var showSessionSheet = false
-
+    
     private var isEditing: Bool {
         if case .edit = mode { return true }
         return false
     }
-
+    
     private var isValid: Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty
     }
-
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -84,15 +91,15 @@ struct PieceEditView: View {
             }
         }
     }
-
+    
     // MARK: - Photos
-
+    
     private var photosSection: some View {
         Section {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     addPhotoButton
-
+                    
                     ForEach(draftPhotos) { photo in
                         DraftPhotoThumbnail(
                             photo: photo,
@@ -122,7 +129,7 @@ struct PieceEditView: View {
             }
         }
     }
-
+    
     private var addPhotoButton: some View {
         Button { showPhotoImporter = true } label: {
             RoundedRectangle(cornerRadius: 10)
@@ -141,9 +148,9 @@ struct PieceEditView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     // MARK: - Rating
-
+    
     private var ratingSection: some View {
         Section("Rating") {
             HStack(spacing: 6) {
@@ -162,13 +169,13 @@ struct PieceEditView: View {
             .padding(.vertical, 2)
         }
     }
-
+    
     // MARK: - Info
-
+    
     private var infoSection: some View {
         Section("Piece Info") {
             TextField("Title", text: $title)
-
+            
             // Tag chips
             if !tags.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -193,7 +200,7 @@ struct PieceEditView: View {
                 }
                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
             }
-
+            
             HStack {
                 TextField("Add tag...", text: $tagInput)
                     .onSubmit { submitTag() }
@@ -203,17 +210,58 @@ struct PieceEditView: View {
                         .buttonStyle(.borderless)
                 }
             }
-
+            
             Picker("Type", selection: $pieceType) {
                 ForEach(PieceType.allCases, id: \.self) { t in
                     Label(t.rawValue, systemImage: t.systemImage).tag(t)
                 }
             }
             .pickerStyle(.menu)
+            
+            sizeField
+        }
+    }
+    
+    // MARK: - Size Field
+    
+    @ViewBuilder
+    private var sizeField: some View {
+        switch sizeMode {
+        case .categorical:
+            Picker("Size", selection: $sizeCategory) {
+                Text("Not Set").tag(Optional<TattooSize>.none)
+                ForEach(TattooSize.allCases, id: \.self) { s in
+                    Label(s.rawValue, systemImage: s.systemImage).tag(Optional<TattooSize>.some(s))
+                }
+            }
+            .pickerStyle(.menu)
+        case .dimensional:
+            HStack(spacing: 8) {
+                Label("Size", systemImage: "arrow.up.left.and.arrow.down.right")
+                    .foregroundStyle(.primary)
+                Spacer()
+                TextField("W", text: $sizeWidth)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 52)
+                Text(dimensionUnit.symbol)
+                    .foregroundStyle(.secondary)
+                    .font(.subheadline)
+                Text("×")
+                    .foregroundStyle(.secondary)
+                TextField("H", text: $sizeHeight)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 52)
+                Text(dimensionUnit.symbol)
+                    .foregroundStyle(.secondary)
+                    .font(.subheadline)
+            }
         }
     }
 
     // MARK: - Sessions
+
 
     private var sessionsSection: some View {
         Section {
@@ -302,6 +350,36 @@ struct PieceEditView: View {
         rating = piece.rating ?? 3
         hourlyRate = piece.hourlyRate
         depositAmount = piece.depositAmount
+        // Size
+        sizeCategory = piece.size
+        if let dims = piece.sizeDimensions {
+            let (w, h): (Double, Double) = dimensionUnit == .centimeters
+                ? (dims.widthInches * 2.54, dims.heightInches * 2.54)
+                : (dims.widthInches, dims.heightInches)
+            let fmt = dimensionUnit == .centimeters ? "%.0f" : "%.1f"
+            sizeWidth  = String(format: fmt, w)
+            sizeHeight = String(format: fmt, h)
+        }
+    }
+
+    // MARK: - Size helper
+
+    private func applySize(to piece: Piece) {
+        switch sizeMode {
+        case .categorical:
+            piece.size = sizeCategory
+            piece.sizeDimensions = nil
+        case .dimensional:
+            piece.size = nil
+            let w = Double(sizeWidth.replacingOccurrences(of: ",", with: ".")) ?? 0
+            let h = Double(sizeHeight.replacingOccurrences(of: ",", with: ".")) ?? 0
+            if w > 0 || h > 0 {
+                let factor = dimensionUnit == .centimeters ? (1.0 / 2.54) : 1.0
+                piece.sizeDimensions = PieceDimensions(widthInches: w * factor, heightInches: h * factor)
+            } else {
+                piece.sizeDimensions = nil
+            }
+        }
     }
 
     // MARK: - Save
@@ -317,6 +395,7 @@ struct PieceEditView: View {
                 hourlyRate: hourlyRate
             )
             piece.client = client
+            applySize(to: piece)
             modelContext.insert(piece)
 
             // Persist photos as direct reference images on the piece
@@ -380,55 +459,56 @@ struct PieceEditView: View {
             piece.rating = rating
             piece.hourlyRate = hourlyRate
             piece.depositAmount = depositAmount
+            applySize(to: piece)
             piece.updatedAt = Date()
         }
 
         dismiss()
     }
-}
 
-// MARK: - Photo Thumbnail
-
-private struct DraftPhotoThumbnail: View {
-    let photo: DraftPhoto
-    let onSetPrimary: () -> Void
-    let onDelete: () -> Void
-
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Image(uiImage: photo.image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 90, height: 90)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .strokeBorder(
-                            photo.isPrimary ? Color.accentColor : Color.clear,
-                            lineWidth: 2
-                        )
-                )
-                .onTapGesture { onSetPrimary() }
-
-            // Primary star badge
-            if photo.isPrimary {
-                Image(systemName: "star.fill")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(.white)
-                    .padding(4)
-                    .background(Color.accentColor, in: Circle())
-                    .offset(x: -6, y: 6)
-                    .zIndex(1)
+    // MARK: - Photo Thumbnail
+    
+    private struct DraftPhotoThumbnail: View {
+        let photo: DraftPhoto
+        let onSetPrimary: () -> Void
+        let onDelete: () -> Void
+        
+        var body: some View {
+            ZStack(alignment: .topTrailing) {
+                Image(uiImage: photo.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 90, height: 90)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(
+                                photo.isPrimary ? Color.accentColor : Color.clear,
+                                lineWidth: 2
+                            )
+                    )
+                    .onTapGesture { onSetPrimary() }
+                
+                // Primary star badge
+                if photo.isPrimary {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(4)
+                        .background(Color.accentColor, in: Circle())
+                        .offset(x: -6, y: 6)
+                        .zIndex(1)
+                }
+                
+                // Delete button
+                Button(action: onDelete) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 18))
+                        .foregroundStyle(.white)
+                        .background(Color.black.opacity(0.5), in: Circle())
+                }
+                .offset(x: 6, y: -6)
             }
-
-            // Delete button
-            Button(action: onDelete) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 18))
-                    .foregroundStyle(.white)
-                    .background(Color.black.opacity(0.5), in: Circle())
-            }
-            .offset(x: 6, y: -6)
         }
     }
 }

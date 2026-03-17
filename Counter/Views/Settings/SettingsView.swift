@@ -20,6 +20,9 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case sessionRates   = "Session Rates"
     case clientMode     = "Client Mode"
 
+    // Piece-level settings
+    case pieces         = "Pieces"
+
     var id: String { rawValue }
 
     var adminFilter: AdminFilter {
@@ -28,7 +31,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             return .settings
         case .statistics, .financial, .reports:
             return .analytics
-        case .sessionRates, .clientMode:
+        case .sessionRates, .clientMode, .pieces:
             return .settings
         }
     }
@@ -44,6 +47,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .reports:        "doc.text.magnifyingglass"
         case .sessionRates:   "banknote"
         case .clientMode:     "lock.shield"
+        case .pieces:         "paintbrush.pointed.fill"
         }
     }
 }
@@ -57,7 +61,7 @@ struct SettingsView: View {
 
     private var profile: UserProfile? { profiles.first }
 
-    private static let settingsItems:  [SettingsCategory] = [.profile, .emailTemplates, .about, .support]
+    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .emailTemplates, .about, .support]
     private static let analyticsItems: [SettingsCategory] = [.statistics, .financial, .reports]
 
     private var visibleCategories: [SettingsCategory] {
@@ -135,6 +139,8 @@ struct SettingsView: View {
             SettingsSessionRatesView()
         case .clientMode:
             SettingsClientModeView()
+        case .pieces:
+            SettingsPiecesView()
         }
     }
 }

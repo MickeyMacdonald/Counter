@@ -18,6 +18,9 @@ struct PieceDetailView: View {
     @State private var galleryInitialImage: PieceImage?
     @State private var showingImageGallery = false
 
+    @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
+    @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
+
     private var chargeableTypes: [String] {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
     }
@@ -27,6 +30,16 @@ struct PieceDetailView: View {
     }
     private var pieceID: String {
         piece.persistentModelID.hashValue.description
+    }
+
+    /// Returns a display string for the piece's size, or nil if not set.
+    private var pieceSizeLabel: String? {
+        switch sizeMode {
+        case .categorical:
+            return piece.size?.rawValue
+        case .dimensional:
+            return piece.sizeDimensions?.displayString(unit: dimensionUnit)
+        }
     }
 
     var body: some View {
@@ -70,6 +83,12 @@ struct PieceDetailView: View {
 
                     if !piece.bodyPlacement.isEmpty {
                         Label(piece.bodyPlacement, systemImage: "figure.arms.open")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let sizeLabel = pieceSizeLabel {
+                        Label(sizeLabel, systemImage: "arrow.up.left.and.arrow.down.right")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

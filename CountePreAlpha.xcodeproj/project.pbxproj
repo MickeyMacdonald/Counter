@@ -94,6 +94,7 @@
 		AA000084 /* AppNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000084 /* AppNavigationCoordinator.swift */; };
 		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
 		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
+		AA000087 /* SettingsPiecesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000087 /* SettingsPiecesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -184,6 +185,7 @@
 		AB000084 /* AppNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationCoordinator.swift; sourceTree = "<group>"; };
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		AB000087 /* SettingsPiecesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPiecesView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -366,6 +368,7 @@
 				AB000066 /* SettingsEmailTemplatesView.swift */,
 				AB000074 /* SettingsSessionRatesView.swift */,
 				AB000078 /* SettingsReportsView.swift */,
+				AB000087 /* SettingsPiecesView.swift */,
 				AB000080 /* SettingsDonationView.swift */,
 			);
 			path = Settings;
@@ -599,6 +602,7 @@
 				AA000084 /* AppNavigationCoordinator.swift in Sources */,
 				AA000085 /* SessionsListView.swift in Sources */,
 				AA000086 /* SessionDetailView.swift in Sources */,
+				AA000087 /* SettingsPiecesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -715,6 +719,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
@@ -732,7 +737,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -748,6 +753,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
@@ -765,7 +771,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
