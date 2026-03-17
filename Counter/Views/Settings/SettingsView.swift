@@ -51,7 +51,6 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 struct SettingsView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
-    @Binding var selectedTab: AppTab
     @State private var selectedCategory: SettingsCategory? = .profile
     @State private var searchText = ""
     @State private var adminFilter: AdminFilter = .settings
@@ -70,7 +69,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                AppTabSwitcher(selectedTab: $selectedTab)
+                AppTabSwitcher()
                 Divider()
                 Picker("Admin Filter", selection: $adminFilter) {
                     ForEach(AdminFilter.allCases, id: \.self) { f in
@@ -736,7 +735,8 @@ var noProfileView: some View {
 }
 
 #Preview {
-    SettingsView(selectedTab: .constant(.settings))
+    SettingsView()
+        .environment(AppNavigationCoordinator())
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

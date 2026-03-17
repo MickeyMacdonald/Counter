@@ -291,7 +291,17 @@ struct ShareSheetView: UIViewControllerRepresentable {
                     activityItems: [image],
                     applicationActivities: nil
                 )
-                activityVC.modalPresentationStyle = .pageSheet
+                // On iPad UIActivityViewController is presented as a popover and MUST have a
+                // sourceView set — omitting it raises UIPopoverPresentationController exception.
+                if let popover = activityVC.popoverPresentationController {
+                    popover.sourceView = placeholder.view
+                    popover.sourceRect = CGRect(
+                        x: placeholder.view.bounds.midX,
+                        y: placeholder.view.bounds.midY,
+                        width: 0, height: 0
+                    )
+                    popover.permittedArrowDirections = []
+                }
                 placeholder.present(activityVC, animated: true)
             }
         }

@@ -25,7 +25,8 @@ struct CounterApp: App {
                 AvailabilityOverride.self,
                 CustomSessionType.self,
                 FlashPriceTier.self,
-                SessionRateConfig.self
+                SessionRateConfig.self,
+                CustomGalleryGroup.self
             ])
             let config = ModelConfiguration(
                 schema: schema,

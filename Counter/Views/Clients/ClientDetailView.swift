@@ -4,6 +4,7 @@ import SwiftData
 struct ClientDetailView: View {
     @Bindable var client: Client
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppNavigationCoordinator.self) private var coordinator
     @Query(sort: \Booking.date) private var allBookings: [Booking]
     @Query private var profiles: [UserProfile]
     @State private var showingEditClient = false
@@ -188,11 +189,18 @@ struct ClientDetailView: View {
                     }
                 } else {
                     ForEach(client.pieces.sorted(by: { $0.updatedAt > $1.updatedAt })) { piece in
-                        NavigationLink {
-                            PieceDetailView(piece: piece)
+                        Button {
+                            coordinator.navigateToPiece(piece)
                         } label: {
-                            PieceRowView(piece: piece)
+                            HStack {
+                                PieceRowView(piece: piece)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
+                            }
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             } header: {

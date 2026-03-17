@@ -88,6 +88,12 @@
 		AA000078 /* SettingsReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000078 /* SettingsReportsView.swift */; };
 		AA000079 /* DonationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000079 /* DonationStore.swift */; };
 		AA000080 /* SettingsDonationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000080 /* SettingsDonationView.swift */; };
+		AA000081 /* CustomGalleryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000081 /* CustomGalleryGroup.swift */; };
+		AA000082 /* GalleryBySizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000082 /* GalleryBySizeView.swift */; };
+		AA000083 /* GalleryByCustomGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000083 /* GalleryByCustomGroupView.swift */; };
+		AA000084 /* AppNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000084 /* AppNavigationCoordinator.swift */; };
+		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
+		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -172,6 +178,12 @@
 		AB000078 /* SettingsReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReportsView.swift; sourceTree = "<group>"; };
 		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationStore.swift; sourceTree = "<group>"; };
 		AB000080 /* SettingsDonationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDonationView.swift; sourceTree = "<group>"; };
+		AB000081 /* CustomGalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGalleryGroup.swift; sourceTree = "<group>"; };
+		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
+		AB000083 /* GalleryByCustomGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByCustomGroupView.swift; sourceTree = "<group>"; };
+		AB000084 /* AppNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationCoordinator.swift; sourceTree = "<group>"; };
+		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
+		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -213,6 +225,7 @@
 			children = (
 				AB000001 /* CounterApp.swift */,
 				AB000002 /* ContentView.swift */,
+				AB000084 /* AppNavigationCoordinator.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -237,6 +250,7 @@
 				AB000069 /* CustomSessionType.swift */,
 				AB000070 /* FlashPriceTier.swift */,
 				AB000073 /* SessionRateConfig.swift */,
+				AB000081 /* CustomGalleryGroup.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -390,6 +404,8 @@
 				AB000058 /* GalleryByRatingView.swift */,
 				AB000059 /* GalleryByPlacementView.swift */,
 				AB000077 /* AvailableFlashGalleryView.swift */,
+				AB000082 /* GalleryBySizeView.swift */,
+				AB000083 /* GalleryByCustomGroupView.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -414,6 +430,8 @@
 			isa = PBXGroup;
 			children = (
 				AB000075 /* SessionsTabView.swift */,
+				AB000085 /* SessionsListView.swift */,
+				AB000086 /* SessionDetailView.swift */,
 			);
 			path = Sessions;
 			sourceTree = "<group>";
@@ -575,6 +593,12 @@
 				AA000078 /* SettingsReportsView.swift in Sources */,
 				AA000079 /* DonationStore.swift in Sources */,
 				AA000080 /* SettingsDonationView.swift in Sources */,
+				AA000081 /* CustomGalleryGroup.swift in Sources */,
+				AA000082 /* GalleryBySizeView.swift in Sources */,
+				AA000083 /* GalleryByCustomGroupView.swift in Sources */,
+				AA000084 /* AppNavigationCoordinator.swift in Sources */,
+				AA000085 /* SessionsListView.swift in Sources */,
+				AA000086 /* SessionDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

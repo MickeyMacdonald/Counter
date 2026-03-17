@@ -16,6 +16,9 @@ final class Piece {
     // Internal artist rating (1–5), nil if not yet rated
     var rating: Int?
 
+    // Tattoo size category
+    var size: TattooSize?
+
     // Fee structure
     var hourlyRate: Decimal
     var flatRate: Decimal?
@@ -145,6 +148,22 @@ final class Piece {
         self.depositAmount = depositAmount
         self.createdAt = Date()
         self.updatedAt = Date()
+    }
+}
+
+enum TattooSize: String, Codable, CaseIterable {
+    case small      = "Small"
+    case medium     = "Medium"
+    case large      = "Large"
+    case extraLarge = "Extra Large"
+
+    var systemImage: String {
+        switch self {
+        case .small:      "s.circle.fill"
+        case .medium:     "m.circle.fill"
+        case .large:      "l.circle.fill"
+        case .extraLarge: "xl.circle.fill"
+        }
     }
 }
 

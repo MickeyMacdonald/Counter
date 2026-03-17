@@ -1,18 +1,21 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Sessions Group (top-level picker)
+// MARK: - Bookings Group (top-level picker)
 
-enum SessionsGroup: String, CaseIterable {
+enum BookingsGroup: String, CaseIterable {
+    case sessions = "Sessions"
     case tasks    = "Tasks"
     case schedule = "Schedule"
 }
 
-// MARK: - Sessions Sidebar Section
+// MARK: - Bookings Sidebar Section
+// Used only for the Tasks and Schedule groups.
+// The Sessions group renders its own item list directly in the sidebar.
 
-enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
+enum BookingsSection: String, CaseIterable, Hashable, Identifiable {
     case todo    = "To Do"
-    case list    = "List View"
+    case list    = "Upcoming"
     case weekly  = "Weekly View"
     case monthly = "Monthly View"
 
@@ -27,7 +30,7 @@ enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
         }
     }
 
-    var group: SessionsGroup {
+    var group: BookingsGroup {
         switch self {
         case .todo, .list:      .tasks
         case .weekly, .monthly: .schedule
@@ -35,16 +38,18 @@ enum SessionsSection: String, CaseIterable, Hashable, Identifiable {
     }
 }
 
-// MARK: - Sessions Tab
+// MARK: - Bookings Tab
 
 struct SessionsTabView: View {
-    @Binding var selectedTab: AppTab
-    @State private var group: SessionsGroup = .tasks
-    @State private var selectedSection: SessionsSection? = .list
+    @Environment(AppNavigationCoordinator.self) private var coordinator
+
+    @State private var group: BookingsGroup            = .tasks
+    @State private var selectedSection: BookingsSection? = .list
+    @State private var selectedSession: TattooSession?   = nil
     @State private var searchText = ""
 
-    private var visibleSections: [SessionsSection] {
-        let base = SessionsSection.allCases.filter { $0.group == group }
+    private var visibleSections: [BookingsSection] {
+        let base = BookingsSection.allCases.filter { $0.group == group }
         guard !searchText.isEmpty else { return base }
         return base.filter { $0.rawValue.localizedCaseInsensitiveContains(searchText) }
     }
@@ -52,49 +57,79 @@ struct SessionsTabView: View {
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                AppTabSwitcher(selectedTab: $selectedTab)
+                AppTabSwitcher()
                 Divider()
+
                 Picker("Group", selection: $group) {
-                    ForEach(SessionsGroup.allCases, id: \.self) { g in
+                    ForEach(BookingsGroup.allCases, id: \.self) { g in
                         Text(g.rawValue).tag(g)
                     }
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
+
                 Divider()
-                List(visibleSections, selection: $selectedSection) { section in
-                    Label(section.rawValue, systemImage: section.systemImage)
-                        .tag(section)
+
+                if group == .sessions {
+                    // Sessions group: actual session rows fill the sidebar
+                    SessionsSidebarList(selectedSession: $selectedSession,
+                                        searchText: $searchText)
+                } else {
+                    // Tasks / Schedule groups: section links
+                    List(visibleSections, selection: $selectedSection) { section in
+                        Label(section.rawValue, systemImage: section.systemImage)
+                            .tag(section)
+                    }
+                    .listStyle(.sidebar)
                 }
-                .listStyle(.sidebar)
+
                 Divider()
-                SidebarSearchField(text: $searchText, prompt: "Search...")
+                SidebarSearchField(
+                    text: $searchText,
+                    prompt: group == .sessions ? "Search sessions…" : "Search…"
+                )
             }
             .toolbarBackground(AppTab.sessions.sidebarTint.opacity(0.55), for: .navigationBar)
-            .navigationTitle("Sessions")
+            .navigationTitle("Bookings")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
             NavigationStack {
-                if let section = selectedSection {
+                if group == .sessions {
+                    if let session = selectedSession {
+                        SessionDetailView(session: session)
+                    } else {
+                        ContentUnavailableView(
+                            "Select a Session",
+                            systemImage: "clock.arrow.2.circlepath",
+                            description: Text("Choose a session from the list.")
+                        )
+                    }
+                } else if let section = selectedSection {
                     detailView(for: section)
                 } else {
                     ContentUnavailableView(
                         "Select a View",
-                        systemImage: "calendar",
+                        systemImage: "book",
                         description: Text("Choose a view from the sidebar.")
                     )
                 }
             }
         }
         .onChange(of: group) {
-            selectedSection = visibleSections.first
+            selectedSection = group == .sessions ? nil : visibleSections.first
+            selectedSession = nil
             searchText = ""
         }
+        // Deep-link: navigate to a specific session in the Sessions sidebar
+        .onAppear { consumePendingSession() }
+        .onChange(of: coordinator.pendingSession) { _, _ in consumePendingSession() }
     }
 
+    // MARK: - Detail view dispatcher (Tasks / Schedule)
+
     @ViewBuilder
-    private func detailView(for section: SessionsSection) -> some View {
+    private func detailView(for section: BookingsSection) -> some View {
         switch section {
         case .todo:    ToDoView(embedded: true)
         case .list:    BookingCalendarView(embedded: true, initialMode: .list)
@@ -102,10 +137,24 @@ struct SessionsTabView: View {
         case .monthly: BookingCalendarView(embedded: true, initialMode: .month)
         }
     }
+
+    // MARK: - Deep-link consumer
+
+    private func consumePendingSession() {
+        guard let session = coordinator.pendingSession else { return }
+        // Clear pending immediately so onChange(of: group) doesn't see it
+        coordinator.pendingSession = nil
+        group           = .sessions
+        selectedSection = nil
+        // Defer selection to next run-loop tick so onChange(of: group) fires first
+        // and its `selectedSession = nil` reset doesn't overwrite our value.
+        Task { @MainActor in selectedSession = session }
+    }
 }
 
 #Preview {
-    SessionsTabView(selectedTab: .constant(.sessions))
+    SessionsTabView()
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
+        .environment(AppNavigationCoordinator())
 }

@@ -5,6 +5,7 @@ struct PieceDetailView: View {
     @Bindable var piece: Piece
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
+    @Environment(AppNavigationCoordinator.self) private var coordinator
     @Query private var profiles: [UserProfile]
     @State private var showingEditPiece = false
     @State private var showingAddSession = false
@@ -164,7 +165,21 @@ struct PieceDetailView: View {
                     ForEach(piece.sessions.sorted(by: { $0.date > $1.date })) { session in
                         sessionRow(session)
                             .contentShape(Rectangle())
-                            .onTapGesture { editingSession = session }
+                            .onTapGesture {
+                                coordinator.navigateToSession(session)
+                            }
+                            .contextMenu {
+                                Button {
+                                    editingSession = session
+                                } label: {
+                                    Label("Edit Session", systemImage: "pencil")
+                                }
+                                Button {
+                                    coordinator.navigateToSession(session)
+                                } label: {
+                                    Label("View in Bookings", systemImage: "book")
+                                }
+                            }
                     }
                 }
             } header: {

@@ -7,6 +7,8 @@ enum GallerySection: String, CaseIterable, Hashable, Identifiable {
     case byClient    = "Clients"
     case byStage     = "Stages"
     case byPlacement = "Placement"
+    case bySize      = "Size"
+    case byRating    = "Rating"
     case flash       = "Available Flash"
 
     var id: String { rawValue }
@@ -16,9 +18,23 @@ enum GallerySection: String, CaseIterable, Hashable, Identifiable {
         case .byClient:    "person.2.fill"
         case .byStage:     "square.stack.3d.up.fill"
         case .byPlacement: "figure.arms.open"
+        case .bySize:      "arrow.up.left.and.arrow.down.right"
+        case .byRating:    "star.fill"
         case .flash:       "bolt.fill"
         }
     }
+
+    /// Sections listed in the sidebar (flash is shown via the filter toggle, not the list).
+    static var sidebarSections: [GallerySection] {
+        [.byClient, .byStage, .byPlacement, .bySize, .byRating]
+    }
+}
+
+// MARK: - Gallery Destination
+
+enum GalleryDestination: Hashable {
+    case section(GallerySection)
+    case customGroup(CustomGalleryGroup)
 }
 
 // MARK: - Gallery Filter
@@ -45,45 +61,74 @@ enum GallerySortOrder: String, CaseIterable {
 
 // MARK: - Gallery Tab
 
-/// Main gallery tab — NavigationSplitView with sidebar (Clients, Stages, Placement, Available Flash).
+/// Main gallery tab — NavigationSplitView with sidebar (Stages, Placement, Size, Rating, custom groups).
+/// Available Flash is accessed via the top filter toggle, not the sidebar list.
 struct GalleryTabView: View {
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Query(sort: \Client.lastName) private var allClients: [Client]
+    @Query(sort: \CustomGalleryGroup.sortIndex) private var customGroups: [CustomGalleryGroup]
+    @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
-    @Binding var selectedTab: AppTab
+    @Environment(AppNavigationCoordinator.self) private var coordinator
 
-    @State private var selectedSection: GallerySection? = .byStage
+    @State private var selectedDestination: GalleryDestination? = .section(.byStage)
     @State private var sortOrder: GallerySortOrder = .chronological
     @State private var searchText = ""
     @State private var galleryFilter: GalleryFilter = .all
+    @State private var showAddCustomGroup = false
+    @State private var newGroupName = ""
+    @State private var newGroupTags = ""
 
     private var filteredSections: [GallerySection] {
-        let base: [GallerySection]
         switch galleryFilter {
-        case .all:    base = GallerySection.allCases
-        case .custom: base = [.byClient, .byStage, .byPlacement]
-        case .flash:  base = [.flash]
+        case .all:
+            let base = GallerySection.sidebarSections
+            return lockManager.isLocked ? base.filter { $0 != .byClient && $0 != .byRating } : base
+        case .custom:
+            let base: [GallerySection] = [.byClient, .byStage, .byPlacement, .bySize]
+            return lockManager.isLocked ? base.filter { $0 != .byClient } : base
+        case .flash:
+            return []
         }
-        return lockManager.isLocked ? base.filter { $0 != .byClient } : base
     }
 
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                AppTabSwitcher(selectedTab: $selectedTab)
-                Divider()
-                Picker("Filter", selection: $galleryFilter) {
-                    ForEach(GalleryFilter.allCases, id: \.self) { f in
-                        Text(f.rawValue).tag(f)
+                if !lockManager.isLocked {
+                    AppTabSwitcher()
+                    Divider()
+                    Picker("Filter", selection: $galleryFilter) {
+                        ForEach(GalleryFilter.allCases, id: \.self) { f in
+                            Text(f.rawValue).tag(f)
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    Divider()
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                Divider()
-                List(filteredSections, selection: $selectedSection) { section in
-                    Label(section.rawValue, systemImage: section.systemImage)
-                        .tag(section)
+                List(selection: $selectedDestination) {
+                    Section {
+                        ForEach(filteredSections) { section in
+                            Label(section.rawValue, systemImage: section.systemImage)
+                                .tag(GalleryDestination.section(section))
+                        }
+                    }
+                    if !lockManager.isLocked && galleryFilter != .flash {
+                        Section("Custom") {
+                            ForEach(customGroups) { group in
+                                Label(group.name, systemImage: "tag.fill")
+                                    .tag(GalleryDestination.customGroup(group))
+                            }
+                            Button {
+                                showAddCustomGroup = true
+                            } label: {
+                                Label("New Group", systemImage: "plus")
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                    }
                 }
                 .listStyle(.sidebar)
                 Divider()
@@ -98,53 +143,73 @@ struct GalleryTabView: View {
                     ClientLockBanner(lockManager: lockManager)
                 }
                 NavigationStack {
-                    if let section = selectedSection {
-                        detailView(for: section)
-                            .navigationTitle(section.rawValue)
-                            .toolbar {
-                                if section != .flash {
-                                    ToolbarItem(placement: .topBarTrailing) {
-                                        Menu {
-                                            Picker("Sort", selection: $sortOrder) {
-                                                ForEach(GallerySortOrder.allCases, id: \.self) { order in
-                                                    Label(order.rawValue, systemImage: order.systemImage)
-                                                        .tag(order)
-                                                }
-                                            }
-                                        } label: {
-                                            Image(systemName: sortOrder == .chronological
-                                                  ? "arrow.up.arrow.down"
-                                                  : "star.fill")
-                                        }
-                                    }
-                                }
-                            }
-                    } else {
-                        ContentUnavailableView(
-                            "Select a Category",
-                            systemImage: "photo.on.rectangle.angled",
-                            description: Text("Choose a category from the sidebar.")
-                        )
-                    }
+                    detailContent
                 }
             }
         }
-        .onChange(of: galleryFilter) {
-            if let current = selectedSection, !filteredSections.contains(current) {
-                selectedSection = filteredSections.first
-            }
-        }
-        .onChange(of: lockManager.isLocked) {
-            if lockManager.isLocked && selectedSection == .byClient {
-                selectedSection = filteredSections.first
-            }
+        .onChange(of: galleryFilter) { updateSelectionForFilter() }
+        .onChange(of: lockManager.isLocked) { updateSelectionForLock() }
+        .alert("New Custom Group", isPresented: $showAddCustomGroup) {
+            TextField("Group Name", text: $newGroupName)
+            TextField("Tags (comma-separated)", text: $newGroupTags)
+            Button("Create") { createCustomGroup() }
+            Button("Cancel", role: .cancel) { resetNewGroupForm() }
+        } message: {
+            Text("Pieces with matching tags will appear in this group.")
         }
     }
 
-    // MARK: - Detail Routing
+    // MARK: - Detail Content
 
     @ViewBuilder
-    private func detailView(for section: GallerySection) -> some View {
+    private var detailContent: some View {
+        if galleryFilter == .flash {
+            AvailableFlashGalleryView()
+                .navigationTitle(GallerySection.flash.rawValue)
+        } else if let dest = selectedDestination {
+            switch dest {
+            case .section(let section):
+                sectionView(for: section)
+                    .navigationTitle(section.rawValue)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) { sortMenu }
+                    }
+            case .customGroup(let group):
+                GalleryByCustomGroupView(group: group, pieces: sortedPieces)
+                    .navigationTitle(group.name)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) { sortMenu }
+                    }
+            }
+        } else {
+            ContentUnavailableView(
+                "Select a Category",
+                systemImage: "photo.on.rectangle.angled",
+                description: Text("Choose a category from the sidebar.")
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var sortMenu: some View {
+        Menu {
+            Picker("Sort", selection: $sortOrder) {
+                Label(GallerySortOrder.chronological.rawValue,
+                      systemImage: GallerySortOrder.chronological.systemImage)
+                    .tag(GallerySortOrder.chronological)
+                if !lockManager.isLocked {
+                    Label(GallerySortOrder.rating.rawValue,
+                          systemImage: GallerySortOrder.rating.systemImage)
+                        .tag(GallerySortOrder.rating)
+                }
+            }
+        } label: {
+            Image(systemName: sortOrder == .chronological ? "arrow.up.arrow.down" : "star.fill")
+        }
+    }
+
+    @ViewBuilder
+    private func sectionView(for section: GallerySection) -> some View {
         switch section {
         case .byClient:
             GalleryByClientView(clients: clientsWithImages)
@@ -152,9 +217,70 @@ struct GalleryTabView: View {
             GalleryByStageView(pieces: sortedPieces)
         case .byPlacement:
             GalleryByPlacementView(pieces: sortedPieces)
+        case .bySize:
+            GalleryBySizeView(pieces: sortedPieces)
+        case .byRating:
+            GalleryByRatingView(pieces: sortedPieces)
         case .flash:
             AvailableFlashGalleryView()
         }
+    }
+
+    // MARK: - Selection Helpers
+
+    private func updateSelectionForFilter() {
+        if galleryFilter == .flash {
+            selectedDestination = nil
+            return
+        }
+        guard let dest = selectedDestination else {
+            selectedDestination = filteredSections.first.map { .section($0) }
+            return
+        }
+        if case .section(let section) = dest, !filteredSections.contains(section) {
+            selectedDestination = filteredSections.first.map { .section($0) }
+        }
+    }
+
+    private func updateSelectionForLock() {
+        guard lockManager.isLocked else { return }
+        if let dest = selectedDestination {
+            switch dest {
+            case .section(let section) where section == .byClient || section == .byRating:
+                selectedDestination = filteredSections.first.map { .section($0) }
+            case .customGroup:
+                selectedDestination = filteredSections.first.map { .section($0) }
+            default:
+                break
+            }
+        }
+        if sortOrder == .rating { sortOrder = .chronological }
+    }
+
+    // MARK: - Custom Group Management
+
+    private func createCustomGroup() {
+        guard !newGroupName.trimmingCharacters(in: .whitespaces).isEmpty else {
+            resetNewGroupForm()
+            return
+        }
+        let tags = newGroupTags
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        let group = CustomGalleryGroup(
+            name: newGroupName.trimmingCharacters(in: .whitespaces),
+            tags: tags,
+            sortIndex: customGroups.count
+        )
+        modelContext.insert(group)
+        selectedDestination = .customGroup(group)
+        resetNewGroupForm()
+    }
+
+    private func resetNewGroupForm() {
+        newGroupName = ""
+        newGroupTags = ""
     }
 
     // MARK: - Derived Data
@@ -205,7 +331,6 @@ struct GalleryTabView: View {
             }
         }
     }
-
 }
 
 // MARK: - Client Lock Banner
@@ -292,14 +417,15 @@ enum GalleryCategory: String, CaseIterable {
 
     var isClientSafe: Bool {
         switch self {
-        case .all, .flash, .bodyPlacement:          true
-        case .byStage, .byClient, .byRating, .inspiration: false
+        case .all, .flash, .bodyPlacement:                    true
+        case .byStage, .byClient, .byRating, .inspiration:   false
         }
     }
 }
 
 #Preview {
-    GalleryTabView(selectedTab: .constant(.gallery))
+    GalleryTabView()
+        .environment(AppNavigationCoordinator())
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }

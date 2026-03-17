@@ -14,6 +14,13 @@ final class Booking {
     var depositPaid: Bool
     var reminderSent: Bool
 
+    /// Labels of auto-generated prep tasks whose completion state has been
+    /// manually overridden (toggled from what the piece data would compute).
+    var checklistOverrides: [String] = []
+
+    /// User-defined to-do items appended to the checklist.
+    var customChecklistItems: [BookingCustomTask] = []
+
     var createdAt: Date
     var updatedAt: Date
 
@@ -113,6 +120,13 @@ struct PrepTask: Identifiable {
     let icon: String
     let isComplete: Bool
     var id: String { label }
+}
+
+/// A user-defined checklist item stored directly on a Booking.
+struct BookingCustomTask: Codable, Identifiable, Hashable {
+    var id: UUID = UUID()
+    var label: String
+    var isComplete: Bool = false
 }
 
 enum BookingStatus: String, Codable, CaseIterable {

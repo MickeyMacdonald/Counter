@@ -11,7 +11,7 @@ enum WorksSection: String, CaseIterable {
 // MARK: - Works Tab
 
 struct WorksTabView: View {
-    @Binding var selectedTab: AppTab
+    @Environment(AppNavigationCoordinator.self) private var coordinator
     @State private var section: WorksSection = .clients
     @State private var selectedClient: Client?
     @State private var selectedPiece: Piece?
@@ -20,7 +20,7 @@ struct WorksTabView: View {
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                AppTabSwitcher(selectedTab: $selectedTab)
+                AppTabSwitcher()
                 Divider()
                 Picker("Section", selection: $section) {
                     ForEach(WorksSection.allCases, id: \.self) { s in
@@ -81,6 +81,30 @@ struct WorksTabView: View {
             selectedPiece = nil
             searchText = ""
         }
+        // Deep-link: navigate to a specific client in the sidebar
+        .onAppear { consumePendingClient(); consumePendingPiece() }
+        .onChange(of: coordinator.pendingClient) { _, _ in consumePendingClient() }
+        // Deep-link: navigate to a specific piece in the sidebar
+        .onChange(of: coordinator.pendingPiece) { _, _ in consumePendingPiece() }
+    }
+
+    private func consumePendingClient() {
+        guard let client = coordinator.pendingClient else { return }
+        coordinator.pendingClient = nil
+        section       = .clients
+        selectedPiece = nil
+        Task { @MainActor in selectedClient = client }
+    }
+
+    private func consumePendingPiece() {
+        guard let piece = coordinator.pendingPiece else { return }
+        // Clear pending immediately so onChange(of: section) doesn't see it
+        coordinator.pendingPiece = nil
+        section        = .pieces
+        selectedClient = nil
+        // Defer selection to next run-loop tick so onChange(of: section) fires first
+        // and its `selectedPiece = nil` reset doesn't overwrite our value.
+        Task { @MainActor in selectedPiece = piece }
     }
 }
 
@@ -279,7 +303,8 @@ private struct WorksPiecesList: View {
 }
 
 #Preview {
-    WorksTabView(selectedTab: .constant(.works))
+    WorksTabView()
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
+        .environment(AppNavigationCoordinator())
 }

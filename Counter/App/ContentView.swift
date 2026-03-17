@@ -6,7 +6,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(\.scenePhase) private var scenePhase
-    @State private var selectedTab: AppTab = .works
+    @State private var coordinator = AppNavigationCoordinator()
 
     private var hasProfile: Bool {
         profiles.first != nil
@@ -17,26 +17,26 @@ struct ContentView: View {
             if hasProfile {
                 if lockManager.isLocked {
                     // Client mode: Gallery only (no tab bar)
-                    GalleryTabView(selectedTab: $selectedTab)
-                        .onAppear { selectedTab = .gallery }
+                    GalleryTabView()
+                        .onAppear { coordinator.selectedTab = .gallery }
                 } else {
                     // Full app — no TabView; AppTabSwitcher inside each sidebar drives navigation
-                    switch selectedTab {
+                    switch coordinator.selectedTab {
                     case .settings:
-                        SettingsView(selectedTab: $selectedTab)
+                        SettingsView()
                     case .works:
-                        WorksTabView(selectedTab: $selectedTab)
+                        WorksTabView()
                     case .sessions:
-                        SessionsTabView(selectedTab: $selectedTab)
+                        SessionsTabView()
                     case .gallery:
-                        GalleryTabView(selectedTab: $selectedTab)
-
+                        GalleryTabView()
                     }
                 }
             } else {
                 WelcomeSetupView()
             }
         }
+        .environment(coordinator)
         .onChange(of: scenePhase) { _, newPhase in
             guard lockManager.isEnabled else { return }
             switch newPhase {
@@ -224,7 +224,7 @@ enum AppTab: String, CaseIterable {
         switch self {
         case .settings: "Admin"
         case .works:    "Works"
-        case .sessions: "Sessions"
+        case .sessions: "Bookings"
         case .gallery:  "Gallery"
         }
     }
@@ -234,7 +234,7 @@ enum AppTab: String, CaseIterable {
         case .settings: "gearshape.fill"
         case .works:    "person.crop.rectangle.stack.fill"
         case .gallery:  "photo.fill"
-        case .sessions: "calendar.badge.clock"
+        case .sessions: "book.fill"
         }
     }
 
@@ -285,13 +285,14 @@ struct SidebarSearchField: View {
 // MARK: - App Tab Switcher
 
 struct AppTabSwitcher: View {
-    @Binding var selectedTab: AppTab
+    @Environment(AppNavigationCoordinator.self) private var coordinator
 
     var body: some View {
+        @Bindable var coord = coordinator
         HStack(spacing: 0) {
             ForEach(AppTab.allCases, id: \.self) { tab in
                 Button {
-                    selectedTab = tab
+                    coord.selectedTab = tab
                 } label: {
                     VStack(spacing: 3) {
                         Image(systemName: tab.systemImage)
@@ -301,9 +302,9 @@ struct AppTabSwitcher: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
-                    .foregroundStyle(selectedTab == tab ? Color.primary : Color.secondary)
+                    .foregroundStyle(coord.selectedTab == tab ? Color.primary : Color.secondary)
                     .background(
-                        selectedTab == tab
+                        coord.selectedTab == tab
                             ? Color.primary.opacity(0.08)
                             : Color.clear,
                         in: RoundedRectangle(cornerRadius: 8)
@@ -321,6 +322,7 @@ struct AppTabSwitcher: View {
     ContentView()
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
+        .environment(AppNavigationCoordinator())
 }
 
 #Preview("Welcome") {

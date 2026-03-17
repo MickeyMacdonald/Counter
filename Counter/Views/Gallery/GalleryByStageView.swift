@@ -6,6 +6,7 @@ import SwiftData
 struct GalleryByStageView: View {
     let pieces: [Piece]
 
+    @Environment(BusinessLockManager.self) private var lockManager
     @State private var selectedFullScreenImages: [PieceImage] = []
     @State private var selectedFullScreenImage: PieceImage?
     @State private var showingFullScreen = false
@@ -70,7 +71,7 @@ struct GalleryByStageView: View {
                                     GalleryImageCell(
                                         filePath: item.image.filePath,
                                         title: item.piece.title,
-                                        ratingValue: item.piece.rating
+                                        ratingValue: lockManager.isLocked ? nil : item.piece.rating
                                     )
                                     .onTapGesture {
                                         let allGroupImages = group.items.map(\.image)
