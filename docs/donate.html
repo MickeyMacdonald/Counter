@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Counter &mdash; Donate</title>
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="icon.png" alt="Counter icon"> Counter
+    </a>
+    <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Features</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="donate.html" class="active">Support Us</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<header class="hero" style="padding:3rem 1.5rem 2.5rem;">
+  <h1>Support Counter</h1>
+  <p class="tagline">Counter is independently built and funded. Your support helps keep development going and the app free of ads.</p>
+</header>
+
+<!-- ── Donation Tiers ── -->
+<section class="section">
+  <p class="donate-intro">
+    Counter is a passion project built by an independent developer in Calgary, Alberta.
+    Every contribution &mdash; big or small &mdash; goes directly toward development, testing, and keeping the app accessible
+    to creative professionals who need it most. Thank you for believing in what we're building.
+  </p>
+
+  <div class="donate-tiers">
+
+    <div class="tier-card">
+      <div class="tier-emoji">&#9749;</div>
+      <div class="tier-name">Buy a Coffee</div>
+      <div class="tier-price">$5</div>
+      <p class="tier-desc">A quick thank-you. Keeps the lights on and the coffee hot during late-night coding sessions.</p>
+      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $5</a>
+    </div>
+
+    <div class="tier-card featured">
+      <div class="tier-emoji">&#128165;</div>
+      <div class="tier-name">Ink Supporter</div>
+      <div class="tier-price">$15</div>
+      <p class="tier-desc">Help fund a week of focused feature work. You're directly shaping what Counter becomes next.</p>
+      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $15</a>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-emoji">&#11088;</div>
+      <div class="tier-name">Studio Champion</div>
+      <div class="tier-price">$50</div>
+      <p class="tier-desc">Major support. Helps cover testing devices, design tools, and App Store costs for an entire cycle.</p>
+      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $50</a>
+    </div>
+
+  </div>
+
+  <!-- Custom amount -->
+  <div class="form-card" style="max-width:480px;margin:0 auto;">
+    <h3 style="text-align:center;">Custom Amount</h3>
+    <p style="text-align:center;font-size:0.9rem;color:var(--text-light);margin-bottom:1.25rem;">
+      Want to contribute a different amount? Enter whatever feels right.
+    </p>
+    <form onsubmit="alert('Payment integration coming soon!');return false;" style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
+      <div class="form-group" style="margin:0;flex:1;min-width:140px;">
+        <label for="amount" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Amount (CAD)</label>
+        <input type="number" id="amount" min="1" step="1" placeholder="$ CAD" style="text-align:center;font-size:1.1rem;font-weight:600;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Donate</button>
+    </form>
+  </div>
+
+  <p class="text-center mt-2" style="color:var(--text-light);font-size:0.85rem;">
+    Payment processing is being set up. For now, reach out to
+    <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a>
+    to arrange a contribution via e-Transfer.
+  </p>
+</section>
+
+<!-- ── What Your Support Funds ── -->
+<section class="highlight">
+  <div class="section">
+    <h2 class="section-title">Where Your Support Goes</h2>
+    <p class="section-subtitle">Every dollar is reinvested directly into making Counter better.</p>
+    <div class="highlight-grid">
+      <div class="highlight-item">
+        <div class="num">&#128187;</div>
+        <div class="label">Development &amp; new features</div>
+      </div>
+      <div class="highlight-item">
+        <div class="num">&#128736;</div>
+        <div class="label">Testing devices &amp; tools</div>
+      </div>
+      <div class="highlight-item">
+        <div class="num">&#127961;</div>
+        <div class="label">App Store &amp; hosting fees</div>
+      </div>
+      <div class="highlight-item">
+        <div class="num">&#128173;</div>
+        <div class="label">Community feedback &amp; support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="icon.png" alt="Counter"> Counter</div>
+      <p style="font-size:0.88rem;max-width:320px;line-height:1.6;">Studio management built for tattoo artists, removal specialists, and hairdressers. Made in Calgary, Alberta.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Features</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="donate.html">Support Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a></li>
+        <li><a href="#" onclick="alert('App Store link coming soon!');return false;">App Store</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Counter. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

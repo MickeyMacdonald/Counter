@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact &mdash; Counter</title>
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="icon.png" alt="Counter icon"> Counter
+    </a>
+    <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Features</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="donate.html">Support Us</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<header class="hero" style="padding:3rem 1.5rem 2.5rem;">
+  <h1>Get in Touch</h1>
+  <p class="tagline">Questions, feedback, or partnership inquiries &mdash; we'd love to hear from you.</p>
+</header>
+
+<!-- ── Contact Section ── -->
+<section class="section">
+  <div class="contact-layout">
+
+    <div class="contact-info">
+      <h2>Let's Connect</h2>
+      <p>Counter is built independently in Calgary, Alberta. Whether you're a tattoo artist curious about the app, a shop owner interested in a partnership, or just want to say hello &mdash; reach out anytime.</p>
+
+      <div class="contact-detail">
+        <div class="cd-icon">&#9993;</div>
+        <div class="cd-text">
+          <strong>Email</strong><br>
+          <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="cd-icon">&#128205;</div>
+        <div class="cd-text">
+          <strong>Location</strong><br>
+          Calgary, Alberta, Canada
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="cd-icon">&#128241;</div>
+        <div class="cd-text">
+          <strong>Platform</strong><br>
+          iPad &mdash; <a href="#" onclick="alert('App Store link coming soon!');return false;">App Store (coming soon)</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Send a Message</h3>
+      <form action="https://formsubmit.co/mickey@thecounterapp.ca" method="POST">
+        <!-- honeypot -->
+        <input type="text" name="_honey" style="display:none">
+        <!-- disable captcha page -->
+        <input type="hidden" name="_captcha" value="false">
+        <!-- redirect back after submit -->
+        <input type="hidden" name="_next" value="contact.html?sent=1">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject">
+            <option value="General Inquiry">General Inquiry</option>
+            <option value="Bug Report">Bug Report</option>
+            <option value="Feature Request">Feature Request</option>
+            <option value="Partnership">Partnership</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required placeholder="How can we help?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-warm" style="width:100%;">Send Message</button>
+      </form>
+
+      <!-- Success banner (shown via query param) -->
+      <div id="sent-banner" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#e8f5e9;color:#2e7d32;border-radius:8px;font-size:0.9rem;text-align:center;">
+        Message sent! We'll get back to you soon.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="icon.png" alt="Counter"> Counter</div>
+      <p style="font-size:0.88rem;max-width:320px;line-height:1.6;">Studio management built for tattoo artists, removal specialists, and hairdressers. Made in Calgary, Alberta.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Features</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="donate.html">Support Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a></li>
+        <li><a href="#" onclick="alert('App Store link coming soon!');return false;">App Store</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Counter. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  if (new URLSearchParams(window.location.search).has('sent')) {
+    document.getElementById('sent-banner').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

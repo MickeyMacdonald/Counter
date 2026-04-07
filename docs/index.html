@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter &mdash; Studio Management for Creative Professionals</title>
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="icon.png" alt="Counter icon"> Counter
+    </a>
+    <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Features</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="donate.html">Support Us</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<header class="hero">
+  <img src="icon.png" alt="Counter app icon" class="hero-icon">
+  <h1>Counter</h1>
+  <p class="tagline">The all-in-one studio management app built for tattoo artists, removal specialists, and hairdressers.</p>
+  <div class="hero-buttons">
+    <a href="#" class="btn btn-primary" onclick="alert('App Store link coming soon!');return false;">Download on the App&nbsp;Store</a>
+    <a href="#features" class="btn btn-outline">See Features</a>
+  </div>
+  <p style="margin-top:0.75rem;font-size:0.82rem;color:var(--tan);">Available for iPad</p>
+</header>
+
+<!-- ── Stats Banner ── -->
+<section class="highlight">
+  <div class="section">
+    <div class="highlight-grid">
+      <div class="highlight-item">
+        <div class="num">18+</div>
+        <div class="label">Data models powering your studio</div>
+      </div>
+      <div class="highlight-item">
+        <div class="num">100%</div>
+        <div class="label">Local &amp; private &mdash; your data stays on your device</div>
+      </div>
+      <div class="highlight-item">
+        <div class="num">1</div>
+        <div class="label">App to replace them all</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section class="section" id="features">
+  <h2 class="section-title">Everything You Need to Run Your Studio</h2>
+  <p class="section-subtitle">Counter replaces your spreadsheets, calendars, and sticky notes with one cohesive workspace.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="icon">&#128100;</div>
+      <h3>Client Management</h3>
+      <p>Comprehensive profiles with contact details, health info, allergy notes, pronouns, and a full history of pieces, sessions, and spend.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#127912;</div>
+      <h3>Piece Tracking</h3>
+      <p>Manage every tattoo from concept to healed. Track status, placement, size, pricing, tags, reference images, and artist ratings.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128197;</div>
+      <h3>Bookings &amp; Sessions</h3>
+      <p>Schedule consultations, sessions, and touch-ups. Auto-generated prep checklists, no-show tracking, and session-type pricing keep you organized.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128176;</div>
+      <h3>Financial Management</h3>
+      <p>Record payments by method, track deposits and outstanding balances, apply discounts, and generate year-end financial reports as PDFs.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128247;</div>
+      <h3>Gallery &amp; Image Library</h3>
+      <p>Document work progress by stage. Show clients a curated public gallery while keeping sketches and stencils private. Build a personal inspiration library.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128274;</div>
+      <h3>Privacy &amp; Client Mode</h3>
+      <p>Lock your business data behind Face ID, Touch ID, or a PIN. Hand your iPad to a client to browse the gallery without exposing sensitive info.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#9993;</div>
+      <h3>Email Templates &amp; Comms</h3>
+      <p>Pre-built and custom email templates with smart tokens. Send from the app, attach images, and every communication is automatically logged.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128221;</div>
+      <h3>Agreements &amp; Waivers</h3>
+      <p>Consent forms, liability waivers, photo releases, and design approvals &mdash; all with digital signature capture and PDF export.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128200;</div>
+      <h3>PDF Reports</h3>
+      <p>Generate professional client summaries, outstanding balance reports, finished-piece portfolios, and year-end financials at the tap of a button.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128336;</div>
+      <h3>Availability Scheduling</h3>
+      <p>Set weekly recurring slots, mark flash-only hours, and add overrides for holidays or special closures. Clients see when you're bookable.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#9881;</div>
+      <h3>Fully Customizable</h3>
+      <p>Define custom session types, pricing tiers, discount categories, fee structures, and gallery groupings tailored to the way you work.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="icon">&#128241;</div>
+      <h3>Built for iPad</h3>
+      <p>Native SwiftUI experience designed for the device you already use at your station. Fast, fluid, and works entirely offline.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="highlight">
+  <div class="section">
+    <h2 class="section-title">Ready to Simplify Your Studio?</h2>
+    <p class="section-subtitle">Counter is currently in pre-alpha. Be among the first to try it.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-warm" onclick="alert('App Store link coming soon!');return false;">Get Counter for iPad</a>
+      <a href="contact.html" class="btn btn-outline" style="color:var(--espresso);border-color:var(--tan);">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="icon.png" alt="Counter"> Counter</div>
+      <p style="font-size:0.88rem;max-width:320px;line-height:1.6;">Studio management built for tattoo artists, removal specialists, and hairdressers. Made in Calgary, Alberta.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Features</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="donate.html">Support Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a></li>
+        <li><a href="#" onclick="alert('App Store link coming soon!');return false;">App Store</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Counter. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
