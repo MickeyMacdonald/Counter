@@ -28,92 +28,83 @@
 
 <!-- ── Hero ── -->
 <header class="hero" style="padding:3rem 1.5rem 2.5rem;">
-  <h1>Support Counter</h1>
-  <p class="tagline">Counter is independently built and funded. Your support helps keep development going and the app free of ads.</p>
+  <div style="font-size:2.4rem;margin-bottom:0.75rem;">&#9749;&#65039;</div>
+  <h1>Counter is free. For real.</h1>
+  <p class="tagline">No subscriptions required. No paywalls. No data harvesting.<br>I built this because I needed it, and I figured you might too.</p>
 </header>
 
 <!-- ── Donation Tiers ── -->
 <section class="section">
-  <p class="donate-intro">
-    Counter is a passion project built by an independent developer in Calgary, Alberta.
-    Every contribution &mdash; big or small &mdash; goes directly toward development, testing, and keeping the app accessible
-    to creative professionals who need it most. Thank you for believing in what we're building.
-  </p>
 
   <div class="donate-tiers">
 
-    <div class="tier-card">
-      <div class="tier-emoji">&#9749;</div>
-      <div class="tier-name">Buy a Coffee</div>
-      <div class="tier-price">$5</div>
-      <p class="tier-desc">A quick thank-you. Keeps the lights on and the coffee hot during late-night coding sessions.</p>
-      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $5</a>
-    </div>
-
-    <div class="tier-card featured">
-      <div class="tier-emoji">&#128165;</div>
-      <div class="tier-name">Ink Supporter</div>
-      <div class="tier-price">$15</div>
-      <p class="tier-desc">Help fund a week of focused feature work. You're directly shaping what Counter becomes next.</p>
-      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $15</a>
-    </div>
-
-    <div class="tier-card">
-      <div class="tier-emoji">&#11088;</div>
-      <div class="tier-name">Studio Champion</div>
-      <div class="tier-price">$50</div>
-      <p class="tier-desc">Major support. Helps cover testing devices, design tools, and App Store costs for an entire cycle.</p>
-      <a href="#" class="btn btn-warm" onclick="alert('Payment integration coming soon!');return false;">Donate $50</a>
-    </div>
-
-  </div>
-
-  <!-- Custom amount -->
-  <div class="form-card" style="max-width:480px;margin:0 auto;">
-    <h3 style="text-align:center;">Custom Amount</h3>
-    <p style="text-align:center;font-size:0.9rem;color:var(--text-light);margin-bottom:1.25rem;">
-      Want to contribute a different amount? Enter whatever feels right.
-    </p>
-    <form onsubmit="alert('Payment integration coming soon!');return false;" style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
-      <div class="form-group" style="margin:0;flex:1;min-width:140px;">
-        <label for="amount" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Amount (CAD)</label>
-        <input type="number" id="amount" min="1" step="1" placeholder="$ CAD" style="text-align:center;font-size:1.1rem;font-weight:600;">
+    <!-- Free Forever -->
+    <div class="tier-card" style="border-left:4px solid var(--espresso);">
+      <div class="tier-header">
+        <div class="tier-icon" style="background:rgba(62,39,35,0.1);color:var(--espresso);">&#8734;</div>
+        <div>
+          <div class="tier-name">Free Forever</div>
+          <div class="tier-price-row"><span class="tier-price">$0.00</span> <span class="tier-freq">always</span></div>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Donate</button>
-    </form>
+      <p class="tier-desc">Every feature, every update, no charge. I'm not going to hold your client list hostage. Counter is yours.</p>
+      <p class="tier-footnote">Though if you find yourself saving time and making money with this, throwing a dollar into the jar would genuinely make my day.</p>
+      <div class="tier-btn-row">
+        <span class="tier-status">&#9989; You're already in</span>
+      </div>
+    </div>
+
+    <!-- Buy Me a Beer -->
+    <div class="tier-card" style="border-left:4px solid var(--warm-brown);">
+      <div class="tier-header">
+        <div class="tier-icon" style="background:rgba(109,76,65,0.12);color:var(--warm-brown);">&#127866;</div>
+        <div>
+          <div class="tier-name">Buy Me a Beer</div>
+          <div class="tier-price-row"><span class="tier-price">$4.99</span> <span class="tier-freq">once</span></div>
+        </div>
+      </div>
+      <p class="tier-desc">A one-time thank-you. Covers approximately one (1) cold beverage, which I will drink while fixing bugs at midnight.</p>
+      <a href="#" class="btn btn-warm tier-btn" onclick="alert('Available in-app via the App Store. For now, you can e-Transfer to mickey@thecounterapp.ca');return false;">Send a beer</a>
+    </div>
+
+    <!-- Monthly Support -->
+    <div class="tier-card featured" style="border-left:4px solid var(--accent);">
+      <div class="tier-header">
+        <div class="tier-icon" style="background:rgba(74,111,165,0.12);color:var(--accent);">&#128197;</div>
+        <div>
+          <div class="tier-name">Monthly Support</div>
+          <div class="tier-price-row"><span class="tier-price">$1.99</span> <span class="tier-freq">/ month</span></div>
+        </div>
+      </div>
+      <p class="tier-desc">Slip me a few bucks a month. It helps me keep developing features instead of finding a real job.</p>
+      <p class="tier-footnote">Cancel any time from your App Store subscriptions. No hard feelings.</p>
+      <a href="#" class="btn btn-primary tier-btn" onclick="alert('Available in-app via the App Store. For now, you can e-Transfer to mickey@thecounterapp.ca');return false;">Support monthly</a>
+    </div>
+
+    <!-- Tip Per Session -->
+    <div class="tier-card" style="border-left:4px solid #e67e22;">
+      <div class="tier-header">
+        <div class="tier-icon" style="background:rgba(230,126,34,0.12);color:#e67e22;">&#9889;</div>
+        <div>
+          <div class="tier-name">Tip Per Session</div>
+          <div class="tier-price-row"><span class="tier-price">$0.99</span> <span class="tier-freq">per tip</span></div>
+        </div>
+      </div>
+      <p class="tier-desc">Every time Counter helps you land a booking, throw a coin in the jar. Like a tip, but for the app that helped you get the tip.</p>
+      <p class="tier-footnote">You control when. Tap whenever it feels right.</p>
+      <a href="#" class="btn btn-warm tier-btn" style="background:#e67e22;" onclick="alert('Available in-app via the App Store. For now, you can e-Transfer to mickey@thecounterapp.ca');return false;">Drop a tip</a>
+    </div>
+
   </div>
 
   <p class="text-center mt-2" style="color:var(--text-light);font-size:0.85rem;">
-    Payment processing is being set up. For now, reach out to
-    <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a>
-    to arrange a contribution via e-Transfer.
+    In-app purchases are handled through the App Store. In the meantime, you can
+    <a href="mailto:mickey@thecounterapp.ca">e-Transfer mickey@thecounterapp.ca</a> directly.
   </p>
-</section>
 
-<!-- ── What Your Support Funds ── -->
-<section class="highlight">
-  <div class="section">
-    <h2 class="section-title">Where Your Support Goes</h2>
-    <p class="section-subtitle">Every dollar is reinvested directly into making Counter better.</p>
-    <div class="highlight-grid">
-      <div class="highlight-item">
-        <div class="num">&#128187;</div>
-        <div class="label">Development &amp; new features</div>
-      </div>
-      <div class="highlight-item">
-        <div class="num">&#128736;</div>
-        <div class="label">Testing devices &amp; tools</div>
-      </div>
-      <div class="highlight-item">
-        <div class="num">&#127961;</div>
-        <div class="label">App Store &amp; hosting fees</div>
-      </div>
-      <div class="highlight-item">
-        <div class="num">&#128173;</div>
-        <div class="label">Community feedback &amp; support</div>
-      </div>
-    </div>
-  </div>
+  <p class="text-center" style="color:var(--tan);font-size:0.78rem;margin-top:1rem;">
+    Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period.
+  </p>
 </section>
 
 <!-- ── Footer ── -->
