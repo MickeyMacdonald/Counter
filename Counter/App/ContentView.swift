@@ -38,14 +38,18 @@ struct ContentView: View {
         }
         .environment(coordinator)
         .onChange(of: scenePhase) { _, newPhase in
-            guard lockManager.isEnabled else { return }
             switch newPhase {
             case .background, .inactive:
                 // Auto-lock whenever the app leaves the foreground
-                lockManager.lock()
+                if lockManager.isEnabled { lockManager.lock() }
+                // Auto-backup on background (alpha safety net)
+                if newPhase == .background {
+                    let context = modelContext
+                    Task { try? await RecoveryService.shared.performBackup(context: context) }
+                }
             case .active:
                 // Prompt for biometrics immediately on return if locked
-                if lockManager.isLocked {
+                if lockManager.isEnabled && lockManager.isLocked {
                     Task { await lockManager.unlockWithBiometrics() }
                 }
             @unknown default:

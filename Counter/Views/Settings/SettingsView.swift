@@ -12,6 +12,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case emailTemplates = "Email Templates"
     case about          = "About"
     case support        = "Support Counter"
+    case recovery       = "Recovery"
     // Analytics
     case statistics     = "Statistics"
     case financial      = "Financials"
@@ -27,7 +28,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 
     var adminFilter: AdminFilter {
         switch self {
-        case .profile, .emailTemplates, .about, .support:
+        case .profile, .emailTemplates, .about, .support, .recovery:
             return .settings
         case .statistics, .financial, .reports:
             return .analytics
@@ -48,6 +49,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .sessionRates:   "banknote"
         case .clientMode:     "lock.shield"
         case .pieces:         "paintbrush.pointed.fill"
+        case .recovery:       "arrow.clockwise.icloud"
         }
     }
 }
@@ -61,7 +63,7 @@ struct SettingsView: View {
 
     private var profile: UserProfile? { profiles.first }
 
-    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .emailTemplates, .about, .support]
+    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .emailTemplates, .about, .support, .recovery]
     private static let analyticsItems: [SettingsCategory] = [.statistics, .financial, .reports]
 
     private var visibleCategories: [SettingsCategory] {
@@ -141,6 +143,8 @@ struct SettingsView: View {
             SettingsClientModeView()
         case .pieces:
             SettingsPiecesView()
+        case .recovery:
+            SettingsRecoveryView()
         }
     }
 }
