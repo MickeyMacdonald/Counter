@@ -15,7 +15,8 @@
       "Bash(grep -r SettingsStatisticsView /Users/mickeymacdonald/Documents/Code/Counter --include=*.swift)",
       "Bash(gh api:*)",
       "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" api repos/MickeyMacdonald/Counter/pages)",
-      "Bash(\"/c/Program Files/GitHub:*)"
+      "Bash(\"/c/Program Files/GitHub:*)",
+      "Bash(grep -v \"//\")"
     ]
   }
 }
