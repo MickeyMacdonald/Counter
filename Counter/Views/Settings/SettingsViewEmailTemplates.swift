@@ -4,7 +4,7 @@ import SwiftData
 // Make EmailTemplate usable with .sheet(item:)
 extension EmailTemplate: Identifiable {}
 
-struct SettingsEmailTemplatesView: View {
+struct SettingsViewEmailTemplates: View {
     @Query(sort: \CustomEmailTemplate.name) private var customTemplates: [CustomEmailTemplate]
     @Environment(\.modelContext) private var modelContext
 
@@ -136,7 +136,7 @@ private struct TemplateListRow: View {
 
 #Preview {
     NavigationStack {
-        SettingsEmailTemplatesView()
+        SettingsViewEmailTemplates()
     }
     .modelContainer(PreviewContainer.shared.container)
 }

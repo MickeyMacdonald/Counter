@@ -3,7 +3,7 @@ import SwiftData
 
 // MARK: - Entry Point
 
-struct SettingsSessionRatesView: View {
+struct SettingsViewFinancial: View {
     @Query private var profiles: [UserProfile]
 
     var body: some View {
@@ -11,7 +11,7 @@ struct SettingsSessionRatesView: View {
             SessionRatesContent(profile: profile)
         } else {
             noProfileView
-                .navigationTitle("Session Rates")
+                .navigationTitle("Financial Settings")
         }
     }
 }
@@ -507,7 +507,7 @@ private extension Decimal {
 
 #Preview {
     NavigationStack {
-        SettingsSessionRatesView()
+        SettingsViewFinancial()
     }
     .modelContainer(PreviewContainer.shared.container)
     .environment(BusinessLockManager())

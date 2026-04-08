@@ -73,15 +73,15 @@
 		AA000063 /* PieceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000063 /* PieceListView.swift */; };
 		AA000064 /* CustomEmailTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000064 /* CustomEmailTemplate.swift */; };
 		AA000065 /* EmailTemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000065 /* EmailTemplateEditorView.swift */; };
-		AA000066 /* SettingsEmailTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsEmailTemplatesView.swift */; };
+		AA000066 /* SettingsViewEmailTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsViewEmailTemplates.swift */; };
 		AA000067 /* AvailabilityOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000067 /* AvailabilityOverride.swift */; };
-		AA000068 /* SettingsBookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000068 /* SettingsBookingView.swift */; };
+		AA000068 /* SettingsViewBooking.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000068 /* SettingsViewBooking.swift */; };
 		AA000069 /* CustomSessionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000069 /* CustomSessionType.swift */; };
 		AA000070 /* FlashPriceTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000070 /* FlashPriceTier.swift */; };
 		AA000071 /* FlashPortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000071 /* FlashPortfolioView.swift */; };
 		AA000072 /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000072 /* ToDoView.swift */; };
 		AA000073 /* SessionRateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000073 /* SessionRateConfig.swift */; };
-		AA000074 /* SettingsSessionRatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000074 /* SettingsSessionRatesView.swift */; };
+		AA000074 /* SettingsViewFinancial.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000074 /* SettingsViewFinancial.swift */; };
 		AA000075 /* SessionsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000075 /* SessionsTabView.swift */; };
 		AA000076 /* WorksTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000076 /* WorksTabView.swift */; };
 		AA000077 /* AvailableFlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000077 /* AvailableFlashGalleryView.swift */; };
@@ -167,15 +167,15 @@
 		AB000063 /* PieceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceListView.swift; sourceTree = "<group>"; };
 		AB000064 /* CustomEmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmailTemplate.swift; sourceTree = "<group>"; };
 		AB000065 /* EmailTemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateEditorView.swift; sourceTree = "<group>"; };
-		AB000066 /* SettingsEmailTemplatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsEmailTemplatesView.swift; sourceTree = "<group>"; };
+		AB000066 /* SettingsViewEmailTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplates.swift; sourceTree = "<group>"; };
 		AB000067 /* AvailabilityOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityOverride.swift; sourceTree = "<group>"; };
-		AB000068 /* SettingsBookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBookingView.swift; sourceTree = "<group>"; };
+		AB000068 /* SettingsViewBooking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewBooking.swift; sourceTree = "<group>"; };
 		AB000069 /* CustomSessionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSessionType.swift; sourceTree = "<group>"; };
 		AB000070 /* FlashPriceTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPriceTier.swift; sourceTree = "<group>"; };
 		AB000071 /* FlashPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPortfolioView.swift; sourceTree = "<group>"; };
 		AB000072 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
 		AB000073 /* SessionRateConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRateConfig.swift; sourceTree = "<group>"; };
-		AB000074 /* SettingsSessionRatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSessionRatesView.swift; sourceTree = "<group>"; };
+		AB000074 /* SettingsViewFinancial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewFinancial.swift; sourceTree = "<group>"; };
 		AB000075 /* SessionsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsTabView.swift; sourceTree = "<group>"; };
 		AB000076 /* WorksTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksTabView.swift; sourceTree = "<group>"; };
 		AB000077 /* AvailableFlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableFlashGalleryView.swift; sourceTree = "<group>"; };
@@ -372,9 +372,9 @@
 				AB000042 /* ProfileEditView.swift */,
 				AB000043 /* AvailabilityEditView.swift */,
 				AB000065 /* EmailTemplateEditorView.swift */,
-				AB000068 /* SettingsBookingView.swift */,
-				AB000066 /* SettingsEmailTemplatesView.swift */,
-				AB000074 /* SettingsSessionRatesView.swift */,
+				AB000068 /* SettingsViewBooking.swift */,
+				AB000066 /* SettingsViewEmailTemplates.swift */,
+				AB000074 /* SettingsViewFinancial.swift */,
 				AB000078 /* SettingsReportsView.swift */,
 				AB000087 /* SettingsPiecesView.swift */,
 				AB000080 /* SettingsDonationView.swift */,
@@ -590,15 +590,15 @@
 				AA000063 /* PieceListView.swift in Sources */,
 				AA000064 /* CustomEmailTemplate.swift in Sources */,
 				AA000065 /* EmailTemplateEditorView.swift in Sources */,
-				AA000066 /* SettingsEmailTemplatesView.swift in Sources */,
+				AA000066 /* SettingsViewEmailTemplates.swift in Sources */,
 				AA000067 /* AvailabilityOverride.swift in Sources */,
-				AA000068 /* SettingsBookingView.swift in Sources */,
+				AA000068 /* SettingsViewBooking.swift in Sources */,
 				AA000069 /* CustomSessionType.swift in Sources */,
 				AA000070 /* FlashPriceTier.swift in Sources */,
 				AA000071 /* FlashPortfolioView.swift in Sources */,
 				AA000072 /* ToDoView.swift in Sources */,
 				AA000073 /* SessionRateConfig.swift in Sources */,
-				AA000074 /* SettingsSessionRatesView.swift in Sources */,
+				AA000074 /* SettingsViewFinancial.swift in Sources */,
 				AA000075 /* SessionsTabView.swift in Sources */,
 				AA000076 /* WorksTabView.swift in Sources */,
 				AA000077 /* AvailableFlashGalleryView.swift in Sources */,

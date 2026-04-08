@@ -15,7 +15,7 @@ extension AvailabilitySlot.SlotType {
 
 // MARK: - Settings Booking View
 
-struct SettingsBookingView: View {
+struct SettingsViewBooking: View {
     @Query(sort: \AvailabilityOverride.startDate) private var overrides: [AvailabilityOverride]
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddOverride = false
@@ -496,6 +496,6 @@ struct AvailabilityOverrideEditView: View {
 }
 
 #Preview {
-    NavigationStack { SettingsBookingView() }
+    NavigationStack { SettingsViewBooking() }
         .modelContainer(PreviewContainer.shared.container)
 }

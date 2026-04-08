@@ -10,33 +10,44 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     // Settings
     case profile        = "Profile"
     case emailTemplates = "Email Templates"
+    case schedule       = "Schedule"
+    case rates          = "Rates"
     case about          = "About"
-    case support        = "Support Counter"
     case recovery       = "Recovery"
+    case support        = "Support Counter"
+    case sessionDetails = "Session Details"
+    case clientMode     = "Client Mode"
+    case pieces         = "Pieces"
+    
     // Analytics
     case statistics     = "Statistics"
     case financial      = "Financials"
     case reports        = "Reports"
-    // Hidden (accessible elsewhere)
-    case sessionRates   = "Session Rates"
-    case clientMode     = "Client Mode"
 
-    // Piece-level settings
-    case pieces         = "Pieces"
-
+    // Settings/Analysis Filter
     var id: String { rawValue }
 
     var adminFilter: AdminFilter {
         switch self {
-        case .profile, .emailTemplates, .about, .recovery, .support:
+        case .profile,
+                .emailTemplates,
+                .about,
+                .recovery,
+                .support,
+                .sessionDetails,
+                .clientMode,
+                .pieces,
+                .rates,
+                .schedule:
             return .settings
-        case .statistics, .financial, .reports:
+        case .statistics,
+                .financial,
+                .reports:
             return .analytics
-        case .sessionRates, .clientMode, .pieces:
-            return .settings
         }
     }
 
+    // Icons
     var systemImage: String {
         switch self {
         case .profile:        "person.crop.circle"
@@ -46,10 +57,12 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .statistics:     "chart.bar.fill"
         case .financial:      "dollarsign.circle.fill"
         case .reports:        "doc.text.magnifyingglass"
-        case .sessionRates:   "banknote"
+        case .sessionDetails: "banknote"
         case .clientMode:     "lock.shield"
         case .pieces:         "paintbrush.pointed.fill"
         case .recovery:       "arrow.clockwise.icloud"
+        case .schedule:       "book.badge.plus"
+        case .rates :         "plus.forwardslash.minus"
         }
     }
 }
@@ -57,15 +70,19 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 struct SettingsView: View {
     @Query private var profiles: [UserProfile]
     @Environment(\.modelContext) private var modelContext
+    
+    //Sidebar State
     @State private var selectedCategory: SettingsCategory? = .profile
     @State private var searchText = ""
     @State private var adminFilter: AdminFilter = .settings
 
     private var profile: UserProfile? { profiles.first }
 
-    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .clientMode, .emailTemplates, .about, .support, .recovery]
+    // Sub-categories Order
+    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .clientMode, .emailTemplates, .about,  .recovery, .support, .rates, .sessionDetails]
     private static let analyticsItems: [SettingsCategory] = [.statistics, .financial, .reports]
 
+    
     private var visibleCategories: [SettingsCategory] {
         let base = adminFilter == .settings ? Self.settingsItems : Self.analyticsItems
         guard !searchText.isEmpty else { return base }
@@ -120,23 +137,26 @@ struct SettingsView: View {
         }
     }
 
+    // SettingView File Sync
     @ViewBuilder
     private func settingsDetail(for category: SettingsCategory) -> some View {
         switch category {
         case .profile:
             SettingsProfileView(profile: profile)
         case .emailTemplates:
-            SettingsEmailTemplatesView()
+            SettingsViewEmailTemplates()
         case .about:
             SettingsAboutView()
         case .statistics:
             SettingsStatisticsView()
+        case .schedule:
+            SettingsViewBooking()
         case .financial:
             FinancialDashboardView(embedded: true)
         case .reports:
             SettingsReportsView()
-        case .sessionRates:
-            SettingsSessionRatesView()
+        case .sessionDetails:
+            PaymentHistoryView()
         case .clientMode:
             SettingsClientModeView()
         case .pieces:
@@ -145,6 +165,8 @@ struct SettingsView: View {
             SettingsRecoveryView()
         case .support:
             SettingsDonationView()
+        case .rates:
+            SettingsViewFinancial()
         }
     }
 }
