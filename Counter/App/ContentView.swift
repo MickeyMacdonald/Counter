@@ -7,6 +7,7 @@ struct ContentView: View {
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(\.scenePhase) private var scenePhase
     @State private var coordinator = AppNavigationCoordinator()
+    @AppStorage("business.autolockOnBackground") private var autoLockOnBackground: Bool = true
 
     private var hasProfile: Bool {
         profiles.first != nil
@@ -41,7 +42,7 @@ struct ContentView: View {
             switch newPhase {
             case .background, .inactive:
                 // Auto-lock whenever the app leaves the foreground
-                if lockManager.isEnabled { lockManager.lock() }
+                if lockManager.isEnabled && autoLockOnBackground { lockManager.lock() }
                 // Auto-backup on background (alpha safety net)
                 if newPhase == .background {
                     let context = modelContext

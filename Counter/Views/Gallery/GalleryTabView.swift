@@ -79,14 +79,47 @@ struct GalleryTabView: View {
     @State private var newGroupName = ""
     @State private var newGroupTags = ""
 
+    @AppStorage("business.galleryAllowedSections") private var galleryAllowedSectionsRaw: String = "byStage,byPlacement,bySize"
+
+    private var allowedGalleryKeysWhenLocked: Set<String> {
+        Set(galleryAllowedSectionsRaw.split(separator: ",").map { String($0) }.filter { !$0.isEmpty })
+    }
+
     private var filteredSections: [GallerySection] {
         switch galleryFilter {
         case .all:
             let base = GallerySection.sidebarSections
-            return lockManager.isLocked ? base.filter { $0 != .byClient && $0 != .byRating } : base
+            let lockFiltered = lockManager.isLocked ? base.filter { $0 != .byClient && $0 != .byRating } : base
+            if lockManager.isLocked {
+                return lockFiltered.filter { section in
+                    switch section {
+                    case .byStage:     return allowedGalleryKeysWhenLocked.contains("byStage")
+                    case .byPlacement: return allowedGalleryKeysWhenLocked.contains("byPlacement")
+                    case .bySize:      return allowedGalleryKeysWhenLocked.contains("bySize")
+                    case .byRating:    return allowedGalleryKeysWhenLocked.contains("byRating")
+                    case .byClient:    return allowedGalleryKeysWhenLocked.contains("byClient")
+                    case .flash:       return true
+                    }
+                }
+            } else {
+                return lockFiltered
+            }
         case .custom:
             let base: [GallerySection] = [.byClient, .byStage, .byPlacement, .bySize]
-            return lockManager.isLocked ? base.filter { $0 != .byClient } : base
+            let lockFiltered = lockManager.isLocked ? base.filter { $0 != .byClient } : base
+            if lockManager.isLocked {
+                return lockFiltered.filter { section in
+                    switch section {
+                    case .byStage:     return allowedGalleryKeysWhenLocked.contains("byStage")
+                    case .byPlacement: return allowedGalleryKeysWhenLocked.contains("byPlacement")
+                    case .bySize:      return allowedGalleryKeysWhenLocked.contains("bySize")
+                    case .byClient:    return allowedGalleryKeysWhenLocked.contains("byClient")
+                    default:           return true
+                    }
+                }
+            } else {
+                return lockFiltered
+            }
         case .flash:
             return []
         }
@@ -337,6 +370,7 @@ struct GalleryTabView: View {
 
 struct ClientLockBanner: View {
     let lockManager: BusinessLockManager
+    @AppStorage("business.authMethod") private var authMethod: String = "auto"
     @State private var showPINEntry = false
     @State private var pinInput = ""
     @State private var pinError = false
@@ -344,9 +378,13 @@ struct ClientLockBanner: View {
     var body: some View {
         Button {
             if lockManager.isLocked {
-                Task {
-                    let success = await lockManager.unlockWithBiometrics()
-                    if !success { showPINEntry = true }
+                if authMethod == "pin" {
+                    showPINEntry = true
+                } else {
+                    Task {
+                        let success = await lockManager.unlockWithBiometrics()
+                        if !success { showPINEntry = true }
+                    }
                 }
             } else {
                 lockManager.lock()
@@ -359,7 +397,7 @@ struct ClientLockBanner: View {
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 Image(systemName: lockManager.isLocked
-                      ? "faceid"
+                      ? (authMethod == "pin" ? "number.circle" : lockManager.biometricIcon)
                       : "chevron.right")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(lockManager.isLocked ? .primary : .tertiary)

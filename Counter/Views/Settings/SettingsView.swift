@@ -63,7 +63,7 @@ struct SettingsView: View {
 
     private var profile: UserProfile? { profiles.first }
 
-    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .emailTemplates, .about, .support, .recovery]
+    private static let settingsItems:  [SettingsCategory] = [.profile, .pieces, .clientMode, .emailTemplates, .about, .support, .recovery]
     private static let analyticsItems: [SettingsCategory] = [.statistics, .financial, .reports]
 
     private var visibleCategories: [SettingsCategory] {
@@ -296,6 +296,10 @@ struct SettingsClientModeView: View {
     @State private var confirmPIN = ""
     @State private var pinMismatch = false
 
+    @AppStorage("business.autolockOnBackground") private var autoLockOnBackground: Bool = true
+    @AppStorage("business.authMethod") private var authMethod: String = "auto" // values: "auto", "pin"
+    @AppStorage("business.galleryAllowedSections") private var galleryAllowedSectionsRaw: String = "byStage,byPlacement,bySize"
+
     var body: some View {
         List {
             Section {
@@ -313,43 +317,70 @@ struct SettingsClientModeView: View {
                 }
 
                 if lockManager.isEnabled {
-                    if lockManager.biometricsAvailable {
+                    DisclosureGroup {
+                        if lockManager.biometricsAvailable {
+                            LabeledContent {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            } label: {
+                                Label(lockManager.biometricName, systemImage: lockManager.biometricIcon)
+                            }
+                        }
+
+                        if lockManager.hasPIN {
+                            Button(role: .destructive) {
+                                lockManager.clearPIN()
+                            } label: {
+                                Label("Remove PIN", systemImage: "number.circle")
+                            }
+                        } else {
+                            Button {
+                                newPIN = ""
+                                confirmPIN = ""
+                                pinMismatch = false
+                                showingSetPIN = true
+                            } label: {
+                                Label("Set a PIN", systemImage: "number.circle")
+                            }
+                        }
+
+                        Toggle("Auto-lock on background", isOn: $autoLockOnBackground)
+
+                        Picker("Authentication Method", selection: $authMethod) {
+                            Text("Auto (Biometrics if available)").tag("auto")
+                            Text("PIN Only").tag("pin")
+                        }
+                        .pickerStyle(.menu)
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Allowed Gallery Sections")
+                                .font(.subheadline.weight(.semibold))
+                            ForEach(["byStage","byPlacement","bySize","byRating","byClient"], id: \.self) { key in
+                                Toggle(labelForGalleryKey(key), isOn: Binding(
+                                    get: { allowedGalleryKeys.contains(key) },
+                                    set: { on in updateAllowedGalleryKeys(key: key, enabled: on) }
+                                ))
+                            }
+                            Text("These apply only while in Client Mode.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
                         LabeledContent {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                            Text("Use the Gallery tab banner to enter Client Mode.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         } label: {
-                            Label(lockManager.biometricName, systemImage: lockManager.biometricIcon)
+                            Label("How to Lock", systemImage: "info.circle")
                         }
-                    }
 
-                    if lockManager.hasPIN {
-                        Button(role: .destructive) {
-                            lockManager.clearPIN()
-                        } label: {
-                            Label("Remove PIN", systemImage: "number.circle")
-                        }
-                    } else {
                         Button {
-                            newPIN = ""
-                            confirmPIN = ""
-                            pinMismatch = false
-                            showingSetPIN = true
+                            coordinator.selectedTab = .gallery
                         } label: {
-                            Label("Set a PIN", systemImage: "number.circle")
+                            Label("Open Gallery to Lock", systemImage: "photo.fill.on.rectangle.fill")
                         }
-                    }
-
-                    LabeledContent {
-                        Text("Use the Gallery tab banner to enter Client Mode.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
                     } label: {
-                        Label("How to Lock", systemImage: "info.circle")
-                    }
-                    Button {
-                        coordinator.selectedTab = .gallery
-                    } label: {
-                        Label("Open Gallery to Lock", systemImage: "photo.fill.on.rectangle.fill")
+                        Label("Client Mode Options", systemImage: "slider.horizontal.3")
                     }
                 }
             } footer: {
@@ -381,6 +412,27 @@ struct SettingsClientModeView: View {
                 showingSetPIN = true
             }
             Button("Cancel", role: .cancel) { }
+        }
+    }
+
+    private var allowedGalleryKeys: Set<String> {
+        Set(galleryAllowedSectionsRaw.split(separator: ",").map { String($0) }.filter { !$0.isEmpty })
+    }
+
+    private func updateAllowedGalleryKeys(key: String, enabled: Bool) {
+        var set = allowedGalleryKeys
+        if enabled { set.insert(key) } else { set.remove(key) }
+        galleryAllowedSectionsRaw = set.sorted().joined(separator: ",")
+    }
+
+    private func labelForGalleryKey(_ key: String) -> String {
+        switch key {
+        case "byStage": return "By Stage"
+        case "byPlacement": return "Placement"
+        case "bySize": return "Size"
+        case "byRating": return "Rating"
+        case "byClient": return "Clients"
+        default: return key
         }
     }
 }

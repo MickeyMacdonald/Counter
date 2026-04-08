@@ -9,6 +9,7 @@ struct BusinessLockView: View {
     @State private var enteredPIN = ""
     @State private var pinError = false
     @State private var isAuthenticating = false
+    @AppStorage("business.authMethod") private var authMethod: String = "auto"
 
     var body: some View {
         VStack(spacing: 24) {
@@ -37,7 +38,7 @@ struct BusinessLockView: View {
 
             // Unlock buttons
             VStack(spacing: 12) {
-                if lockManager.biometricsAvailable {
+                if lockManager.biometricsAvailable && authMethod != "pin" {
                     Button {
                         authenticateWithBiometrics()
                     } label: {
@@ -114,7 +115,7 @@ struct BusinessLockView: View {
         }
         .onAppear {
             // Auto-prompt biometrics when the view appears
-            if lockManager.biometricsAvailable {
+            if lockManager.biometricsAvailable && authMethod != "pin" {
                 authenticateWithBiometrics()
             }
         }
