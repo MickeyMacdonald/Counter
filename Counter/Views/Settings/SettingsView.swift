@@ -28,7 +28,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 
     var adminFilter: AdminFilter {
         switch self {
-        case .profile, .emailTemplates, .about, .support, .recovery:
+        case .profile, .emailTemplates, .about, .recovery, .support:
             return .settings
         case .statistics, .financial, .reports:
             return .analytics
@@ -129,8 +129,6 @@ struct SettingsView: View {
             SettingsEmailTemplatesView()
         case .about:
             SettingsAboutView()
-        case .support:
-            SettingsDonationView()
         case .statistics:
             SettingsStatisticsView()
         case .financial:
@@ -145,6 +143,8 @@ struct SettingsView: View {
             SettingsPiecesView()
         case .recovery:
             SettingsRecoveryView()
+        case .support:
+            SettingsDonationView()
         }
     }
 }
