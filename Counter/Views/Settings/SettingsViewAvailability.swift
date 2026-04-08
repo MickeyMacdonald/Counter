@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct AvailabilityEditView: View {
+struct SettingsViewAvailability: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \AvailabilitySlot.dayOfWeek) private var slots: [AvailabilitySlot]
@@ -135,6 +135,6 @@ struct DayAvailabilitySection: View {
 }
 
 #Preview {
-    AvailabilityEditView()
+    SettingsViewAvailability()
         .modelContainer(PreviewContainer.shared.container)
 }

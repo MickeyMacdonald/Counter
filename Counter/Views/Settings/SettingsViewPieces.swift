@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsPiecesView: View {
+struct SettingsViewPieces: View {
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
     @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
 
@@ -47,5 +47,5 @@ struct SettingsPiecesView: View {
 }
 
 #Preview {
-    NavigationStack { SettingsPiecesView() }
+    NavigationStack { SettingsViewPieces() }
 }

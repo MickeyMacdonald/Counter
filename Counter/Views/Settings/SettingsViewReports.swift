@@ -45,7 +45,7 @@ enum ReportType: String, CaseIterable, Identifiable {
 
 // MARK: - Settings Reports View
 
-struct SettingsReportsView: View {
+struct SettingsViewReports: View {
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Query(filter: #Predicate<Client> { !$0.isFlashPortfolioClient }, sort: \Client.lastName)
     private var clients: [Client]
@@ -247,7 +247,7 @@ extension URL: @retroactive Identifiable {
 
 #Preview {
     NavigationStack {
-        SettingsReportsView()
+        SettingsViewReports()
     }
     .modelContainer(PreviewContainer.shared.container)
     .environment(BusinessLockManager())

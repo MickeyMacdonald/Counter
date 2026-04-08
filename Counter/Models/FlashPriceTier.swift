@@ -21,12 +21,27 @@ enum FlashPricingMode: String, Codable, CaseIterable {
     var price: Decimal
     var sortOrder: Int
 
-    init(label: String = "New Size", widthInches: Double = 4, heightInches: Double = 4, price: Decimal = 0, sortOrder: Int = 0) {
+    /// True for dimension-based tiers (W × H pricing); false for named size tiers.
+    var isDimensionBased: Bool = false
+    /// True for the built-in Small / Medium / Large tiers — these cannot be deleted.
+    var isBuiltIn: Bool = false
+
+    init(
+        label: String = "New Size",
+        widthInches: Double = 4,
+        heightInches: Double = 4,
+        price: Decimal = 0,
+        isDimensionBased: Bool = false,
+        isBuiltIn: Bool = false,
+        sortOrder: Int = 0
+    ) {
         self.uuid = UUID()
         self.label = label
         self.widthInches = widthInches
         self.heightInches = heightInches
         self.price = price
+        self.isDimensionBased = isDimensionBased
+        self.isBuiltIn = isBuiltIn
         self.sortOrder = sortOrder
     }
 }

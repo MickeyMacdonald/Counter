@@ -9,10 +9,16 @@ final class UserProfile {
     var email: String
     var phone: String
 
+    // Studio contact (separate from personal contact)
+    var studioEmail: String = ""
+    var studioPhone: String = ""
+
     var profession: Profession
     var profilePhotoPath: String?
 
     var defaultHourlyRate: Decimal
+    /// Secondary rate for events, VIP clients, or other special circumstances.
+    var specialHourlyRate: Decimal = 0
     var currency: String
 
     // Deposits
@@ -114,6 +120,37 @@ final class UserProfile {
         billingCountry      == shopCountry
     }
 
+    // MARK: - Contact Card
+
+    /// Generates a vCard 3.0 string suitable for sharing as a .vcf file.
+    /// Pass `personalContactSameAsStudio: true` when the personal contact fields
+    /// are linked to the studio contact, so the vCard reflects the studio values.
+    func makeVCard(personalContactSameAsStudio: Bool = false) -> String {
+        var lines = ["BEGIN:VCARD", "VERSION:3.0"]
+        lines.append("N:\(lastName);\(firstName);;;")
+        let fn = fullName
+        if !fn.isEmpty { lines.append("FN:\(fn)") }
+        if !businessName.isEmpty { lines.append("ORG:\(businessName)") }
+        lines.append("TITLE:\(profession.rawValue)")
+
+        let pEmail = personalContactSameAsStudio ? studioEmail : email
+        let pPhone = personalContactSameAsStudio ? studioPhone : phone
+
+        if !pEmail.isEmpty { lines.append("EMAIL;TYPE=INTERNET,PREF:\(pEmail)") }
+        if !pPhone.isEmpty { lines.append("TEL;TYPE=CELL,PREF:\(pPhone)") }
+
+        // Include studio contact only when it differs from personal
+        if !studioEmail.isEmpty, studioEmail != pEmail { lines.append("EMAIL;TYPE=WORK:\(studioEmail)") }
+        if !studioPhone.isEmpty, studioPhone != pPhone { lines.append("TEL;TYPE=WORK:\(studioPhone)") }
+
+        if shopAddressSummary != nil {
+            lines.append("ADR;TYPE=WORK:;;\(shopAddressLine1);\(shopCity);\(shopState);\(shopPostalCode);\(shopCountry)")
+        }
+
+        lines.append("END:VCARD")
+        return lines.joined(separator: "\r\n")
+    }
+
     init(
         firstName: String = "",
         lastName: String = "",
@@ -143,16 +180,32 @@ final class UserProfile {
     }
 }
 
+// MARK: - Profession
+
 enum Profession: String, Codable, CaseIterable {
-    case tattooer = "Tattooer"
+    case tattooer      = "Tattooer"
     case tattooRemoval = "Tattoo Removal"
-    case hairdresser = "Hairdresser"
+    case hairdresser   = "Hairdresser"
+    case jewelry       = "Jewelry"
+    case other         = "Other"
 
     var systemImage: String {
         switch self {
-        case .tattooer: "paintbrush.pointed.fill"
+        case .tattooer:      "paintbrush.pointed.fill"
         case .tattooRemoval: "eraser.fill"
-        case .hairdresser: "scissors"
+        case .hairdresser:   "scissors"
+        case .jewelry:       "sparkle"
+        case .other:         "briefcase"
         }
     }
+
+    /// Reserved for future per-profession app configuration (feature inclusion / exclusion).
+    var configuration: ProfessionConfiguration { ProfessionConfiguration() }
+}
+
+/// Placeholder for per-profession feature flags.
+/// Populate this struct as app configuration needs grow.
+struct ProfessionConfiguration {
+    // e.g. var showsFlashGallery: Bool = true
+    //      var showsTattooRemoval: Bool = false
 }

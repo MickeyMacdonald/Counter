@@ -4,7 +4,7 @@ import SwiftData
 // MARK: - Recovery Backup View (Alpha Safety Net)
 // Temporary backup/restore UI for alpha testers. Will be retired at release.
 
-struct SettingsRecoveryView: View {
+struct SettingsViewRecovery: View {
     @Environment(\.modelContext) private var modelContext
     @State private var backups: [BackupMetadata] = []
     @State private var isBackingUp = false
@@ -217,7 +217,7 @@ struct SettingsRecoveryView: View {
 
 #Preview {
     NavigationStack {
-        SettingsRecoveryView()
+        SettingsViewRecovery()
     }
     .modelContainer(PreviewContainer.shared.container)
 }

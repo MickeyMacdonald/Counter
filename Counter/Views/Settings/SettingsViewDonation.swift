@@ -3,7 +3,7 @@ import StoreKit
 
 // MARK: - Settings Donation View
 
-struct SettingsDonationView: View {
+struct SettingsViewDonation: View {
     @State private var store = DonationStore()
     @State private var activePurchase: DonationStore.ProductID?
     @State private var thankYouIDs: Set<String> = []
@@ -301,7 +301,7 @@ private struct DonationTierCard: View {
 
 #Preview {
     NavigationStack {
-        SettingsDonationView()
+        SettingsViewDonation()
     }
     .modelContainer(PreviewContainer.shared.container)
 }

@@ -81,13 +81,13 @@ struct SettingsViewEmailTemplates: View {
             }
         }
         .sheet(isPresented: $showingNewTemplate) {
-            EmailTemplateEditorView(mode: .create)
+            SettingsViewEmailTemplateEditor(mode: .create)
         }
         .sheet(item: $editingTemplate) { template in
-            EmailTemplateEditorView(mode: .edit(template))
+            SettingsViewEmailTemplateEditor(mode: .edit(template))
         }
         .sheet(item: $customizingBuiltIn) { template in
-            EmailTemplateEditorView(mode: .fromBuiltIn(template))
+            SettingsViewEmailTemplateEditor(mode: .fromBuiltIn(template))
         }
     }
 }

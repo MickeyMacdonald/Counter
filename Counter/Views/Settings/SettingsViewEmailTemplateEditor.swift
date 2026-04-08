@@ -70,7 +70,7 @@ enum TemplateToken: String, CaseIterable {
 
 // MARK: - Editor View
 
-struct EmailTemplateEditorView: View {
+struct SettingsViewEmailTemplateEditor: View {
     enum Mode {
         case create
         case edit(CustomEmailTemplate)
@@ -697,6 +697,6 @@ struct TokenChip: View {
 }
 
 #Preview {
-    EmailTemplateEditorView(mode: .create)
+    SettingsViewEmailTemplateEditor(mode: .create)
         .modelContainer(PreviewContainer.shared.container)
 }

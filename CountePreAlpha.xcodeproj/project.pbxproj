@@ -49,8 +49,7 @@
 		AA000039 /* BookingEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* BookingEditView.swift */; };
 		AA000040 /* DayBookingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* DayBookingListView.swift */; };
 		AA000041 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* SettingsView.swift */; };
-		AA000042 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000042 /* ProfileEditView.swift */; };
-		AA000043 /* AvailabilityEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* AvailabilityEditView.swift */; };
+		AA000043 /* SettingsViewAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* SettingsViewAvailability.swift */; };
 		AA000044 /* SessionDraftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000044 /* SessionDraftView.swift */; };
 		AA000045 /* FlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000045 /* FlashGalleryView.swift */; };
 		AA000046 /* InspirationGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000046 /* InspirationGalleryView.swift */; };
@@ -72,7 +71,7 @@
 		AA000062 /* BusinessLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000062 /* BusinessLockView.swift */; };
 		AA000063 /* PieceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000063 /* PieceListView.swift */; };
 		AA000064 /* CustomEmailTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000064 /* CustomEmailTemplate.swift */; };
-		AA000065 /* EmailTemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000065 /* EmailTemplateEditorView.swift */; };
+		AA000065 /* SettingsViewEmailTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000065 /* SettingsViewEmailTemplateEditor.swift */; };
 		AA000066 /* SettingsViewEmailTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsViewEmailTemplates.swift */; };
 		AA000067 /* AvailabilityOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000067 /* AvailabilityOverride.swift */; };
 		AA000068 /* SettingsViewBooking.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000068 /* SettingsViewBooking.swift */; };
@@ -85,19 +84,20 @@
 		AA000075 /* SessionsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000075 /* SessionsTabView.swift */; };
 		AA000076 /* WorksTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000076 /* WorksTabView.swift */; };
 		AA000077 /* AvailableFlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000077 /* AvailableFlashGalleryView.swift */; };
-		AA000078 /* SettingsReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000078 /* SettingsReportsView.swift */; };
+		AA000078 /* SettingsViewReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000078 /* SettingsViewReports.swift */; };
 		AA000079 /* DonationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000079 /* DonationStore.swift */; };
-		AA000080 /* SettingsDonationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000080 /* SettingsDonationView.swift */; };
+		AA000080 /* SettingsViewDonation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000080 /* SettingsViewDonation.swift */; };
 		AA000081 /* CustomGalleryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000081 /* CustomGalleryGroup.swift */; };
+		AA000091 /* CustomDiscount.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000091 /* CustomDiscount.swift */; };
 		AA000082 /* GalleryBySizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000082 /* GalleryBySizeView.swift */; };
 		AA000083 /* GalleryByCustomGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000083 /* GalleryByCustomGroupView.swift */; };
 		AA000084 /* AppNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000084 /* AppNavigationCoordinator.swift */; };
 		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
 		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
-		AA000087 /* SettingsPiecesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000087 /* SettingsPiecesView.swift */; };
+		AA000087 /* SettingsViewPieces.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000087 /* SettingsViewPieces.swift */; };
 		AA000088 /* RecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000088 /* RecoveryService.swift */; };
 		AA000089 /* RecoveryBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000089 /* RecoveryBackup.swift */; };
-		AA000090 /* SettingsRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000090 /* SettingsRecoveryView.swift */; };
+		AA000090 /* SettingsViewRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000090 /* SettingsViewRecovery.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -143,8 +143,7 @@
 		AB000039 /* BookingEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingEditView.swift; sourceTree = "<group>"; };
 		AB000040 /* DayBookingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayBookingListView.swift; sourceTree = "<group>"; };
 		AB000041 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		AB000042 /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
-		AB000043 /* AvailabilityEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityEditView.swift; sourceTree = "<group>"; };
+		AB000043 /* SettingsViewAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewAvailability.swift; sourceTree = "<group>"; };
 		AB000044 /* SessionDraftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDraftView.swift; sourceTree = "<group>"; };
 		AB000045 /* FlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashGalleryView.swift; sourceTree = "<group>"; };
 		AB000046 /* InspirationGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationGalleryView.swift; sourceTree = "<group>"; };
@@ -166,7 +165,7 @@
 		AB000062 /* BusinessLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockView.swift; sourceTree = "<group>"; };
 		AB000063 /* PieceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceListView.swift; sourceTree = "<group>"; };
 		AB000064 /* CustomEmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmailTemplate.swift; sourceTree = "<group>"; };
-		AB000065 /* EmailTemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateEditorView.swift; sourceTree = "<group>"; };
+		AB000065 /* SettingsViewEmailTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplateEditor.swift; sourceTree = "<group>"; };
 		AB000066 /* SettingsViewEmailTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplates.swift; sourceTree = "<group>"; };
 		AB000067 /* AvailabilityOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityOverride.swift; sourceTree = "<group>"; };
 		AB000068 /* SettingsViewBooking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewBooking.swift; sourceTree = "<group>"; };
@@ -179,19 +178,20 @@
 		AB000075 /* SessionsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsTabView.swift; sourceTree = "<group>"; };
 		AB000076 /* WorksTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksTabView.swift; sourceTree = "<group>"; };
 		AB000077 /* AvailableFlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableFlashGalleryView.swift; sourceTree = "<group>"; };
-		AB000078 /* SettingsReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReportsView.swift; sourceTree = "<group>"; };
+		AB000078 /* SettingsViewReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewReports.swift; sourceTree = "<group>"; };
 		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationStore.swift; sourceTree = "<group>"; };
-		AB000080 /* SettingsDonationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDonationView.swift; sourceTree = "<group>"; };
+		AB000080 /* SettingsViewDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewDonation.swift; sourceTree = "<group>"; };
 		AB000081 /* CustomGalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGalleryGroup.swift; sourceTree = "<group>"; };
+		AB000091 /* CustomDiscount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDiscount.swift; sourceTree = "<group>"; };
 		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
 		AB000083 /* GalleryByCustomGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByCustomGroupView.swift; sourceTree = "<group>"; };
 		AB000084 /* AppNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationCoordinator.swift; sourceTree = "<group>"; };
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
-		AB000087 /* SettingsPiecesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPiecesView.swift; sourceTree = "<group>"; };
+		AB000087 /* SettingsViewPieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewPieces.swift; sourceTree = "<group>"; };
 		AB000088 /* RecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryService.swift; sourceTree = "<group>"; };
 		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
-		AB000090 /* SettingsRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRecoveryView.swift; sourceTree = "<group>"; };
+		AB000090 /* SettingsViewRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewRecovery.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -259,6 +259,7 @@
 				AB000070 /* FlashPriceTier.swift */,
 				AB000073 /* SessionRateConfig.swift */,
 				AB000081 /* CustomGalleryGroup.swift */,
+				AB000091 /* CustomDiscount.swift */,
 				AB000089 /* RecoveryBackup.swift */,
 			);
 			path = Models;
@@ -369,16 +370,15 @@
 			isa = PBXGroup;
 			children = (
 				AB000041 /* SettingsView.swift */,
-				AB000042 /* ProfileEditView.swift */,
-				AB000043 /* AvailabilityEditView.swift */,
-				AB000065 /* EmailTemplateEditorView.swift */,
+				AB000043 /* SettingsViewAvailability.swift */,
+				AB000065 /* SettingsViewEmailTemplateEditor.swift */,
 				AB000068 /* SettingsViewBooking.swift */,
 				AB000066 /* SettingsViewEmailTemplates.swift */,
 				AB000074 /* SettingsViewFinancial.swift */,
-				AB000078 /* SettingsReportsView.swift */,
-				AB000087 /* SettingsPiecesView.swift */,
-				AB000080 /* SettingsDonationView.swift */,
-				AB000090 /* SettingsRecoveryView.swift */,
+				AB000078 /* SettingsViewReports.swift */,
+				AB000087 /* SettingsViewPieces.swift */,
+				AB000080 /* SettingsViewDonation.swift */,
+				AB000090 /* SettingsViewRecovery.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -566,8 +566,7 @@
 				AA000039 /* BookingEditView.swift in Sources */,
 				AA000040 /* DayBookingListView.swift in Sources */,
 				AA000041 /* SettingsView.swift in Sources */,
-				AA000042 /* ProfileEditView.swift in Sources */,
-				AA000043 /* AvailabilityEditView.swift in Sources */,
+				AA000043 /* SettingsViewAvailability.swift in Sources */,
 				AA000044 /* SessionDraftView.swift in Sources */,
 				AA000045 /* FlashGalleryView.swift in Sources */,
 				AA000046 /* InspirationGalleryView.swift in Sources */,
@@ -589,7 +588,7 @@
 				AA000062 /* BusinessLockView.swift in Sources */,
 				AA000063 /* PieceListView.swift in Sources */,
 				AA000064 /* CustomEmailTemplate.swift in Sources */,
-				AA000065 /* EmailTemplateEditorView.swift in Sources */,
+				AA000065 /* SettingsViewEmailTemplateEditor.swift in Sources */,
 				AA000066 /* SettingsViewEmailTemplates.swift in Sources */,
 				AA000067 /* AvailabilityOverride.swift in Sources */,
 				AA000068 /* SettingsViewBooking.swift in Sources */,
@@ -602,19 +601,20 @@
 				AA000075 /* SessionsTabView.swift in Sources */,
 				AA000076 /* WorksTabView.swift in Sources */,
 				AA000077 /* AvailableFlashGalleryView.swift in Sources */,
-				AA000078 /* SettingsReportsView.swift in Sources */,
+				AA000078 /* SettingsViewReports.swift in Sources */,
 				AA000079 /* DonationStore.swift in Sources */,
-				AA000080 /* SettingsDonationView.swift in Sources */,
+				AA000080 /* SettingsViewDonation.swift in Sources */,
 				AA000081 /* CustomGalleryGroup.swift in Sources */,
+				AA000091 /* CustomDiscount.swift in Sources */,
 				AA000082 /* GalleryBySizeView.swift in Sources */,
 				AA000083 /* GalleryByCustomGroupView.swift in Sources */,
 				AA000084 /* AppNavigationCoordinator.swift in Sources */,
 				AA000085 /* SessionsListView.swift in Sources */,
 				AA000086 /* SessionDetailView.swift in Sources */,
-				AA000087 /* SettingsPiecesView.swift in Sources */,
+				AA000087 /* SettingsViewPieces.swift in Sources */,
 				AA000088 /* RecoveryService.swift in Sources */,
 				AA000089 /* RecoveryBackup.swift in Sources */,
-				AA000090 /* SettingsRecoveryView.swift in Sources */,
+				AA000090 /* SettingsViewRecovery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

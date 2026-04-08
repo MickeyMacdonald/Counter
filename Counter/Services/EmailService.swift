@@ -434,7 +434,7 @@ struct EmailTemplatePickerView: View {
                 )
             }
             .sheet(item: $editingCustomTemplate) { template in
-                EmailTemplateEditorView(mode: .edit(template))
+                SettingsViewEmailTemplateEditor(mode: .edit(template))
             }
         }
     }
