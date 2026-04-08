@@ -290,6 +290,7 @@ struct SettingsAvailabilityView: View {
 
 struct SettingsClientModeView: View {
     @Environment(BusinessLockManager.self) private var lockManager
+    @Environment(AppNavigationCoordinator.self) private var coordinator
     @State private var showingSetPIN = false
     @State private var newPIN = ""
     @State private var confirmPIN = ""
@@ -338,10 +339,17 @@ struct SettingsClientModeView: View {
                         }
                     }
 
-                    Button {
-                        lockManager.lock()
+                    LabeledContent {
+                        Text("Use the Gallery tab banner to enter Client Mode.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     } label: {
-                        Label("Lock Now", systemImage: "lock.fill")
+                        Label("How to Lock", systemImage: "info.circle")
+                    }
+                    Button {
+                        coordinator.selectedTab = .gallery
+                    } label: {
+                        Label("Open Gallery to Lock", systemImage: "photo.fill.on.rectangle.fill")
                     }
                 }
             } footer: {
@@ -984,3 +992,4 @@ var noProfileView: some View {
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
 }
+

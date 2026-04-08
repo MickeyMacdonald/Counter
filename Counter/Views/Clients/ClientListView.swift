@@ -46,16 +46,6 @@ struct ClientListView: View {
             .navigationTitle("Clients")
             .searchable(text: $searchText, prompt: "Search clients...")
             .toolbar {
-                if lockManager.isEnabled && !lockManager.isLocked {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            lockManager.lock()
-                        } label: {
-                            Image(systemName: "lock.open.fill")
-                                .font(.caption)
-                        }
-                    }
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingAddClient = true
