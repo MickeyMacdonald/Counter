@@ -22,6 +22,9 @@ final class Client {
     // Profile photo stored as file path relative to app documents
     var profilePhotoPath: String?
 
+    // Communication preferences
+    var emailOptIn: Bool = true
+
     // Flash Portfolio: this client is the artist's hidden flash inventory holder
     var isFlashPortfolioClient: Bool = false
 

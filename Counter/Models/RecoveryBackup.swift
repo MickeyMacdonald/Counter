@@ -104,6 +104,7 @@ struct ClientBackup: Codable {
     let state: String
     let zipCode: String
     let profilePhotoPath: String?
+    let emailOptIn: Bool
     let isFlashPortfolioClient: Bool
     let createdAt: Date
     let updatedAt: Date

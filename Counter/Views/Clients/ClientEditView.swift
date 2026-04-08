@@ -20,6 +20,7 @@ struct ClientEditView: View {
     @State private var hasBirthdate = false
     @State private var allergyNotes = ""
     @State private var notes = ""
+    @State private var emailOptIn = true
     @State private var streetAddress = ""
     @State private var city = ""
     @State private var state = ""
@@ -58,6 +59,7 @@ struct ClientEditView: View {
                     TextField("Phone", text: $phone)
                         .textContentType(.telephoneNumber)
                         .keyboardType(.phonePad)
+                    Toggle("Email List Opt-In", isOn: $emailOptIn)
                 }
 
                 Section("Details") {
@@ -119,6 +121,7 @@ struct ClientEditView: View {
         birthdate = client.birthdate
         hasBirthdate = client.birthdate != nil
         allergyNotes = client.allergyNotes
+        emailOptIn = client.emailOptIn
         notes = client.notes
         streetAddress = client.streetAddress
         city = client.city
@@ -143,6 +146,7 @@ struct ClientEditView: View {
                 state: state.trimmed,
                 zipCode: zipCode.trimmed
             )
+            client.emailOptIn = emailOptIn
             modelContext.insert(client)
 
         case .edit(let client):
@@ -154,6 +158,7 @@ struct ClientEditView: View {
             client.birthdate = hasBirthdate ? birthdate : nil
             client.allergyNotes = allergyNotes.trimmed
             client.notes = notes.trimmed
+            client.emailOptIn = emailOptIn
             client.streetAddress = streetAddress.trimmed
             client.city = city.trimmed
             client.state = state.trimmed

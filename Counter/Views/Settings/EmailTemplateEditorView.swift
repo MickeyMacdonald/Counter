@@ -97,6 +97,15 @@ struct EmailTemplateEditorView: View {
     @State private var subjectCursor: Int?
     @State private var bodyCursor: Int?
 
+    // Send flow
+    @State private var showSendAllConfirmation = false
+    @State private var showClientPicker = false
+
+    @Query private var allClients: [Client]
+    private var optedInClients: [Client] {
+        allClients.filter { $0.emailOptIn && !$0.email.trimmingCharacters(in: .whitespaces).isEmpty && !$0.isFlashPortfolioClient }
+    }
+
     private var navigationTitle: String {
         switch mode {
         case .create:        "New Template"
@@ -108,6 +117,17 @@ struct EmailTemplateEditorView: View {
     private var saveLabel: String {
         if case .fromBuiltIn = mode { return "Save as Custom" }
         return "Save"
+    }
+
+    private var showsSendSection: Bool {
+        switch mode {
+        case .create:
+            return category == .customGeneral
+        case .edit(let template):
+            return template.category == .customGeneral || category == .customGeneral
+        case .fromBuiltIn(let template):
+            return template.id == "flash_drop"
+        }
     }
 
     private var canSave: Bool {
@@ -193,6 +213,38 @@ struct EmailTemplateEditorView: View {
                         .textCase(nil)
                     }
                 }
+
+                // MARK: Send
+                if showsSendSection {
+                    Section {
+                        Button {
+                            showClientPicker = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "person.crop.circle.badge.checkmark")
+                                Text("Send to Specific Clients")
+                            }
+                        }
+                        .disabled(!canSave || optedInClients.isEmpty)
+
+                        Button(role: .destructive) {
+                            showSendAllConfirmation = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "paperplane.fill")
+                                Text("Send to All Clients")
+                                Spacer()
+                                Text("\(optedInClients.count)")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(!canSave || optedInClients.isEmpty)
+                    } header: {
+                        Text("Send")
+                    } footer: {
+                        Text("Only clients with an email address and \"Email List Opt-In\" enabled will be included. \(optedInClients.count) client\(optedInClients.count == 1 ? "" : "s") eligible.")
+                    }
+                }
             }
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -207,6 +259,33 @@ struct EmailTemplateEditorView: View {
                 }
             }
             .onAppear { loadContent() }
+            .confirmationDialog(
+                "Send to All Clients",
+                isPresented: $showSendAllConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Send to \(optedInClients.count) Client\(optedInClients.count == 1 ? "" : "s")") {
+                    sendToClients(optedInClients)
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("This will open a mail draft to all \(optedInClients.count) opted-in client\(optedInClients.count == 1 ? "" : "s"). Clients without an email or who have not opted in will not be included.")
+            }
+            .sheet(isPresented: $showClientPicker) {
+                ClientPickerSheet(clients: optedInClients) { selected in
+                    sendToClients(selected)
+                }
+            }
+            .sheet(isPresented: $showMailComposer) {
+                EmailComposerView(
+                    recipients: mailRecipients,
+                    subject: mailSubject,
+                    body: mailBody,
+                    attachmentImages: []
+                ) { _ in
+                    showMailComposer = false
+                }
+            }
         }
     }
 
@@ -257,6 +336,93 @@ struct EmailTemplateEditorView: View {
         let index = text.index(text.startIndex, offsetBy: clamped)
         text.insert(contentsOf: token, at: index)
         cursor = clamped + token.count
+    }
+
+    @State private var mailRecipients: [String] = []
+    @State private var mailSubject: String = ""
+    @State private var mailBody: String = ""
+    @State private var showMailComposer = false
+
+    private func sendToClients(_ clients: [Client]) {
+        mailRecipients = clients.map { $0.email }
+        mailSubject = subject
+        mailBody = bodyText
+        showMailComposer = true
+    }
+}
+
+// MARK: - Client Picker Sheet
+
+private struct ClientPickerSheet: View {
+    let clients: [Client]
+    let onSend: ([Client]) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedIDs: Set<ObjectIdentifier> = []
+
+    private var selectedClients: [Client] {
+        clients.filter { selectedIDs.contains(ObjectIdentifier($0)) }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(clients, id: \.self) { client in
+                Button {
+                    let id = ObjectIdentifier(client)
+                    if selectedIDs.contains(id) {
+                        selectedIDs.remove(id)
+                    } else {
+                        selectedIDs.insert(id)
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(client.fullName)
+                                .font(.body)
+                            Text(client.email)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if selectedIDs.contains(ObjectIdentifier(client)) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.blue)
+                        } else {
+                            Image(systemName: "circle")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .tint(.primary)
+            }
+            .navigationTitle("Select Clients")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Send (\(selectedClients.count))") {
+                        dismiss()
+                        onSend(selectedClients)
+                    }
+                    .fontWeight(.semibold)
+                    .disabled(selectedClients.isEmpty)
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    HStack {
+                        Button("Select All") {
+                            selectedIDs = Set(clients.map { ObjectIdentifier($0) })
+                        }
+                        Spacer()
+                        Button("Deselect All") {
+                            selectedIDs.removeAll()
+                        }
+                    }
+                    .font(.subheadline)
+                }
+            }
+        }
     }
 }
 

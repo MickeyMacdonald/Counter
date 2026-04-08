@@ -15,7 +15,8 @@ struct EmailTemplate {
         case flash = "Flash Offering"
         case followUp = "Follow-Up"
         case appointment = "Appointment"
-        case custom = "Custom"
+        case custom = "Custom (Individual)"
+        case customGeneral = "Custom (General)"
 
         var systemImage: String {
             switch self {
@@ -25,6 +26,7 @@ struct EmailTemplate {
             case .followUp: "arrow.turn.up.right"
             case .appointment: "calendar"
             case .custom: "envelope"
+            case .customGeneral: "envelope.open.fill"
             }
         }
     }

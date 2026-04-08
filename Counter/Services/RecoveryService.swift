@@ -231,6 +231,7 @@ actor RecoveryService {
                 streetAddress: c.streetAddress, city: c.city,
                 state: c.state, zipCode: c.zipCode,
                 profilePhotoPath: c.profilePhotoPath,
+                emailOptIn: c.emailOptIn,
                 isFlashPortfolioClient: c.isFlashPortfolioClient,
                 createdAt: c.createdAt, updatedAt: c.updatedAt
             )
@@ -637,6 +638,7 @@ actor RecoveryService {
                 state: cb.state, zipCode: cb.zipCode
             )
             client.profilePhotoPath = cb.profilePhotoPath
+            client.emailOptIn = cb.emailOptIn
             client.isFlashPortfolioClient = cb.isFlashPortfolioClient
             client.createdAt = cb.createdAt
             client.updatedAt = cb.updatedAt
