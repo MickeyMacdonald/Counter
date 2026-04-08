@@ -13,16 +13,16 @@ enum TemplateToken: String, CaseIterable {
     // Piece
     case pieceName      = "{{PIECE_NAME}}"
     case piecePlacement = "{{PIECE_PLACEMENT}}"
-    case sessionDate    = "{{SESSION_DATE}}"
     // Artist
     case artistName     = "{{ARTIST_NAME}}"
     case artistSig      = "{{ARTIST_SIGNATURE}}"
-    // Images (auto-attach on send)
+    // Misc
+    case sessionDate    = "{{SESSION_DATE}}"
+    case currentYear    = "{{CURRENT_YEAR}}"
+    // Images (auto-attach on send) — kept last
     case piecePhoto         = "{{PIECE_PHOTO}}"
     case lastSessionPhoto   = "{{LAST_SESSION_PHOTO}}"
     case lastLineartPhoto   = "{{LAST_LINEART_PHOTO}}"
-    // Misc
-    case currentYear    = "{{CURRENT_YEAR}}"
 
     var label: String {
         switch self {
@@ -90,6 +90,12 @@ struct EmailTemplateEditorView: View {
 
     private enum Field { case subject, body }
     @FocusState private var focusedField: Field?
+    @State private var editingSubject = false
+    @State private var editingBody = false
+
+    // Cursor positions for insert-at-cursor
+    @State private var subjectCursor: Int?
+    @State private var bodyCursor: Int?
 
     private var navigationTitle: String {
         switch mode {
@@ -124,41 +130,68 @@ struct EmailTemplateEditorView: View {
                 }
 
                 // MARK: Subject
-                Section("Subject Line") {
-                    TextField("Email subject", text: $subject)
-                        .focused($focusedField, equals: .subject)
+                Section {
+                    if editingSubject {
+                        InlineSmartBlocksGrid { token in
+                            insertAtCursor(token.rawValue, into: &subject, cursor: &subjectCursor)
+                        }
+                        CursorTrackingTextField(text: $subject, cursorPosition: $subjectCursor, placeholder: "Email subject")
+                            .focused($focusedField, equals: .subject)
+                    } else {
+                        TokenRenderedInline(text: subject, placeholder: "Email subject")
+                    }
+                } header: {
+                    HStack {
+                        Text("Subject Line")
+                        Spacer()
+                        Button(editingSubject ? "Done" : "Edit") {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                editingSubject.toggle()
+                            }
+                            if editingSubject {
+                                editingBody = false
+                                focusedField = .subject
+                            } else {
+                                focusedField = nil
+                            }
+                        }
+                        .font(.subheadline)
+                        .textCase(nil)
+                    }
                 }
 
                 // MARK: Body
-                Section("Message Body") {
-                    TextEditor(text: $bodyText)
-                        .focused($focusedField, equals: .body)
-                        .frame(minHeight: 220)
-                        .font(.body)
-                        .dropDestination(for: String.self) { items, _ in
-                            bodyText += items.joined()
-                            return true
-                        }
-                }
-
-                // MARK: Smart Blocks
                 Section {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            ForEach(TemplateToken.allCases, id: \.rawValue) { token in
-                                TokenChip(token: token) {
-                                    insertToken(token.rawValue)
-                                }
-                                .draggable(token.rawValue)
-                            }
+                    if editingBody {
+                        InlineSmartBlocksGrid { token in
+                            insertAtCursor(token.rawValue, into: &bodyText, cursor: &bodyCursor)
                         }
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 2)
+                        CursorTrackingTextEditor(text: $bodyText, cursorPosition: $bodyCursor)
+                            .focused($focusedField, equals: .body)
+                            .frame(minHeight: 220)
+                    } else {
+                        TokenRenderedBody(text: bodyText)
+                            .frame(minHeight: 220, alignment: .topLeading)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
                     }
                 } header: {
-                    Text("Smart Blocks")
-                } footer: {
-                    Text("Tap to insert at end, or drag into the message body. Image blocks auto-attach the photo when sending.")
+                    HStack {
+                        Text("Message Body")
+                        Spacer()
+                        Button(editingBody ? "Done" : "Edit") {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                editingBody.toggle()
+                            }
+                            if editingBody {
+                                editingSubject = false
+                                focusedField = .body
+                            } else {
+                                focusedField = nil
+                            }
+                        }
+                        .font(.subheadline)
+                        .textCase(nil)
+                    }
                 }
             }
             .navigationTitle(navigationTitle)
@@ -196,14 +229,6 @@ struct EmailTemplateEditorView: View {
         }
     }
 
-    private func insertToken(_ token: String) {
-        switch focusedField {
-        case .subject:
-            subject += token
-        case .body, .none:
-            bodyText += token
-        }
-    }
 
     private func save() {
         switch mode {
@@ -225,6 +250,249 @@ struct EmailTemplateEditorView: View {
         }
         dismiss()
     }
+
+    private func insertAtCursor(_ token: String, into text: inout String, cursor: inout Int?) {
+        let pos = cursor ?? text.count
+        let clamped = min(pos, text.count)
+        let index = text.index(text.startIndex, offsetBy: clamped)
+        text.insert(contentsOf: token, at: index)
+        cursor = clamped + token.count
+    }
+}
+
+// MARK: - Cursor-Tracking UIKit Wrappers
+
+/// A `UITextField` wrapper that reports cursor position back to SwiftUI.
+private struct CursorTrackingTextField: UIViewRepresentable {
+    @Binding var text: String
+    @Binding var cursorPosition: Int?
+    var placeholder: String = ""
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIView(context: Context) -> UITextField {
+        let field = UITextField()
+        field.placeholder = placeholder
+        field.font = .preferredFont(forTextStyle: .body)
+        field.delegate = context.coordinator
+        field.addTarget(context.coordinator, action: #selector(Coordinator.textChanged(_:)), for: .editingChanged)
+        return field
+    }
+
+    func updateUIView(_ field: UITextField, context: Context) {
+        if field.text != text { field.text = text }
+        // Restore cursor after token insertion
+        if let pos = cursorPosition, let newPos = field.position(from: field.beginningOfDocument, offset: min(pos, text.count)) {
+            if field.isFirstResponder {
+                field.selectedTextRange = field.textRange(from: newPos, to: newPos)
+            }
+        }
+    }
+
+    class Coordinator: NSObject, UITextFieldDelegate {
+        var parent: CursorTrackingTextField
+        init(_ parent: CursorTrackingTextField) { self.parent = parent }
+
+        @objc func textChanged(_ field: UITextField) {
+            parent.text = field.text ?? ""
+            updateCursor(field)
+        }
+
+        func textFieldDidChangeSelection(_ textField: UITextField) {
+            updateCursor(textField)
+        }
+
+        private func updateCursor(_ field: UITextField) {
+            guard let selected = field.selectedTextRange else { return }
+            parent.cursorPosition = field.offset(from: field.beginningOfDocument, to: selected.end)
+        }
+    }
+}
+
+/// A `UITextView` wrapper that reports cursor position back to SwiftUI.
+private struct CursorTrackingTextEditor: UIViewRepresentable {
+    @Binding var text: String
+    @Binding var cursorPosition: Int?
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView()
+        view.font = .preferredFont(forTextStyle: .body)
+        view.backgroundColor = .clear
+        view.delegate = context.coordinator
+        view.textContainerInset = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
+        return view
+    }
+
+    func updateUIView(_ view: UITextView, context: Context) {
+        if view.text != text { view.text = text }
+        // Restore cursor after token insertion
+        if let pos = cursorPosition {
+            let clamped = min(pos, text.count)
+            let range = NSRange(location: clamped, length: 0)
+            if view.isFirstResponder && view.selectedRange != range {
+                view.selectedRange = range
+            }
+        }
+    }
+
+    class Coordinator: NSObject, UITextViewDelegate {
+        var parent: CursorTrackingTextEditor
+        init(_ parent: CursorTrackingTextEditor) { self.parent = parent }
+
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+            parent.cursorPosition = textView.selectedRange.location
+        }
+
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            parent.cursorPosition = textView.selectedRange.location
+        }
+    }
+}
+
+// MARK: - Inline Smart Blocks Grid (Accordion)
+
+/// 6-column grid of token chips shown inline within a section when editing.
+private struct InlineSmartBlocksGrid: View {
+    let onInsert: (TemplateToken) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Smart Blocks")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6), spacing: 8) {
+                ForEach(TemplateToken.allCases, id: \.rawValue) { token in
+                    TokenChip(token: token) {
+                        onInsert(token)
+                    }
+                }
+            }
+
+            Text("Tap a block to insert. Image blocks auto-attach when sending.")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+}
+
+// MARK: - Token Rendered Inline (Subject Line)
+
+/// Single-line rendered view for the subject field — shows tokens as inline pills.
+fileprivate struct TokenRenderedInline: View {
+    let text: String
+    var placeholder: String = ""
+
+    var body: some View {
+        if text.isEmpty {
+            Text(placeholder)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            buildText()
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func buildText() -> Text {
+        var result = Text("")
+        var remaining = text[...]
+
+        while let openRange = remaining.range(of: "{{") {
+            let before = remaining[remaining.startIndex..<openRange.lowerBound]
+            if !before.isEmpty {
+                result = result + Text(before).font(.body)
+            }
+
+            let afterOpen = remaining[openRange.upperBound...]
+            if let closeRange = afterOpen.range(of: "}}") {
+                let raw = "{{\(afterOpen[afterOpen.startIndex..<closeRange.lowerBound])}}"
+                if let token = TemplateToken(rawValue: raw) {
+                    let color: Color = token.isImageToken ? .purple : .orange
+                    result = result + Text(" \(Image(systemName: token.systemImage)) \(token.label) ")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(color)
+                } else {
+                    result = result + Text(raw).font(.body)
+                }
+                remaining = remaining[closeRange.upperBound...]
+            } else {
+                result = result + Text(remaining).font(.body)
+                remaining = remaining[remaining.endIndex...]
+            }
+        }
+
+        if !remaining.isEmpty {
+            result = result + Text(remaining).font(.body)
+        }
+        return result
+    }
+}
+
+// MARK: - Token Rendered Body
+
+/// Displays template body text with {{TOKEN}} placeholders rendered as inline colored text with icons.
+/// Uses the same Text-concatenation approach as the subject line, split by paragraphs.
+fileprivate struct TokenRenderedBody: View {
+    let text: String
+
+    var body: some View {
+        if text.isEmpty {
+            Text("Tap to start writing…")
+                .foregroundStyle(.secondary)
+                .font(.body)
+        } else {
+            VStack(alignment: .leading, spacing: 4) {
+                let paragraphs = text.components(separatedBy: "\n")
+                ForEach(Array(paragraphs.enumerated()), id: \.offset) { _, paragraph in
+                    if paragraph.isEmpty {
+                        Text(" ").font(.body) // preserve blank lines
+                    } else {
+                        buildRichText(from: paragraph)
+                    }
+                }
+            }
+        }
+    }
+
+    private func buildRichText(from line: String) -> Text {
+        var result = Text("")
+        var remaining = line[...]
+
+        while let openRange = remaining.range(of: "{{") {
+            let before = remaining[remaining.startIndex..<openRange.lowerBound]
+            if !before.isEmpty {
+                result = result + Text(before).font(.body)
+            }
+
+            let afterOpen = remaining[openRange.upperBound...]
+            if let closeRange = afterOpen.range(of: "}}") {
+                let raw = "{{\(afterOpen[afterOpen.startIndex..<closeRange.lowerBound])}}"
+                if let token = TemplateToken(rawValue: raw) {
+                    let color: Color = token.isImageToken ? .purple : .orange
+                    result = result + Text(" \(Image(systemName: token.systemImage)) \(token.label) ")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(color)
+                } else {
+                    result = result + Text(raw).font(.body)
+                }
+                remaining = remaining[closeRange.upperBound...]
+            } else {
+                result = result + Text(remaining).font(.body)
+                remaining = remaining[remaining.endIndex...]
+            }
+        }
+
+        if !remaining.isEmpty {
+            result = result + Text(remaining).font(.body)
+        }
+        return result
+    }
 }
 
 // MARK: - Token Chip
@@ -244,7 +512,8 @@ struct TokenChip: View {
                     .multilineTextAlignment(.center)
             }
             .foregroundStyle(token.isImageToken ? Color.purple : Color.orange)
-            .frame(width: 72, height: 60)
+            .frame(maxWidth: .infinity)
+            .frame(height: 60)
             .background(
                 (token.isImageToken ? Color.purple : Color.orange).opacity(0.1),
                 in: RoundedRectangle(cornerRadius: 10)

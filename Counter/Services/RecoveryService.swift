@@ -572,20 +572,21 @@ actor RecoveryService {
         }
 
         for cst in backup.customSessionTypes {
-            let obj = CustomSessionType(uuid: cst.uuid, name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
+            let obj = CustomSessionType(name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
+            obj.uuid = cst.uuid
             obj.createdAt = cst.createdAt
             context.insert(obj)
         }
 
         for cet in backup.customEmailTemplates {
-            let obj = CustomEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, categoryRaw: cet.categoryRaw)
+            let obj = CustomEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: EmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
             obj.createdAt = cet.createdAt
             obj.updatedAt = cet.updatedAt
             context.insert(obj)
         }
 
         for s in backup.availabilitySlots {
-            let obj = AvailabilitySlot(dayOfWeek: s.dayOfWeek, startTime: s.startTime, endTime: s.endTime, slotTypeRaw: s.slotTypeRaw, isFlashOnly: s.isFlashOnly)
+            let obj = AvailabilitySlot(dayOfWeek: s.dayOfWeek, startTime: s.startTime, endTime: s.endTime, slotType: AvailabilitySlot.SlotType(rawValue: s.slotTypeRaw) ?? .available, isFlashOnly: s.isFlashOnly)
             obj.isActive = s.isActive
             context.insert(obj)
         }
@@ -596,12 +597,19 @@ actor RecoveryService {
         }
 
         for src in backup.sessionRateConfigs {
-            let obj = SessionRateConfig(sessionTypeRaw: src.sessionTypeRaw, rateModeRaw: src.rateModeRaw, rateValue: src.rateValue, depositModeRaw: src.depositModeRaw, discountTypeRaw: src.discountTypeRaw, feeTypeRaw: src.feeTypeRaw, flashPricingModeRaw: src.flashPricingModeRaw)
+            let obj = SessionRateConfig(sessionTypeRaw: src.sessionTypeRaw)
+            obj.rateModeRaw = src.rateModeRaw
+            obj.rateValue = src.rateValue
+            obj.depositModeRaw = src.depositModeRaw
+            obj.discountTypeRaw = src.discountTypeRaw
+            obj.feeTypeRaw = src.feeTypeRaw
+            obj.flashPricingModeRaw = src.flashPricingModeRaw
             context.insert(obj)
         }
 
         for fpt in backup.flashPriceTiers {
-            let obj = FlashPriceTier(uuid: fpt.uuid, label: fpt.label, widthInches: fpt.widthInches, heightInches: fpt.heightInches, price: fpt.price, sortOrder: fpt.sortOrder)
+            let obj = FlashPriceTier(label: fpt.label, widthInches: fpt.widthInches, heightInches: fpt.heightInches, price: fpt.price, sortOrder: fpt.sortOrder)
+            obj.uuid = fpt.uuid
             context.insert(obj)
         }
 

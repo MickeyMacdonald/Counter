@@ -95,6 +95,9 @@
 		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
 		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
 		AA000087 /* SettingsPiecesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000087 /* SettingsPiecesView.swift */; };
+		AA000088 /* RecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000088 /* RecoveryService.swift */; };
+		AA000089 /* RecoveryBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000089 /* RecoveryBackup.swift */; };
+		AA000090 /* SettingsRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000090 /* SettingsRecoveryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -186,6 +189,9 @@
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		AB000087 /* SettingsPiecesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPiecesView.swift; sourceTree = "<group>"; };
+		AB000088 /* RecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryService.swift; sourceTree = "<group>"; };
+		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
+		AB000090 /* SettingsRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRecoveryView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -253,6 +259,7 @@
 				AB000070 /* FlashPriceTier.swift */,
 				AB000073 /* SessionRateConfig.swift */,
 				AB000081 /* CustomGalleryGroup.swift */,
+				AB000089 /* RecoveryBackup.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -317,6 +324,7 @@
 				AB000032 /* PDFReportService.swift */,
 				AB000033 /* ExportService.swift */,
 				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
+				AB000088 /* RecoveryService.swift */,
 				AB000061 /* BusinessLockManager.swift */,
 				AB000079 /* DonationStore.swift */,
 			);
@@ -370,6 +378,7 @@
 				AB000078 /* SettingsReportsView.swift */,
 				AB000087 /* SettingsPiecesView.swift */,
 				AB000080 /* SettingsDonationView.swift */,
+				AB000090 /* SettingsRecoveryView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -603,6 +612,9 @@
 				AA000085 /* SessionsListView.swift in Sources */,
 				AA000086 /* SessionDetailView.swift in Sources */,
 				AA000087 /* SettingsPiecesView.swift in Sources */,
+				AA000088 /* RecoveryService.swift in Sources */,
+				AA000089 /* RecoveryBackup.swift in Sources */,
+				AA000090 /* SettingsRecoveryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
