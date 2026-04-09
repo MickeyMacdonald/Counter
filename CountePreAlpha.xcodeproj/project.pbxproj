@@ -257,6 +257,17 @@
 			path = Tasks;
 			sourceTree = "<group>";
 		};
+		790D13462F872C9500C31CE2 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				AB000037 /* BookingCalendarView.swift */,
+				AB000038 /* BookingDetailView.swift */,
+				AB000040 /* DayBookingListView.swift */,
+				AB000039 /* BookingEditView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
 		AE000001 = {
 			isa = PBXGroup;
 			children = (
@@ -272,7 +283,6 @@
 				AE000004 /* Models */,
 				AE000005 /* Views */,
 				AE000008 /* Services */,
-				AE000009 /* Utilities */,
 				AB000020 /* Assets.xcassets */,
 				AE000011 /* Preview Content */,
 			);
@@ -320,10 +330,10 @@
 		AE000005 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				AE000014 /* Scheduling */,
 				AE000013 /* Admin */,
-				AE000016 /* Gallery */,
 				AE000020 /* Work */,
+				AE000014 /* Scheduling */,
+				AE000016 /* Gallery */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -373,19 +383,12 @@
 				AB000088 /* RecoveryService.swift */,
 				AB000061 /* BusinessLockManager.swift */,
 				AB000079 /* DonationStore.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		AE000009 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
 				AB000027 /* SignatureCaptureView.swift */,
 				AB000028 /* AgreementEditView.swift */,
 				AB000029 /* AgreementDetailView.swift */,
 				AB000062 /* BusinessLockView.swift */,
 			);
-			path = Utilities;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		AE000010 /* Products */ = {
@@ -419,13 +422,9 @@
 			isa = PBXGroup;
 			children = (
 				AB000075 /* SchedulingView.swift */,
+				790D13462F872C9500C31CE2 /* Calendar */,
 				790D13452F8721DC00C31CE2 /* Tasks */,
 				AE000019 /* Sessions */,
-				AB000037 /* BookingCalendarView.swift */,
-				AB000038 /* BookingDetailView.swift */,
-				AB000039 /* BookingEditView.swift */,
-				AB000040 /* DayBookingListView.swift */,
-				AB000047 /* AddSessionView.swift */,
 			);
 			path = Scheduling;
 			sourceTree = "<group>";
@@ -463,6 +462,7 @@
 			children = (
 				AB000085 /* SessionsListView.swift */,
 				AB000086 /* SessionDetailView.swift */,
+				AB000047 /* AddSessionView.swift */,
 			);
 			path = Sessions;
 			sourceTree = "<group>";

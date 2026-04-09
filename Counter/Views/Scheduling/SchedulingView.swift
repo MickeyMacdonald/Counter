@@ -1,12 +1,13 @@
 import SwiftUI
 import SwiftData
+//TODO: daily switch case add lines 24, 34, 42, 136. Booking Calendar needs edits
 
 // MARK: - Bookings Group (top-level picker)
 
 enum ScheduleGroup: String, CaseIterable {
     case sessions = "Sessions"
     case tasks    = "Tasks"
-    case schedule = "Schedule"
+    case calendar = "Calendar"
 }
 
 // MARK: - Bookings Sidebar Section
@@ -18,6 +19,7 @@ enum ScheduleSection: String, CaseIterable, Hashable, Identifiable {
     case list    = "Upcoming"
     case weekly  = "Weekly View"
     case monthly = "Monthly View"
+    // case daily   = "Today" TODO: repair with exhaustive switch on ln-136
 
     var id: String { rawValue }
 
@@ -27,13 +29,16 @@ enum ScheduleSection: String, CaseIterable, Hashable, Identifiable {
         case .list:    "list.bullet"
         case .weekly:  "calendar.badge.clock"
         case .monthly: "calendar"
+        // case .daily: "1.calendar" TODO: repair with exhaustive switch on ln-136
         }
     }
 
     var group: ScheduleGroup {
         switch self {
-        case .todo, .list:      .tasks
-        case .weekly, .monthly: .schedule
+        case .todo, .list:
+            return .tasks
+        case .weekly, .monthly: // TODO: daily add
+            return .calendar
         }
     }
 }
@@ -135,6 +140,7 @@ struct SchedulingView: View {
         case .list:    BookingCalendarView(embedded: true, initialMode: .list)
         case .weekly:  BookingCalendarView(embedded: true, initialMode: .week)
         case .monthly: BookingCalendarView(embedded: true, initialMode: .month)
+        // case .daily:   BookingCalendarView(embedded: true, initialMode: ) //TODO: Fix this daily by adjusting the BookingCalendarView
         }
     }
 
