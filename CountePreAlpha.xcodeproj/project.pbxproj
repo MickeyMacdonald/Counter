@@ -97,6 +97,7 @@
 		AA000081 /* CustomGalleryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000081 /* CustomGalleryGroup.swift */; };
 		AA000082 /* GalleryBySizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000082 /* GalleryBySizeView.swift */; };
 		AA000083 /* GalleryByCustomGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000083 /* GalleryByCustomGroupView.swift */; };
+		AA000092 /* GalleryByPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000092 /* GalleryByPriceView.swift */; };
 		AA000084 /* AppNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000084 /* AppNavigationCoordinator.swift */; };
 		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
 		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
@@ -198,6 +199,7 @@
 		AB000081 /* CustomGalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGalleryGroup.swift; sourceTree = "<group>"; };
 		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
 		AB000083 /* GalleryByCustomGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByCustomGroupView.swift; sourceTree = "<group>"; };
+		AB000092 /* GalleryByPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPriceView.swift; sourceTree = "<group>"; };
 		AB000084 /* AppNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationCoordinator.swift; sourceTree = "<group>"; };
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
@@ -452,6 +454,7 @@
 				AB000077 /* AvailableFlashGalleryView.swift */,
 				AB000082 /* GalleryBySizeView.swift */,
 				AB000083 /* GalleryByCustomGroupView.swift */,
+				AB000092 /* GalleryByPriceView.swift */,
 				AB000071 /* FlashPortfolioView.swift */,
 			);
 			path = Gallery;
@@ -636,6 +639,7 @@
 				AA000091 /* CustomDiscount.swift in Sources */,
 				AA000082 /* GalleryBySizeView.swift in Sources */,
 				AA000083 /* GalleryByCustomGroupView.swift in Sources */,
+				AA000092 /* GalleryByPriceView.swift in Sources */,
 				AA000084 /* AppNavigationCoordinator.swift in Sources */,
 				AA000085 /* SessionsListView.swift in Sources */,
 				AA000086 /* SessionDetailView.swift in Sources */,

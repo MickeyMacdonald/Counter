@@ -63,7 +63,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .about:          "info.circle"
         case .support:        "heart.fill"
         case .statistics:     "chart.bar.fill"
-        case .trends:         "chart.line.uptrend.xyaxis.symbolEffect(.bounce.down.byLayer, options: .nonRepeating)"
+        case .trends:         "chart.line.uptrend.xyaxis"
         case .financial:      "dollarsign.circle.fill"
         case .reports:        "doc.text.magnifyingglass"
         case .paymentHistory: "banknote"
@@ -92,11 +92,12 @@ struct SettingsView: View {
                                                              .pieces,
                                                              .clientMode,
                                                              .emailTemplates,
+                                                             .schedule,
+                                                             .rates,
                                                              .about,
                                                              .recovery,
-                                                             .rates,
                                                              .support,]
-    private static let analyticsItems: [SettingsCategory] = [.statistics]
+    private static let analyticsItems: [SettingsCategory] = [.statistics, .trends]
     private static let financialItems: [SettingsCategory] = [.financial,
                                                              .reports,
                                                             .paymentHistory]

@@ -77,7 +77,12 @@ actor RecoveryService {
         // 8. Prune old backups
         try pruneOldBackups()
 
-        // 9. Update state
+        // 9. Mirror JSON + metadata to local Documents (Files-app visible, beta safety net).
+        //    Skips image copy — images already live in Documents/CounterImages.
+        //    Runs even when iCloud is the primary destination.
+        try mirrorToLocalDocuments(backupURL: backupURL, jsonData: jsonData, metaData: metaData)
+
+        // 10. Update state
         lastBackupDate = Date()
         lastBackupError = nil
 
@@ -805,6 +810,56 @@ actor RecoveryService {
         if let v = ud.hasSeededDataV2 { defaults.set(v, forKey: "com.counter.hasSeededData.v2") }
         if let v = ud.hasSeededPayments { defaults.set(v, forKey: "com.counter.hasSeededPayments") }
         if let v = ud.hasSeededFlashPortfolio { defaults.set(v, forKey: "com.counter.hasSeededFlashPortfolio") }
+    }
+
+    // MARK: - Local Documents Mirror (Beta Safety Net)
+
+    /// Returns the local-Documents backup container, always — regardless of iCloud availability.
+    /// This folder is visible in the Files app when UIFileSharingEnabled is set in Info.plist.
+    private func localDocumentsContainerURL() throws -> URL {
+        guard let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            throw RecoveryError.serializationFailed("Could not locate local Documents directory.")
+        }
+        let url = docs.appendingPathComponent(backupFolderName)
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Copies backup.json and metadata.json into a matching folder under local Documents.
+    /// Images are deliberately excluded — they already live in Documents/CounterImages.
+    private func mirrorToLocalDocuments(backupURL: URL, jsonData: Data, metaData: Data) throws {
+        let localContainer = try localDocumentsContainerURL()
+        let folderName = backupURL.lastPathComponent
+        let mirrorURL = localContainer.appendingPathComponent(folderName)
+
+        // Skip if this is already the primary backup destination (iCloud unavailable)
+        if mirrorURL.path == backupURL.path { return }
+
+        try fileManager.createDirectory(at: mirrorURL, withIntermediateDirectories: true)
+        try jsonData.write(to: mirrorURL.appendingPathComponent("backup.json"))
+        try metaData.write(to: mirrorURL.appendingPathComponent("metadata.json"))
+
+        // Prune the local mirror to the same retention limit
+        try pruneLocalMirror(container: localContainer)
+    }
+
+    private func pruneLocalMirror(container: URL) throws {
+        let contents = try fileManager.contentsOfDirectory(
+            at: container,
+            includingPropertiesForKeys: [.isDirectoryKey, .creationDateKey],
+            options: .skipsHiddenFiles
+        )
+        let folders = try contents
+            .filter { try $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true }
+            .sorted {
+                let d0 = (try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                let d1 = (try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                return d0 > d1
+            }
+        guard folders.count > maxBackupCount else { return }
+        for folder in folders.suffix(from: maxBackupCount) {
+            try fileManager.removeItem(at: folder)
+        }
     }
 
     // MARK: - Pruning

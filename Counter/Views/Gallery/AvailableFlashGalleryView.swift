@@ -10,8 +10,11 @@ struct AvailableFlashGalleryView: View {
     )
     private var portfolioClients: [Client]
 
-    @State private var selectedPiece: Piece?
-    @State private var showManagePortfolio = false
+    @Environment(BusinessLockManager.self) private var lockManager
+
+    @State private var selectedPiece: Piece?          // admin → FlashSelectSheet
+    @State private var pendingClientPiece: Piece?      // client → confirmation dialog
+    @State private var confirmedClientPiece: Piece?    // client → booking sheet
 
     private let columns = [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 12)]
 
@@ -26,33 +29,54 @@ struct AvailableFlashGalleryView: View {
                     Label("No Flash Available", systemImage: "bolt.slash.fill")
                 } description: {
                     Text("Add flash designs to your portfolio to see them here.")
-                } actions: {
-                    Button("Manage Portfolio") { showManagePortfolio = true }
-                        .buttonStyle(.borderedProminent)
                 }
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(flashPieces) { piece in
                             FlashAvailableCell(piece: piece)
-                                .onTapGesture { selectedPiece = piece }
+                                .onTapGesture {
+                                    if lockManager.isLocked {
+                                        pendingClientPiece = piece
+                                    } else {
+                                        selectedPiece = piece
+                                    }
+                                }
                         }
                     }
                     .padding(14)
                 }
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Manage") { showManagePortfolio = true }
-                    .font(.subheadline)
-            }
-        }
-        .sheet(isPresented: $showManagePortfolio) {
-            FlashPortfolioView()
-        }
+        // Admin sheet — full detail + booking via AddSessionView
         .sheet(item: $selectedPiece) { piece in
             FlashSelectSheet(piece: piece)
+        }
+        // Client confirmation dialog
+        .confirmationDialog(
+            pendingClientPiece.map { "Book \"\($0.title)\"" } ?? "Book This Design",
+            isPresented: Binding(get: { pendingClientPiece != nil }, set: { if !$0 { pendingClientPiece = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("Confirm") {
+                confirmedClientPiece = pendingClientPiece
+                pendingClientPiece = nil
+            }
+            if let piece = pendingClientPiece, let price = piece.flatRate {
+                Button(price.currencyFormatted, role: .none) {
+                    confirmedClientPiece = pendingClientPiece
+                    pendingClientPiece = nil
+                }
+            }
+            Button("Cancel", role: .cancel) { pendingClientPiece = nil }
+        } message: {
+            if let piece = pendingClientPiece {
+                Text(piece.flatRate.map { "Price: \($0.currencyFormatted)" } ?? piece.title)
+            }
+        }
+        // Client booking sheet
+        .sheet(item: $confirmedClientPiece) { piece in
+            ClientFlashBookingSheet(piece: piece)
         }
     }
 }
@@ -102,10 +126,7 @@ private struct FlashAvailableCell: View {
     }
 
     private var priceText: String? {
-        if let flat = piece.flatRate {
-            return flat.currencyFormatted
-        }
-        return nil
+        piece.flatRate.map { $0.currencyFormatted }
     }
 
     private func loadThumbnail() async {
@@ -119,7 +140,7 @@ private struct FlashAvailableCell: View {
     }
 }
 
-// MARK: - Flash Select Sheet
+// MARK: - Flash Select Sheet (Admin)
 
 struct FlashSelectSheet: View {
     let piece: Piece
@@ -186,7 +207,6 @@ struct FlashSelectSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
 
-                    // Book button
                     Button {
                         showBooking = true
                     } label: {
@@ -218,5 +238,86 @@ struct FlashSelectSheet: View {
         guard let path = piece.primaryImagePath,
               let img = await ImageStorageService.shared.loadImage(relativePath: path) else { return }
         await MainActor.run { self.thumbnail = img }
+    }
+}
+
+// MARK: - Client Flash Booking Sheet
+
+struct ClientFlashBookingSheet: View {
+    let piece: Piece
+
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @Query(sort: \Client.lastName) private var allClients: [Client]
+
+    @State private var selectedClient: Client?
+    @State private var bookingDate = Date()
+    @State private var showReturnToArtist = false
+
+    private var regularClients: [Client] {
+        allClients.filter { !$0.isFlashPortfolioClient }
+    }
+
+    private var priceText: String {
+        piece.flatRate.map { $0.currencyFormatted } ?? "Price TBD"
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    LabeledContent("Design", value: piece.title)
+                    LabeledContent("Price", value: priceText)
+                }
+
+                Section("Appointment") {
+                    DatePicker(
+                        "Date & Time",
+                        selection: $bookingDate,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                }
+
+                Section("Client") {
+                    Picker("Select Client", selection: $selectedClient) {
+                        Text("Unassigned").tag(Client?.none)
+                        ForEach(regularClients) { client in
+                            Text(client.fullName).tag(Client?.some(client))
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Book Flash Design")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Request") { createBooking() }
+                }
+            }
+            .alert("Booking Requested!", isPresented: $showReturnToArtist) {
+                Button("Done") { dismiss() }
+            } message: {
+                Text("Please return the device to your artist to confirm the appointment.")
+            }
+        }
+    }
+
+    private func createBooking() {
+        let end = Calendar.current.date(byAdding: .hour, value: 1, to: bookingDate) ?? bookingDate
+        let booking = Booking(
+            date: bookingDate,
+            startTime: bookingDate,
+            endTime: end,
+            status: .requested,
+            bookingType: .flashPickup,
+            notes: "Flash booking requested via client gallery.",
+            client: selectedClient,
+            piece: piece
+        )
+        modelContext.insert(booking)
+        showReturnToArtist = true
     }
 }

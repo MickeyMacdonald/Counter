@@ -18,12 +18,15 @@ struct SettingsViewRecovery: View {
     @State private var showRestoreSuccess = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showWipeConfirm = false
+    @State private var isReseeding = false
 
     var body: some View {
         List {
             statusSection
             backupSection
             backupsListSection
+            developerSection
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Recovery")
@@ -166,6 +169,37 @@ struct SettingsViewRecovery: View {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
+    }
+
+    // MARK: - Developer Section
+
+    private var developerSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showWipeConfirm = true
+            } label: {
+                HStack {
+                    Label("Reset to Test Data", systemImage: "arrow.counterclockwise.circle.fill")
+                    Spacer()
+                    if isReseeding { ProgressView() }
+                }
+            }
+            .disabled(isReseeding || isBackingUp || isRestoring)
+            .alert("Reset to Test Data?", isPresented: $showWipeConfirm) {
+                Button("Cancel", role: .cancel) { }
+                Button("Wipe & Reseed", role: .destructive) {
+                    isReseeding = true
+                    SeedDataService.wipeAndReseed(context: modelContext)
+                    isReseeding = false
+                }
+            } message: {
+                Text("This will permanently delete ALL current data and replace it with 20 sample clients across 8 months of history. This cannot be undone.")
+            }
+        } header: {
+            Text("Developer")
+        } footer: {
+            Text("Wipes the store completely and populates it with rich test data spanning multiple months, payment scenarios, and piece statuses.")
         }
     }
 

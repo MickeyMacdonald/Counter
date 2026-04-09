@@ -337,13 +337,13 @@ struct SettingsStatisticsView: View {
 
 // MARK: - Chart Data Types
 
-private struct ChartPoint: Identifiable {
+struct ChartPoint: Identifiable {
     let id = UUID()
     let date: Date
     let value: Double
 }
 
-private extension Calendar {
+extension Calendar {
     func startOfMonth(for date: Date) -> Date {
         let comps = dateComponents([.year, .month], from: date)
         return self.date(from: comps) ?? date
@@ -354,7 +354,7 @@ private extension Calendar {
 
 import Charts
 
-private struct StatChartView: View {
+struct StatChartView: View {
     let data: [ChartPoint]
     let color: Color
     var yLabel: String = ""
@@ -451,7 +451,7 @@ private struct StatChartView: View {
 
 // MARK: - Stat Sub-views
 
-private struct StatSection<Content: View>: View {
+struct StatSection<Content: View>: View {
     let title: String
     let systemImage: String
     @ViewBuilder let content: Content
@@ -472,7 +472,7 @@ private struct StatSection<Content: View>: View {
     }
 }
 
-private struct StatGrid<Content: View>: View {
+struct StatGrid<Content: View>: View {
     @ViewBuilder let content: Content
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 0) {
@@ -482,7 +482,7 @@ private struct StatGrid<Content: View>: View {
     }
 }
 
-private struct StatCard: View {
+struct StatCard: View {
     let value: String
     let label: String
 
@@ -502,7 +502,7 @@ private struct StatCard: View {
     }
 }
 
-private struct StatusBreakdownRow: View {
+struct StatusBreakdownRow: View {
     let items: [(label: String, count: Int, color: Color)]
 
     var body: some View {
@@ -527,7 +527,7 @@ private struct StatusBreakdownRow: View {
     }
 }
 
-private struct RatingDistributionBars: View {
+struct RatingDistributionBars: View {
     let distribution: [(label: String, count: Int)]
 
     private var maxCount: Int { distribution.map(\.count).max() ?? 1 }
@@ -565,7 +565,7 @@ private struct RatingDistributionBars: View {
     }
 }
 
-private struct BreakdownPillRow: View {
+struct BreakdownPillRow: View {
     let items: [(label: String, count: Int)]
 
     var body: some View {
