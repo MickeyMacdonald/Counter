@@ -11,7 +11,7 @@ struct SettingsViewFinancial: View {
             FinancialContent(profile: profile)
         } else {
             noProfileView
-                .navigationTitle("Financial")
+                .navigationTitle("Rates")
         }
     }
 }

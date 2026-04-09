@@ -3,17 +3,17 @@ import SwiftData
 
 // MARK: - Bookings Group (top-level picker)
 
-enum BookingsGroup: String, CaseIterable {
+enum ScheduleGroup: String, CaseIterable {
     case sessions = "Sessions"
     case tasks    = "Tasks"
     case schedule = "Schedule"
 }
 
 // MARK: - Bookings Sidebar Section
-// Used only for the Tasks and Schedule groups.
+// Used only for the Tasks, Scheduling and Sessions. Calendar functionality
 // The Sessions group renders its own item list directly in the sidebar.
 
-enum BookingsSection: String, CaseIterable, Hashable, Identifiable {
+enum ScheduleSection: String, CaseIterable, Hashable, Identifiable {
     case todo    = "To Do"
     case list    = "Upcoming"
     case weekly  = "Weekly View"
@@ -30,7 +30,7 @@ enum BookingsSection: String, CaseIterable, Hashable, Identifiable {
         }
     }
 
-    var group: BookingsGroup {
+    var group: ScheduleGroup {
         switch self {
         case .todo, .list:      .tasks
         case .weekly, .monthly: .schedule
@@ -38,18 +38,18 @@ enum BookingsSection: String, CaseIterable, Hashable, Identifiable {
     }
 }
 
-// MARK: - Bookings Tab
+// MARK: - Scheduling Tab
 
-struct SessionsTabView: View {
+struct SchedulingView: View {
     @Environment(AppNavigationCoordinator.self) private var coordinator
 
-    @State private var group: BookingsGroup            = .tasks
-    @State private var selectedSection: BookingsSection? = .list
+    @State private var group: ScheduleGroup            = .tasks
+    @State private var selectedSection: ScheduleSection? = .list
     @State private var selectedSession: TattooSession?   = nil
     @State private var searchText = ""
 
-    private var visibleSections: [BookingsSection] {
-        let base = BookingsSection.allCases.filter { $0.group == group }
+    private var visibleSections: [ScheduleSection] {
+        let base = ScheduleSection.allCases.filter { $0.group == group }
         guard !searchText.isEmpty else { return base }
         return base.filter { $0.rawValue.localizedCaseInsensitiveContains(searchText) }
     }
@@ -61,7 +61,7 @@ struct SessionsTabView: View {
                 Divider()
 
                 Picker("Group", selection: $group) {
-                    ForEach(BookingsGroup.allCases, id: \.self) { g in
+                    ForEach(ScheduleGroup.allCases, id: \.self) { g in
                         Text(g.rawValue).tag(g)
                     }
                 }
@@ -87,11 +87,11 @@ struct SessionsTabView: View {
                 Divider()
                 SidebarSearchField(
                     text: $searchText,
-                    prompt: group == .sessions ? "Search sessions…" : "Search…"
+                    prompt: "Search…"
                 )
             }
-            .toolbarBackground(AppTab.sessions.sidebarTint.opacity(0.55), for: .navigationBar)
-            .navigationTitle("Bookings")
+            .toolbarBackground(AppTab.schedule.sidebarTint.opacity(0.55), for: .navigationBar)
+            .navigationTitle("Schedule")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
             NavigationStack {
@@ -129,7 +129,7 @@ struct SessionsTabView: View {
     // MARK: - Detail view dispatcher (Tasks / Schedule)
 
     @ViewBuilder
-    private func detailView(for section: BookingsSection) -> some View {
+    private func detailView(for section: ScheduleSection) -> some View {
         switch section {
         case .todo:    ToDoView(embedded: true)
         case .list:    BookingCalendarView(embedded: true, initialMode: .list)
@@ -150,11 +150,4 @@ struct SessionsTabView: View {
         // and its `selectedSession = nil` reset doesn't overwrite our value.
         Task { @MainActor in selectedSession = session }
     }
-}
-
-#Preview {
-    SessionsTabView()
-        .modelContainer(PreviewContainer.shared.container)
-        .environment(BusinessLockManager())
-        .environment(AppNavigationCoordinator())
 }

@@ -46,7 +46,7 @@ final class AppNavigationCoordinator {
 
     /// Navigate to a session in the Bookings → Sessions list (switches tab).
     func navigateToSession(_ session: TattooSession) {
-        selectedTab = .sessions
+        selectedTab = .schedule
         // Delay one run-loop so SessionsTabView has appeared before consuming.
         Task { @MainActor in
             self.pendingSession = session

@@ -3,16 +3,16 @@ import SwiftData
 
 // MARK: - Works Section
 
-enum WorksSection: String, CaseIterable {
+enum WorkSection: String, CaseIterable {
     case clients = "Clients"
     case pieces  = "Pieces"
 }
 
 // MARK: - Works Tab
 
-struct WorksTabView: View {
+struct WorkView: View {
     @Environment(AppNavigationCoordinator.self) private var coordinator
-    @State private var section: WorksSection = .clients
+    @State private var section: WorkSection = .clients
     @State private var selectedClient: Client?
     @State private var selectedPiece: Piece?
     @State private var searchText = ""
@@ -23,7 +23,7 @@ struct WorksTabView: View {
                 AppTabSwitcher()
                 Divider()
                 Picker("Section", selection: $section) {
-                    ForEach(WorksSection.allCases, id: \.self) { s in
+                    ForEach(WorkSection.allCases, id: \.self) { s in
                         Text(s.rawValue).tag(s)
                     }
                 }
@@ -44,7 +44,7 @@ struct WorksTabView: View {
                 )
             }
             .toolbarBackground(AppTab.works.sidebarTint.opacity(0.55), for: .navigationBar)
-            .navigationTitle("Works")
+            .navigationTitle("Work")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
             switch section {
@@ -303,7 +303,7 @@ private struct WorksPiecesList: View {
 }
 
 #Preview {
-    WorksTabView()
+    WorkView()
         .modelContainer(PreviewContainer.shared.container)
         .environment(BusinessLockManager())
         .environment(AppNavigationCoordinator())
