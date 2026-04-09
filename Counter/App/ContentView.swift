@@ -25,7 +25,7 @@ struct ContentView: View {
                     switch coordinator.selectedTab {
                         case .settings:
                             SettingsView()
-                        case .works:
+                        case .work:
                             WorkView()
                         case .schedule:
                             SchedulingView()
@@ -63,14 +63,14 @@ struct ContentView: View {
 
 enum AppTab: String, CaseIterable {
     case settings
-    case works
+    case work
     case schedule
     case gallery
 
     var label: String {
         switch self {
         case .settings: "Admin"
-        case .works:    "Work"
+        case .work:    "Work"
         case .schedule: "Schedule"
         case .gallery:  "Gallery"
         }
@@ -79,7 +79,7 @@ enum AppTab: String, CaseIterable {
     var systemImage: String {
         switch self {
         case .settings: "gearshape.fill"
-        case .works:    "paintbrush.pointed.fill"
+        case .work:    "paintbrush.pointed.fill"
         case .gallery:  "photo.fill"
         case .schedule: "book.fill"
         }
@@ -87,10 +87,10 @@ enum AppTab: String, CaseIterable {
 
     var sidebarTint: Color {
         switch self {
-        case .settings: Color(hue: 0.615, saturation: 0.30, brightness: 0.68)
-        case .works:    Color(hue: 0.610, saturation: 0.22, brightness: 0.80)
-        case .schedule: Color(hue: 0.600, saturation: 0.14, brightness: 0.90)
-        case .gallery:  Color(hue: 0.590, saturation: 0.08, brightness: 0.97)
+        case .settings  : Color(hue: 0.00, saturation: 0.00, brightness: 0.92) // K (neutral gray)
+        case .work      : Color(hue: 0.50, saturation: 0.16, brightness: 0.90) // C (~180°)
+        case .schedule  : Color(hue: 0.83, saturation: 0.14, brightness: 0.92) // M (~300°)
+        case .gallery   : Color(hue: 0.17, saturation: 0.18, brightness: 0.94) // Y (~60°)
         }
     }
 }

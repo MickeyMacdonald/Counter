@@ -43,7 +43,7 @@ struct WorkView: View {
                     prompt: section == .clients ? "Search clients..." : "Search pieces..."
                 )
             }
-            .toolbarBackground(AppTab.works.sidebarTint.opacity(0.55), for: .navigationBar)
+            .toolbarBackground(AppTab.work.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Work")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {

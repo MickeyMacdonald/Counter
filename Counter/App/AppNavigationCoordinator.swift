@@ -9,13 +9,9 @@ import Observation
 /// `.onAppear` / `.onChange`.
 @Observable
 final class AppNavigationCoordinator {
-
-    // MARK: - Global tab
-
-    var selectedTab: AppTab = .works
+    var selectedTab: AppTab = .work
 
     // MARK: - Works deep-link
-
     /// When non-nil, `WorksTabView` should switch to the Clients section
     /// and select this client in the sidebar.
     var pendingClient: Client?
@@ -34,13 +30,13 @@ final class AppNavigationCoordinator {
 
     /// Navigate to a client in the Works sidebar (switches tab if needed).
     func navigateToClient(_ client: Client) {
-        selectedTab   = .works
+        selectedTab   = .work
         pendingClient = client
     }
 
     /// Navigate to a piece in the Works sidebar (switches tab if needed).
     func navigateToPiece(_ piece: Piece) {
-        selectedTab  = .works
+        selectedTab  = .work
         pendingPiece = piece
     }
 
