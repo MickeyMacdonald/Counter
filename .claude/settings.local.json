@@ -17,7 +17,8 @@
       "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" api repos/MickeyMacdonald/Counter/pages)",
       "Bash(\"/c/Program Files/GitHub:*)",
       "Bash(grep -v \"//\")",
-      "Bash(grep -n \"class\\\\|struct\" /c/Users/Mickey/iCloudDrive/Documents/Code/Counter/Counter/Models/*.swift)"
+      "Bash(grep -n \"class\\\\|struct\" /c/Users/Mickey/iCloudDrive/Documents/Code/Counter/Counter/Models/*.swift)",
+      "Bash(git status:*)"
     ]
   }
 }

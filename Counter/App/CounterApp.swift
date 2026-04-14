@@ -24,11 +24,13 @@ struct CounterApp: App {
 
     init() {
         do {
-            // V1 is a no-op wrapper around the existing 18-model schema.
-            // It exists so future schema changes can ship as
-            // `MigrationStage`s in `CounterMigrationPlan` instead of
-            // relying on SwiftData's silent lightweight migration.
-            let schema = Schema(versionedSchema: CounterSchemaV1.self)
+            // V2 adds `CustomDiscount` to the schema. The V1 → V2 jump
+            // is a lightweight migration declared in
+            // `CounterMigrationPlan`. For users on V1, SwiftData will
+            // create the new `CustomDiscount` table on first launch
+            // and leave every other row untouched. For fresh
+            // installs, V2 is the starting schema.
+            let schema = Schema(versionedSchema: CounterSchemaV2.self)
             let config = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false

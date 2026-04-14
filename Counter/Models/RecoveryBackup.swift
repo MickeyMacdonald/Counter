@@ -28,6 +28,18 @@ struct RecoveryBackup: Codable {
     let flashPriceTiers: [FlashPriceTierBackup]
     let customGalleryGroups: [CustomGalleryGroupBackup]
 
+    /// Added in the V2 schema slice (0.8.x). Optional so that backups
+    /// written by pre-V2 builds still decode into the current
+    /// `RecoveryBackup` shape — the field is simply absent in the
+    /// JSON and will be `nil` after decoding. New backups always write
+    /// a (possibly empty) array.
+    ///
+    /// Keep this field optional even after V2 has been live for a
+    /// while. The `RecoveryBackup.currentVersion` bump that would let
+    /// us require it is gated on the "forward migration of backups"
+    /// task in pillar 1, which has not landed yet.
+    let customDiscounts: [CustomDiscountBackup]?
+
     let userDefaults: UserDefaultsBackup
 
     static let currentVersion = 1
@@ -368,4 +380,11 @@ struct CustomGalleryGroupBackup: Codable {
     let tags: [String]
     let sortIndex: Int
     let createdAt: Date
+}
+
+struct CustomDiscountBackup: Codable {
+    let backupID: UUID
+    let name: String
+    let percentage: Decimal
+    let sortOrder: Int
 }

@@ -340,6 +340,7 @@ actor RecoveryService {
         let sessionRateConfigs = try context.fetch(FetchDescriptor<SessionRateConfig>())
         let flashPriceTiers = try context.fetch(FetchDescriptor<FlashPriceTier>())
         let customGalleryGroups = try context.fetch(FetchDescriptor<CustomGalleryGroup>())
+        let customDiscounts = try context.fetch(FetchDescriptor<CustomDiscount>())
 
         // Build ID lookup tables: object identity → UUID
         var clientIDs: [ObjectIdentifier: UUID] = [:]
@@ -575,6 +576,15 @@ actor RecoveryService {
             )
         }
 
+        let cdBackups = customDiscounts.map { cd in
+            CustomDiscountBackup(
+                backupID: UUID(),
+                name: cd.name,
+                percentage: cd.percentage,
+                sortOrder: cd.sortOrder
+            )
+        }
+
         // UserDefaults snapshot
         let defaults = UserDefaults.standard
         let udBackup = UserDefaultsBackup(
@@ -601,6 +611,7 @@ actor RecoveryService {
             customEmailTemplates: cetBackups, availabilitySlots: slotBackups,
             availabilityOverrides: overrideBackups, sessionRateConfigs: srcBackups,
             flashPriceTiers: fptBackups, customGalleryGroups: cggBackups,
+            customDiscounts: cdBackups,
             userDefaults: udBackup
         )
     }
@@ -660,6 +671,7 @@ actor RecoveryService {
         try context.delete(model: SessionRateConfig.self)
         try context.delete(model: FlashPriceTier.self)
         try context.delete(model: CustomGalleryGroup.self)
+        try context.delete(model: CustomDiscount.self)
     }
 
     // MARK: - Restore: Deserialize & Insert
@@ -750,6 +762,19 @@ actor RecoveryService {
         for cgg in backup.customGalleryGroups {
             let obj = CustomGalleryGroup(name: cgg.name, tags: cgg.tags, sortIndex: cgg.sortIndex)
             obj.createdAt = cgg.createdAt
+            context.insert(obj)
+        }
+
+        // CustomDiscounts: optional field on the backup struct so that
+        // pre-V2 backups (which don't carry this array at all) decode
+        // cleanly. `nil` here means "the backup file predates V2", not
+        // "the user had zero discounts".
+        for cd in backup.customDiscounts ?? [] {
+            let obj = CustomDiscount(
+                name: cd.name,
+                percentage: cd.percentage,
+                sortOrder: cd.sortOrder
+            )
             context.insert(obj)
         }
 
@@ -1138,7 +1163,8 @@ actor RecoveryService {
         backup.customSessionTypes.count + backup.customEmailTemplates.count +
         backup.availabilitySlots.count + backup.availabilityOverrides.count +
         backup.sessionRateConfigs.count + backup.flashPriceTiers.count +
-        backup.customGalleryGroups.count
+        backup.customGalleryGroups.count +
+        (backup.customDiscounts?.count ?? 0)
     }
 
     private func directorySize(at url: URL) -> UInt64 {

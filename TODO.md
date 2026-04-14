@@ -14,12 +14,12 @@ Last updated: 2026-04-14
 
 ### `[v0.8.x]` Foundation — schema versioning + recovery mode
 
-- [x] **`CounterSchemaV1`** — wrap the current 18-model schema in a `VersionedSchema`, even though it hasn't structurally changed yet. This is the seam every future migration plugs into. *(`Counter/Migrations/CounterSchemaV1.swift`)*
-- [x] **`CounterMigrationPlan`** — a `SchemaMigrationPlan` with `V1` as the only stage, ready to accept `V2` later. *(`Counter/Migrations/CounterMigrationPlan.swift`)*
+- [x] **`CounterSchemaV1`** — wrap the current 18-model schema in a `VersionedSchema`, even though it hasn't structurally changed yet. This is the seam every future migration plugs into. *(`Counter/Services/CounterSchemaV1.swift`)*
+- [x] **`CounterMigrationPlan`** — a `SchemaMigrationPlan` with `V1` as the only stage, ready to accept `V2` later. *(`Counter/Services/CounterMigrationPlan.swift`)*
 - [x] **Recovery Mode launch path** — `CounterApp.swift` no longer calls `fatalError` when the `ModelContainer` can't open. Route the user to a minimal screen that can read the recovery folder, view backup metadata, and trigger a reset. *(`Counter/App/RecoveryModeView.swift`; `LaunchState` enum in `CounterApp.swift`)*
 - [ ] **Force-trigger test** — deliberately break the store on a test build, verify the launch routes to recovery mode and the user can restore from a backup without losing data.
-- [ ] **Add new files to Xcode target** — `CounterSchemaV1.swift`, `CounterMigrationPlan.swift`, `RecoveryModeView.swift` need to be added to the `Counter` app target in Xcode (Windows-side edits don't update `project.pbxproj`).
-- [ ] **Register `CustomDiscount` model** — `CustomDiscount.swift` exists under `Counter/Models/` but was never registered in the schema. Adding it is itself a schema change, so it must land as the first `V1 → V2` migration, not as a silent edit to V1.
+- [ ] **Add new files to Xcode target** — `Counter/Services/CounterSchemaV1.swift`, `Counter/Services/CounterSchemaV2.swift`, `Counter/Services/CounterMigrationPlan.swift`, `Counter/App/RecoveryModeView.swift` need to be added to the `Counter` app target in Xcode (Windows-side edits don't update `project.pbxproj`).
+- [x] **Register `CustomDiscount` model** — landed as the first `V1 → V2` migration. `Counter/Services/CounterSchemaV2.swift` adds it; `Counter/Services/CounterMigrationPlan.swift` declares the lightweight stage; `RecoveryBackup.swift` learned a new `CustomDiscountBackup` and an optional `customDiscounts` field for backwards compat with pre-V2 backup files.
 
 ### `[v0.9.0]` Pillar 1 — Migration Safety
 
@@ -141,3 +141,4 @@ Last updated: 2026-04-14
 - [x] **Schema versioning + recovery launch path** — `CounterSchemaV1`, `CounterMigrationPlan`, `RecoveryModeView`, and `LaunchState` routing in `CounterApp.swift` (2026-04-14)
 - [x] **Pillar 2 — Backup Hardening** — checksums, pre-restore snapshots, empty-restore guard, image-count verification, image-embedded local mirror, kind-aware retention, SettingsViewRecovery split (2026-04-14)
 - [x] **Backup `appVersion` reads from `Bundle.main`** — replaces hardcoded `"Pre-Alpha 0.2"` literal in `RecoveryService.swift` (2026-04-14)
+- [x] **`CounterSchemaV2` + V1 → V2 lightweight migration** — formally adds `CustomDiscount` to the schema; backup format extended with optional `customDiscounts` field for backwards compat (2026-04-14)

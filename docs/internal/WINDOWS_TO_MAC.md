@@ -1,7 +1,7 @@
 ---
 title: Windows → Mac Hand-off
 status: LIVE — update on every PC workspace session
-last_updated: 2026-04-14 (pillar 2 slice)
+last_updated: 2026-04-14 (V2 schema slice)
 ---
 
 # Windows → Mac Hand-off
@@ -19,6 +19,55 @@ last_updated: 2026-04-14 (pillar 2 slice)
 ---
 
 ## Pending
+
+### 2026-04-14 · CounterSchemaV2 — formalize CustomDiscount
+
+> **Read this first.** This is the first migration that will actually run on a real device with real data. If it goes wrong, the failure mode is "user opens Counter and gets an error" — which is exactly what `RecoveryModeView` was built for, but it's still a moment that needs a careful walk-through. Do NOT install this build over a populated production-ish store until the smoke tests below have passed on a throwaway store.
+
+**Files added from PC (need to be added to the Xcode `Counter` target):**
+
+- `Counter/Services/CounterSchemaV2.swift`
+
+**Files modified from PC (already on disk, no Xcode action needed beyond a build):**
+
+- `Counter/Services/CounterMigrationPlan.swift` — appended `CounterSchemaV2.self` to `schemas` and added a `.lightweight(fromVersion: V1, toVersion: V2)` stage. Long comment at the top of the file explains why this stage does NOT use the willMigrate auto-backup hook (additive-only, no transformation, no half-migrated state possible) and includes a commented template for the next stage that absolutely WILL need it.
+- `Counter/App/CounterApp.swift` — `Schema(versionedSchema: CounterSchemaV1.self)` → `Schema(versionedSchema: CounterSchemaV2.self)`. The migration plan is unchanged from the previous slice; SwiftData walks the stages array to get from whatever's on disk up to V2.
+- `Counter/Models/RecoveryBackup.swift` — added `CustomDiscountBackup` struct and an **optional** `customDiscounts: [CustomDiscountBackup]?` field on `RecoveryBackup`. Optional is load-bearing: pre-V2 backup files don't have this field at all, and bumping `RecoveryBackup.currentVersion` would break their decode (forward migration of backups is still a pillar 1 task).
+- `Counter/Services/RecoveryService.swift` — `serializeAllModels` now fetches `CustomDiscount` records and emits a `cdBackups` array; the `RecoveryBackup` constructor passes them through; `deserializeAndInsert` has a new loop that treats `nil` as `[]` (legacy backup) and inserts each discount; `wipeAllData` deletes `CustomDiscount.self` last; `totalModelCount` includes `customDiscounts?.count ?? 0`.
+
+**Important context on what was happening before V2:**
+
+`SettingsViewFinancial.swift:101` was already inserting `CustomDiscount` records via `modelContext.insert(...)` and querying them via `@Query(sort: \CustomDiscount.sortOrder)`. Pre-V2, `CustomDiscount` was NOT in the schema. The exact behavior of SwiftData when you `insert` an unregistered `@Model` is undefined — it may have been silently ephemeral, may have crashed in a way the user never reported, or may have been quietly persisted to a side-table. **Whatever the previous behavior was, V2 makes it official.** If a user had any custom discounts that were somehow persisted under V1, they'll either show up in V2 untouched (if SwiftData was persisting them all along) or appear gone (if they were ephemeral). There's no clean way to recover from the latter case from the PC side; the user can re-create them in Settings → Financial. Worth mentioning if any beta tester reports "my discounts are gone" — that's the diagnosis.
+
+**Mac-side actions, in order:**
+
+- [ ] **Add `Counter/Services/CounterSchemaV2.swift` to the `Counter` target** in Xcode. The migration files live alongside the other services now (no separate `Migrations/` group) — drag it into the `Services` group and confirm the `Counter` target checkbox is on.
+- [ ] **Build.** Friction points to watch for:
+  - `CounterSchemaV2.models` lists 19 entries. Compare against `CounterSchemaV1.models` — they should be identical except for `CustomDiscount.self` at the end. If they've drifted (e.g. someone added another model since), V2 must include the drift too, otherwise the migration loses data on the new entity.
+  - `CustomDiscount`'s init has all-defaulted parameters. The `deserializeAndInsert` call uses named args (`name:percentage:sortOrder:`) which match the init signature exactly — should compile clean.
+  - `RecoveryBackup` constructor in `RecoveryService.swift:performBackupInternal` now passes `customDiscounts: cdBackups` as a named arg — make sure the trailing comma placement didn't get mangled by my edit.
+- [ ] **Smoke test #1 — fresh install, V2 from scratch.** Wipe the simulator/device, install the build, walk through onboarding, create a custom discount in Settings → Financial. Take a manual backup. Inspect `Counter Recovery/counter_recovery_*/backup.json` and confirm there's a `customDiscounts` array with one entry. This proves the V2-native happy path.
+- [ ] **Smoke test #2 — upgrade from V1.** This is the load-bearing test. Steps:
+  1. Check out the previous build (the one with `Schema(versionedSchema: CounterSchemaV1.self)` in `CounterApp.swift`), build, install, populate with seed data + a few real records.
+  2. Without wiping, install the new V2 build over top.
+  3. Launch. Confirm the app opens cleanly (does NOT route to Recovery Mode).
+  4. Confirm all V1 data is intact: clients, pieces, sessions, photos, settings.
+  5. Go to Settings → Financial → Custom Discounts. The list should be empty (or whatever was there pre-V2 if SwiftData was somehow persisting them — see context above). Add a new discount.
+  6. Take a manual backup. Confirm the resulting `backup.json` has a `customDiscounts` array including the new entry.
+- [ ] **Smoke test #3 — restore a pre-V2 backup on a V2-running build.** This proves the optional `customDiscounts` field is doing its job:
+  1. Find a `backup.json` from before this slice (any backup taken on the previous build), or just delete the `customDiscounts` line from a fresh backup with a text editor and re-zip it.
+  2. Restore from it via Settings → Recovery.
+  3. Confirm the restore completes cleanly. The restored store should have zero custom discounts (because the pre-V2 backup couldn't carry them) and everything else intact.
+- [ ] **Smoke test #4 — round-trip a backup with discounts.** Take a backup with discounts present, restore from it, confirm the discounts come back exactly. This proves the serialize → deserialize loop is symmetric.
+- [ ] **Tag the build.** `git tag v0.8.3` (or whatever the next patch is) once #1–#4 all pass. **Do NOT tag if any smoke test fails — V2 staying tagged means the migration boundary is permanent.** A failed migration that ships becomes a permanent stain on the version chain because reversing it requires another migration.
+
+**If smoke test #2 fails** (the upgrade-from-V1 case is the one most likely to surprise):
+
+- The expected error path is "ModelContainer init throws" → `CounterApp.swift` catches and routes to `RecoveryModeView`. This is the **good** failure mode — the user can see backups and reset.
+- The unexpected error path is "ModelContainer init succeeds but data is missing or corrupt." This would mean SwiftData accepted the schema but the migration mangled something. If you see this, **do not ship**. Roll back `CounterApp.swift` to use `CounterSchemaV1.self`, file the symptoms in this file under a new "Blocked" section, and we'll reassess from the PC side.
+- The previous-build's last automatic backup is the user's safety net. It's a V1 backup, so it has no `customDiscounts` field, but it can be restored on the V2 build (smoke test #3 proves this).
+
+---
 
 ### 2026-04-14 · Pillar 2 — Backup Hardening
 
@@ -57,9 +106,11 @@ last_updated: 2026-04-14 (pillar 2 slice)
 
 **Files added from PC (need to be added to the Xcode `Counter` target):**
 
-- `Counter/Migrations/CounterSchemaV1.swift`
-- `Counter/Migrations/CounterMigrationPlan.swift`
+- `Counter/Services/CounterSchemaV1.swift`
+- `Counter/Services/CounterMigrationPlan.swift`
 - `Counter/App/RecoveryModeView.swift`
+
+> **Path note:** the V1 schema and migration plan originally lived in `Counter/Migrations/` and have since moved to `Counter/Services/` (PC-side rename via `git mv`). On the Mac, drag them into the existing `Services` Xcode group — there is no longer a separate `Migrations` group.
 
 **Files modified from PC (already on disk, no Xcode action needed beyond a build):**
 
@@ -67,7 +118,7 @@ last_updated: 2026-04-14 (pillar 2 slice)
 
 **Mac-side actions, in order:**
 
-- [ ] **Add the three new files to the `Counter` target.** In Xcode: right-click the `Counter` group → "Add Files to Counter…" → select the three files above → confirm the `Counter` target checkbox is on. The `Migrations/` folder needs to exist as a real Xcode group (not just a folder reference) so future migration files land in the right place.
+- [ ] **Add the three new files to the `Counter` target.** In Xcode: right-click the `Services` group → "Add Files to Counter…" → select `CounterSchemaV1.swift` and `CounterMigrationPlan.swift` → confirm the `Counter` target checkbox is on. Repeat for `RecoveryModeView.swift` under the `App` group.
 - [ ] **Build.** Most likely friction points:
   - `Schema(versionedSchema:)` is iOS 17+. Confirm the deployment target is fine.
   - `RecoveryService.shared.listBackups()` is `async throws` — the `.task` modifier in `RecoveryModeView` handles that. If the signature has drifted, fix the call site.
