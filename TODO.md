@@ -20,8 +20,8 @@ Last updated: 2026-04-07
 
 ### Lower Priority
 - [ ] **Analytics** — Cloudflare Analytics (free, privacy-respecting) or Plausible to understand traffic
-- [ ] **Privacy policy page** — Required for App Store submission; good to host on the website
-- [ ] **Terms of service page** — Needed alongside privacy policy for App Store review
+- [ ] **Privacy policy page** — Required for App Store submission; good to host on the website *(draft at `docs/legal/privacy-policy.md`, awaiting accuracy review)*
+- [ ] **Terms of service page** — Needed alongside privacy policy for App Store review *(draft at `docs/legal/terms-of-service.md`, awaiting accuracy review)*
 - [ ] **Email setup verification** — Confirm `mickey@thecounterapp.ca` is receiving mail via Cloudflare email routing
 
 ---
@@ -67,12 +67,12 @@ Last updated: 2026-04-07
 - [ ] **Accessibility audit** — VoiceOver labels, Dynamic Type support, contrast checks
 - [ ] **iPad multitasking** — Ensure Split View and Slide Over work cleanly
 - [ ] **Haptic feedback** — Subtle haptics on key actions (payment logged, booking confirmed, signature captured)
-- [ ] **Version bump** — Currently "Pre-Alpha 0.2"; establish a versioning strategy as features stabilize
+- [x] **Version bump** — Synced to "Alpha 0.8" (2026-04-13); see `docs/internal/VERSIONING.md` for the strategy going forward
 
 ---
 
 ## App Store Submission Checklist
-- [ ] Privacy policy URL (hosted on website)
+- [ ] Privacy policy URL (hosted on website) — *draft exists at `docs/legal/privacy-policy.md`, needs review for accuracy*
 - [ ] App Store screenshots (6.5" and 12.9" iPad)
 - [ ] App description and keywords
 - [ ] App icon exported at required sizes

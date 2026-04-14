@@ -15,8 +15,8 @@ struct SettingsAboutView: View {
     var body: some View {
         List {
             Section {
-                LabeledContent("Version", value: "Pre-Alpha 0.8")
-                LabeledContent("Build", value: "CounterPreAlpha")
+                LabeledContent("Version", value: "Alpha 0.8")
+                LabeledContent("Build", value: "CounterAlpha")
             }
         }
         .listStyle(.insetGrouped)
