@@ -21,11 +21,22 @@ struct SettingsViewRecovery: View {
     @State private var showWipeConfirm = false
     @State private var isReseeding = false
 
+    private var userBackups: [BackupMetadata] {
+        backups.filter { $0.effectiveKind == .userBackup }
+    }
+
+    private var snapshotBackups: [BackupMetadata] {
+        backups.filter { $0.effectiveKind == .preRestoreSnapshot }
+    }
+
     var body: some View {
         List {
             statusSection
             backupSection
             backupsListSection
+            if !snapshotBackups.isEmpty {
+                snapshotsListSection
+            }
             developerSection
         }
         .listStyle(.insetGrouped)
@@ -108,7 +119,7 @@ struct SettingsViewRecovery: View {
             }
             .disabled(isBackingUp || isRestoring)
         } footer: {
-            Text("Backups are also created automatically when the app goes to the background. The last 3 backups are kept.")
+            Text("Backups are also created automatically when the app goes to the background. The last 3 manual backups and the last 3 pre-restore safety snapshots are kept.")
         }
     }
 
@@ -116,7 +127,7 @@ struct SettingsViewRecovery: View {
 
     private var backupsListSection: some View {
         Section("Available Backups") {
-            if backups.isEmpty {
+            if userBackups.isEmpty {
                 HStack {
                     Spacer()
                     VStack(spacing: 6) {
@@ -131,33 +142,8 @@ struct SettingsViewRecovery: View {
                     Spacer()
                 }
             } else {
-                ForEach(backups) { backup in
-                    HStack(alignment: .top, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(backup.createdAt.formatted(date: .abbreviated, time: .shortened))
-                                .font(.subheadline.weight(.medium))
-                            Text("\(backup.modelCount) records, \(backup.imageCount) images")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(formatBytes(backup.jsonSizeBytes + backup.imageSizeBytes))
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                        }
-
-                        Spacer()
-
-                        Button {
-                            selectedBackup = backup
-                            showRestoreConfirm = true
-                        } label: {
-                            Text("Restore")
-                                .font(.subheadline.weight(.medium))
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.orange)
-                        .disabled(isBackingUp || isRestoring)
-                    }
-                    .padding(.vertical, 4)
+                ForEach(userBackups) { backup in
+                    backupRow(backup)
                 }
             }
 
@@ -170,6 +156,52 @@ struct SettingsViewRecovery: View {
                 }
             }
         }
+    }
+
+    /// Pre-restore safety snapshots are pruned on a separate budget from
+    /// regular backups so they can't push real user backups out of
+    /// rotation. They live in their own section so users can find them
+    /// when they want to undo a restore but don't have to scroll past
+    /// them in the normal flow.
+    private var snapshotsListSection: some View {
+        Section {
+            ForEach(snapshotBackups) { backup in
+                backupRow(backup)
+            }
+        } header: {
+            Text("Safety Snapshots")
+        } footer: {
+            Text("Counter automatically saves a snapshot of your current data right before any restore. If a restore went the wrong way, you can roll back from here.")
+        }
+    }
+
+    private func backupRow(_ backup: BackupMetadata) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(backup.createdAt.formatted(date: .abbreviated, time: .shortened))
+                    .font(.subheadline.weight(.medium))
+                Text("\(backup.modelCount) records, \(backup.imageCount) images")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(formatBytes(backup.jsonSizeBytes + backup.imageSizeBytes))
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Spacer()
+
+            Button {
+                selectedBackup = backup
+                showRestoreConfirm = true
+            } label: {
+                Text("Restore")
+                    .font(.subheadline.weight(.medium))
+            }
+            .buttonStyle(.bordered)
+            .tint(.orange)
+            .disabled(isBackingUp || isRestoring)
+        }
+        .padding(.vertical, 4)
     }
 
     // MARK: - Developer Section

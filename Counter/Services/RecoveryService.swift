@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import CryptoKit
 
 // MARK: - Recovery Service (Alpha Safety Net)
 // Temporary auto-backup service for alpha testers. Will be retired at release.
@@ -8,8 +9,11 @@ actor RecoveryService {
     static let shared = RecoveryService()
 
     private let maxBackupCount = 3
+    private let maxPreRestoreSnapshotCount = 3
     private let backupFolderName = "Counter Recovery"
     private let imagesFolderName = "Images"
+    private let userBackupPrefix = "counter_recovery_"
+    private let preRestorePrefix = "counter_pre_restore_"
     private let fileManager = FileManager.default
 
     // Observable state for the UI
@@ -19,15 +23,75 @@ actor RecoveryService {
     // Debounce: skip backup if one happened recently
     private let minimumBackupInterval: TimeInterval = 60
 
+    // MARK: - Version & Integrity Helpers
+
+    /// Marketing version string sourced from the bundle so backups never lie
+    /// about which build wrote them. Replaces the previous hardcoded
+    /// `"Pre-Alpha 0.2"` literal that drifted as soon as the in-app About
+    /// screen was bumped.
+    static var currentAppVersion: String {
+        let short = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "unknown"
+        let build = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "?"
+        return "\(short) (\(build))"
+    }
+
+    /// SHA-256 hex digest used to detect accidental corruption (truncated
+    /// writes, partial iCloud sync, bit rot). This is NOT an adversarial
+    /// integrity guarantee — `metadata.json` itself is not signed — but it
+    /// catches the failure modes that matter for a single-user offline app.
+    static func sha256Hex(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+
     // MARK: - Public API
 
     @discardableResult
     func performBackup(context: ModelContext) async throws -> BackupMetadata {
-        // Debounce
+        // Debounce — only applies to user-initiated backups. Pre-restore
+        // snapshots bypass this entirely via `performPreRestoreSnapshot`.
         if let last = lastBackupDate, Date().timeIntervalSince(last) < minimumBackupInterval {
             throw RecoveryError.serializationFailed("Backup skipped — too soon since last backup.")
         }
 
+        let metadata = try await performBackupInternal(
+            context: context,
+            kind: .userBackup,
+            folderPrefix: userBackupPrefix
+        )
+
+        // Prune *user* backups only — pre-restore snapshots have their own budget.
+        try pruneOldBackups()
+
+        lastBackupDate = Date()
+        lastBackupError = nil
+
+        return metadata
+    }
+
+    /// Captures the *current* state of the store as a `.preRestoreSnapshot`
+    /// so a subsequent `restore(from:)` is one-tap-rollback-safe. Bypasses
+    /// the user-backup debounce and uses a dedicated retention budget so it
+    /// never pushes a real user backup out of rotation.
+    @discardableResult
+    func performPreRestoreSnapshot(context: ModelContext) async throws -> BackupMetadata {
+        let metadata = try await performBackupInternal(
+            context: context,
+            kind: .preRestoreSnapshot,
+            folderPrefix: preRestorePrefix
+        )
+        try prunePreRestoreSnapshots()
+        return metadata
+    }
+
+    /// Shared backup pipeline used by both user-initiated backups and
+    /// pre-restore snapshots. The only differences between the two callers
+    /// are the folder prefix, the `BackupKind` recorded in metadata, and
+    /// the retention budget — handled by the wrappers above.
+    private func performBackupInternal(
+        context: ModelContext,
+        kind: BackupKind,
+        folderPrefix: String
+    ) async throws -> BackupMetadata {
         // 1. Serialize all models on the main actor (ModelContext requirement)
         let backup = try await MainActor.run {
             try serializeAllModels(context: context)
@@ -39,34 +103,42 @@ actor RecoveryService {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let jsonData = try encoder.encode(backup)
 
-        // 3. Create backup folder
+        // 3. Compute SHA-256 over the encoded payload BEFORE it touches disk.
+        //    The checksum captures the bytes the decoder will see, so any
+        //    mid-write truncation or sync-conflict garbling will fail the
+        //    check on restore.
+        let checksum = Self.sha256Hex(jsonData)
+
+        // 4. Create backup folder
         let containerURL = try backupContainerURL()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd_HHmmss"
-        let folderName = "counter_recovery_\(formatter.string(from: Date()))"
+        let folderName = "\(folderPrefix)\(formatter.string(from: Date()))"
         let backupURL = containerURL.appendingPathComponent(folderName)
         try fileManager.createDirectory(at: backupURL, withIntermediateDirectories: true)
 
-        // 4. Write JSON
+        // 5. Write JSON
         let jsonURL = backupURL.appendingPathComponent("backup.json")
         try jsonData.write(to: jsonURL)
 
-        // 5. Copy images
+        // 6. Copy images
         let imageCount = try copyImages(to: backupURL)
 
-        // 6. Calculate sizes
+        // 7. Calculate sizes
         let imageSizeBytes = directorySize(at: backupURL.appendingPathComponent(imagesFolderName))
 
-        // 7. Write metadata
+        // 8. Write metadata
         let metadata = BackupMetadata(
             id: UUID(),
             createdAt: Date(),
-            appVersion: "Pre-Alpha 0.2",
+            appVersion: Self.currentAppVersion,
             modelCount: totalModelCount(backup),
             imageCount: imageCount,
             jsonSizeBytes: UInt64(jsonData.count),
             imageSizeBytes: imageSizeBytes,
-            folderName: folderName
+            folderName: folderName,
+            jsonChecksum: checksum,
+            kind: kind
         )
         let metaEncoder = JSONEncoder()
         metaEncoder.dateEncodingStrategy = .iso8601
@@ -74,17 +146,16 @@ actor RecoveryService {
         let metaData = try metaEncoder.encode(metadata)
         try metaData.write(to: backupURL.appendingPathComponent("metadata.json"))
 
-        // 8. Prune old backups
-        try pruneOldBackups()
-
-        // 9. Mirror JSON + metadata to local Documents (Files-app visible, beta safety net).
-        //    Skips image copy — images already live in Documents/CounterImages.
-        //    Runs even when iCloud is the primary destination.
-        try mirrorToLocalDocuments(backupURL: backupURL, jsonData: jsonData, metaData: metaData)
-
-        // 10. Update state
-        lastBackupDate = Date()
-        lastBackupError = nil
+        // 9. Mirror JSON + metadata + images to local Documents (Files-app
+        //    visible, beta safety net). Images are now included so the
+        //    mirror is fully self-contained — accepted filesystem cost for
+        //    the beta cycle, will be revisited in 1.1.x.
+        try mirrorToLocalDocuments(
+            backupURL: backupURL,
+            jsonData: jsonData,
+            metaData: metaData,
+            includeImages: true
+        )
 
         return metadata
     }
@@ -122,8 +193,22 @@ actor RecoveryService {
             throw RecoveryError.backupNotFound
         }
 
-        // 1. Parse the full backup into memory FIRST (safety: don't wipe until we know it's valid)
+        // 1. Read the backup payload off disk.
+        //    Everything from here through step 7 is *non-destructive* — we
+        //    only touch the live store after every preflight check passes.
         let jsonData = try Data(contentsOf: jsonURL)
+
+        // 2. Integrity check. Backups written before checksums shipped have
+        //    `jsonChecksum == nil` and skip this — they're grandfathered in,
+        //    not silently trusted forever. The UI can flag them separately.
+        if let expected = metadata.jsonChecksum {
+            let actual = Self.sha256Hex(jsonData)
+            guard expected == actual else {
+                throw RecoveryError.checksumMismatch(expected: expected, actual: actual)
+            }
+        }
+
+        // 3. Decode the payload.
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let backup: RecoveryBackup
@@ -133,21 +218,64 @@ actor RecoveryService {
             throw RecoveryError.deserializationFailed(error.localizedDescription)
         }
 
+        // 4. Schema version check. Forward-migration of backups across
+        //    schema versions lands as part of pillar 1 (0.9.0). For now,
+        //    a mismatch is a hard reject.
         guard backup.version == RecoveryBackup.currentVersion else {
-            throw RecoveryError.versionMismatch(found: backup.version, expected: RecoveryBackup.currentVersion)
+            throw RecoveryError.versionMismatch(
+                found: backup.version,
+                expected: RecoveryBackup.currentVersion
+            )
         }
 
-        // 2. Wipe existing data, then insert from backup (on main actor for ModelContext)
+        // 5. Refuse empty restores. A backup with zero records cannot
+        //    silently destroy a populated store. If a user genuinely wants
+        //    an empty database, they can use Recovery Mode → Reset.
+        let totalRecords = totalModelCount(backup)
+        guard totalRecords > 0 else {
+            throw RecoveryError.refuseEmptyRestore
+        }
+
+        // 6. Pre-flight image check. If the metadata claims this backup
+        //    has images but the Images folder is missing, fail loudly
+        //    BEFORE touching the live store.
+        if metadata.imageCount > 0 {
+            let sourceBase = backupURL.appendingPathComponent(imagesFolderName)
+            if !fileManager.fileExists(atPath: sourceBase.path) {
+                throw RecoveryError.imageCountMismatch(
+                    expected: metadata.imageCount,
+                    actual: 0
+                )
+            }
+        }
+
+        // 7. Pre-restore snapshot of the CURRENT state. This is the
+        //    one-tap rollback point. If we can't take it, we refuse to
+        //    proceed — the cost of being wrong here is the user's data.
+        do {
+            _ = try await performPreRestoreSnapshot(context: context)
+        } catch {
+            throw RecoveryError.preRestoreSnapshotFailed(error.localizedDescription)
+        }
+
+        // 8. Wipe existing data, then insert from backup (on main actor
+        //    for ModelContext). If this throws, the pre-restore snapshot
+        //    from step 7 still exists and the user can re-run restore
+        //    against it from Settings → Recovery.
         try await MainActor.run {
             try wipeAllData(context: context)
             try deserializeAndInsert(backup, context: context)
             try context.save()
         }
 
-        // 3. Restore images
-        try restoreImages(from: backupURL)
+        // 9. Restore images and verify the post-copy file count matches
+        //    what the metadata claimed. A mismatch means the destination
+        //    is in a partially-populated state — surface that to the user
+        //    so they can re-run restore against the pre-restore snapshot.
+        try restoreImages(from: backupURL, expectedCount: metadata.imageCount)
 
-        // 4. Restore UserDefaults
+        // 10. Restore UserDefaults (last, because it's the cheapest to
+        //     re-do and the least likely to fail catastrophically).
         restoreUserDefaults(backup.userDefaults)
     }
 
@@ -463,7 +591,7 @@ actor RecoveryService {
         return RecoveryBackup(
             version: RecoveryBackup.currentVersion,
             createdAt: Date(),
-            appVersion: "Pre-Alpha 0.2",
+            appVersion: RecoveryService.currentAppVersion,
             clients: clientBackups, pieces: pieceBackups,
             sessions: sessionBackups, imageGroups: imageGroupBackups,
             pieceImages: pieceImageBackups, inspirationImages: inspirationBackups,
@@ -784,18 +912,71 @@ actor RecoveryService {
 
     // MARK: - Restore: Images
 
-    private func restoreImages(from backupURL: URL) throws {
-        guard let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+    /// Replaces `Documents/CounterImages` with the image tree from the
+    /// given backup folder, then verifies the resulting file count matches
+    /// `expectedCount` (sourced from `BackupMetadata.imageCount`).
+    ///
+    /// Failures here propagate by design — silently producing a populated
+    /// store that references missing image files is the worst possible
+    /// outcome for a tattoo artist whose entire portfolio is the data.
+    private func restoreImages(from backupURL: URL, expectedCount: Int) throws {
+        guard let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            // No Documents directory at all is a hard failure if the
+            // backup actually contains images.
+            if expectedCount > 0 {
+                throw RecoveryError.imageCopyFailed("Could not locate Documents directory.")
+            }
+            return
+        }
         let destBase = docs.appendingPathComponent("CounterImages")
         let sourceBase = backupURL.appendingPathComponent(imagesFolderName)
 
-        guard fileManager.fileExists(atPath: sourceBase.path) else { return }
+        if !fileManager.fileExists(atPath: sourceBase.path) {
+            if expectedCount > 0 {
+                throw RecoveryError.imageCopyFailed(
+                    "Backup metadata reported \(expectedCount) images but the Images folder is missing from the backup."
+                )
+            }
+            return
+        }
 
         // Remove existing images and replace with backup
         if fileManager.fileExists(atPath: destBase.path) {
             try fileManager.removeItem(at: destBase)
         }
         try fileManager.copyItem(at: sourceBase, to: destBase)
+
+        // Post-copy verification — if the copy produced fewer files than
+        // the metadata claimed, the destination is in a partially-populated
+        // state. Surface that loudly; the user still has the pre-restore
+        // snapshot from step 7 of `restore()` to fall back on.
+        if expectedCount > 0 {
+            let actualCount = recursiveFileCount(at: destBase)
+            if actualCount != expectedCount {
+                throw RecoveryError.imageCountMismatch(
+                    expected: expectedCount,
+                    actual: actualCount
+                )
+            }
+        }
+    }
+
+    /// Recursive count of regular files under `url`. Used to verify image
+    /// restore completeness against the metadata's `imageCount`.
+    private func recursiveFileCount(at url: URL) -> Int {
+        guard let enumerator = fileManager.enumerator(
+            at: url,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: .skipsHiddenFiles
+        ) else { return 0 }
+
+        var count = 0
+        while let fileURL = enumerator.nextObject() as? URL {
+            if (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true {
+                count += 1
+            }
+        }
+        return count
     }
 
     // MARK: - Restore: UserDefaults
@@ -825,9 +1006,18 @@ actor RecoveryService {
         return url
     }
 
-    /// Copies backup.json and metadata.json into a matching folder under local Documents.
-    /// Images are deliberately excluded — they already live in Documents/CounterImages.
-    private func mirrorToLocalDocuments(backupURL: URL, jsonData: Data, metaData: Data) throws {
+    /// Copies backup.json, metadata.json, and (when `includeImages` is set)
+    /// the entire Images tree into a matching folder under local Documents.
+    ///
+    /// Mirrors are written for every backup, regardless of which container
+    /// is the primary destination. Including images makes the mirror fully
+    /// self-contained — accepted filesystem cost for the beta cycle.
+    private func mirrorToLocalDocuments(
+        backupURL: URL,
+        jsonData: Data,
+        metaData: Data,
+        includeImages: Bool
+    ) throws {
         let localContainer = try localDocumentsContainerURL()
         let folderName = backupURL.lastPathComponent
         let mirrorURL = localContainer.appendingPathComponent(folderName)
@@ -839,35 +1029,99 @@ actor RecoveryService {
         try jsonData.write(to: mirrorURL.appendingPathComponent("backup.json"))
         try metaData.write(to: mirrorURL.appendingPathComponent("metadata.json"))
 
-        // Prune the local mirror to the same retention limit
+        if includeImages {
+            let sourceImagesURL = backupURL.appendingPathComponent(imagesFolderName)
+            let destImagesURL = mirrorURL.appendingPathComponent(imagesFolderName)
+            if fileManager.fileExists(atPath: sourceImagesURL.path)
+                && !fileManager.fileExists(atPath: destImagesURL.path) {
+                try fileManager.copyItem(at: sourceImagesURL, to: destImagesURL)
+            }
+        }
+
+        // Prune the local mirror with the same kind-aware budget as the
+        // primary container.
         try pruneLocalMirror(container: localContainer)
     }
 
+    /// Kind-aware prune for the local-Documents mirror. Mirrors the
+    /// behaviour of `pruneOldBackups` + `prunePreRestoreSnapshots` so that
+    /// a flurry of pre-restore snapshots can't push real user backups out
+    /// of mirror retention. Folders without a readable `metadata.json` are
+    /// treated as legacy `userBackup` entries.
     private func pruneLocalMirror(container: URL) throws {
         let contents = try fileManager.contentsOfDirectory(
             at: container,
             includingPropertiesForKeys: [.isDirectoryKey, .creationDateKey],
             options: .skipsHiddenFiles
         )
-        let folders = try contents
-            .filter { try $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true }
-            .sorted {
-                let d0 = (try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                let d1 = (try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                return d0 > d1
+        let folders = try contents.filter {
+            try $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true
+        }
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        struct MirrorEntry {
+            let url: URL
+            let createdAt: Date
+            let kind: BackupKind
+        }
+
+        var entries: [MirrorEntry] = []
+        for folder in folders {
+            let metaURL = folder.appendingPathComponent("metadata.json")
+            var createdAt = (try? folder.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+            var kind: BackupKind = .userBackup
+            if let data = try? Data(contentsOf: metaURL),
+               let meta = try? decoder.decode(BackupMetadata.self, from: data) {
+                createdAt = meta.createdAt
+                kind = meta.effectiveKind
             }
-        guard folders.count > maxBackupCount else { return }
-        for folder in folders.suffix(from: maxBackupCount) {
-            try fileManager.removeItem(at: folder)
+            entries.append(MirrorEntry(url: folder, createdAt: createdAt, kind: kind))
+        }
+
+        let userMirrors = entries
+            .filter { $0.kind == .userBackup }
+            .sorted { $0.createdAt > $1.createdAt }
+        let snapshotMirrors = entries
+            .filter { $0.kind == .preRestoreSnapshot }
+            .sorted { $0.createdAt > $1.createdAt }
+
+        if userMirrors.count > maxBackupCount {
+            for entry in userMirrors.suffix(from: maxBackupCount) {
+                try fileManager.removeItem(at: entry.url)
+            }
+        }
+        if snapshotMirrors.count > maxPreRestoreSnapshotCount {
+            for entry in snapshotMirrors.suffix(from: maxPreRestoreSnapshotCount) {
+                try fileManager.removeItem(at: entry.url)
+            }
         }
     }
 
     // MARK: - Pruning
 
+    /// Prunes only `.userBackup` entries to `maxBackupCount`. Pre-restore
+    /// snapshots are retained on a separate budget so a flurry of restores
+    /// can't push real user backups out of rotation.
     private func pruneOldBackups() throws {
-        let backups = try listBackups()
-        guard backups.count > maxBackupCount else { return }
-        let toDelete = backups.suffix(from: maxBackupCount)
+        let userBackups = try listBackups()
+            .filter { $0.effectiveKind == .userBackup }
+        guard userBackups.count > maxBackupCount else { return }
+        let toDelete = userBackups.suffix(from: maxBackupCount)
+        for backup in toDelete {
+            try deleteBackup(backup)
+        }
+    }
+
+    /// Prunes only `.preRestoreSnapshot` entries to
+    /// `maxPreRestoreSnapshotCount`. Run after every snapshot, not after
+    /// every restore — the snapshot is the thing that just landed.
+    private func prunePreRestoreSnapshots() throws {
+        let snapshots = try listBackups()
+            .filter { $0.effectiveKind == .preRestoreSnapshot }
+        guard snapshots.count > maxPreRestoreSnapshotCount else { return }
+        let toDelete = snapshots.suffix(from: maxPreRestoreSnapshotCount)
         for backup in toDelete {
             try deleteBackup(backup)
         }

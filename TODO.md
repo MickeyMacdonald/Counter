@@ -30,11 +30,11 @@ Last updated: 2026-04-14
 
 ### `[v0.9.0]` Pillar 2 — Backup Hardening
 
-- [ ] **Embed all image binaries** in backup files. Filesystem cost is acceptable for beta (will be revisited in 1.1.x).
-- [ ] **SHA-256 checksum** on every backup file, validated on restore.
-- [ ] **Pre-restore snapshot** — automatic backup of current state before any destructive restore, slotted into `pre-restore-{timestamp}` for one-tap rollback.
-- [ ] **Record-count sanity check** — a backup with zero records can't silently destroy a populated store.
-- [ ] **Image copy failures propagate** — restore aborts loudly instead of silently producing missing files.
+- [x] **Embed all image binaries** in backup files. Filesystem cost is acceptable for beta (will be revisited in 1.1.x). *(iCloud copy already embedded; local-Documents mirror now also includes images via `mirrorToLocalDocuments(..., includeImages: true)`)*
+- [x] **SHA-256 checksum** on every backup file, validated on restore. *(`RecoveryService.sha256Hex`, written into `BackupMetadata.jsonChecksum`, verified at the top of `restore()` before any destructive action)*
+- [x] **Pre-restore snapshot** — automatic backup of current state before any destructive restore, slotted into `counter_pre_restore_{timestamp}` for one-tap rollback. *(`performPreRestoreSnapshot`, separate retention budget, surfaced in Settings → Recovery as a "Safety Snapshots" section)*
+- [x] **Record-count sanity check** — a backup with zero records can't silently destroy a populated store. *(`RecoveryError.refuseEmptyRestore`, thrown before pre-restore snapshot)*
+- [x] **Image copy failures propagate** — restore aborts loudly instead of silently producing missing files. *(`restoreImages(from:expectedCount:)` does pre-flight existence and post-copy count checks against `metadata.imageCount`)*
 
 ### `[v0.9.0]` Pillar 3 — Test Coverage
 
@@ -139,3 +139,5 @@ Last updated: 2026-04-14
 - [x] **Versioning Strategy** — `docs/internal/VERSIONING.md` (2026-04-13)
 - [x] **Version History & Roadmap** — `docs/internal/VERSION_HISTORY.md` (2026-04-14)
 - [x] **Schema versioning + recovery launch path** — `CounterSchemaV1`, `CounterMigrationPlan`, `RecoveryModeView`, and `LaunchState` routing in `CounterApp.swift` (2026-04-14)
+- [x] **Pillar 2 — Backup Hardening** — checksums, pre-restore snapshots, empty-restore guard, image-count verification, image-embedded local mirror, kind-aware retention, SettingsViewRecovery split (2026-04-14)
+- [x] **Backup `appVersion` reads from `Bundle.main`** — replaces hardcoded `"Pre-Alpha 0.2"` literal in `RecoveryService.swift` (2026-04-14)

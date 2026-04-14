@@ -35,6 +35,15 @@ struct RecoveryBackup: Codable {
 
 // MARK: - Backup Metadata
 
+/// Distinguishes user-initiated backups from snapshots taken automatically
+/// before a destructive restore. Pre-restore snapshots are pruned on a
+/// separate retention budget so they can't push real user backups out of
+/// rotation.
+enum BackupKind: String, Codable {
+    case userBackup
+    case preRestoreSnapshot
+}
+
 struct BackupMetadata: Codable, Identifiable {
     let id: UUID
     let createdAt: Date
@@ -44,6 +53,18 @@ struct BackupMetadata: Codable, Identifiable {
     let jsonSizeBytes: UInt64
     let imageSizeBytes: UInt64
     let folderName: String
+
+    /// SHA-256 (hex) of the `backup.json` payload at write time.
+    /// Optional so backups written before integrity checking shipped still
+    /// decode. On restore, when present, a mismatch aborts the restore
+    /// before any destructive action runs.
+    let jsonChecksum: String?
+
+    /// `nil` is treated as `.userBackup` for backwards compatibility with
+    /// metadata files written before pre-restore snapshots existed.
+    let kind: BackupKind?
+
+    var effectiveKind: BackupKind { kind ?? .userBackup }
 }
 
 // MARK: - UserDefaults Snapshot
@@ -68,6 +89,10 @@ enum RecoveryError: Error, LocalizedError {
     case imageCopyFailed(String)
     case restoreFailed(String)
     case versionMismatch(found: Int, expected: Int)
+    case checksumMismatch(expected: String, actual: String)
+    case refuseEmptyRestore
+    case imageCountMismatch(expected: Int, actual: Int)
+    case preRestoreSnapshotFailed(String)
 
     var errorDescription: String? {
         switch self {
@@ -83,6 +108,14 @@ enum RecoveryError: Error, LocalizedError {
             return "Restore failed: \(detail)"
         case .versionMismatch(let found, let expected):
             return "Backup version \(found) is incompatible (expected \(expected))."
+        case .checksumMismatch(let expected, let actual):
+            return "Backup integrity check failed. The backup file may be corrupt or partially written. (expected \(expected.prefix(12))…, got \(actual.prefix(12))…)"
+        case .refuseEmptyRestore:
+            return "This backup contains zero records. Restoring it would erase your current data without putting anything in its place. Restore was aborted."
+        case .imageCountMismatch(let expected, let actual):
+            return "Image restore is incomplete: expected \(expected) image files, found \(actual). Restore aborted to avoid losing image references."
+        case .preRestoreSnapshotFailed(let detail):
+            return "Could not save a safety snapshot of your current data before restoring. Restore aborted. (\(detail))"
         }
     }
 }
