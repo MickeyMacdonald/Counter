@@ -1,7 +1,7 @@
 ---
 title: Counter Versioning Strategy
-status: PROPOSAL — pending sign-off
-last_updated: 2026-04-13
+status: ACTIVE
+last_updated: 2026-04-14
 ---
 
 # Counter Versioning Strategy
@@ -43,6 +43,20 @@ Strict SemVer says anything `0.x` is "no guarantees." Counter is going to be run
 
 In other words: pre-1.0, MINOR is allowed to break things *with migrations*, PATCH is not allowed to break anything.
 
+### The Migration Safety Rule (load-bearing)
+
+> **No release at any channel ships unless:**
+>
+> 1. The schema is wrapped in a `VersionedSchema`, even if it hasn't changed.
+> 2. A `SchemaMigrationPlan` covers every prior shipped schema version.
+> 3. The app **cannot brick on launch** — if the `ModelContainer` fails to open, the user is routed to a Recovery Mode that can read backups and restore, not a `fatalError`.
+> 4. An automatic backup is taken **before** any migration stage runs.
+> 5. The previous schema version's backups can still be read by the current version's `RecoveryService`.
+
+This rule is what makes pre-1.0 `0.x → 0.(x+1)` safe. It is non-negotiable from `0.8.x` forward — see `VERSION_HISTORY.md` for which pieces of it land in which version.
+
+**Why it's load-bearing:** Counter holds real client data, including health notes, intake answers, and signed agreements. A single bricked launch on a real artist's iPad is a trust event we cannot recover from. The migration safety rule exists so that no schema change, even a careless one, can cause that.
+
 ## Channel transitions
 
 This is where Counter is right now and where it's going:
@@ -69,11 +83,11 @@ Beta 0.9.0  → first TestFlight
 
 | Transition | Required to ship |
 |---|---|
-| Alpha → Beta (0.8 → 0.9) | Privacy policy + ToS published, booking notifications, client search, TestFlight listing live, no known data-loss bugs |
-| Beta → RC (0.9 → 1.0-rc.1) | One TestFlight cycle with no P0/P1 reports, App Store listing assets ready, all migrations tested with real data |
-| RC → Stable (1.0-rc → 1.0.0) | Two consecutive RCs with no new bug reports, Apple review approval in hand |
+| Alpha → Beta (0.8 → 0.9) | **Migration Safety Rule fully met.** `VersionedSchema` + `SchemaMigrationPlan` in place. Recovery Mode launch path replacing `fatalError`. Pre-migration auto-backup. All existing migration shims (`piece.imageGroups`, `Drafting → initialDrafting`) converted to formal `MigrationStage`s. Privacy policy + ToS published. TestFlight listing live. |
+| Beta → RC (0.9 → 1.0-rc.1) | One TestFlight cycle with no P0/P1 reports. All migrations tested with real data on real devices. Cosmetic / UI polish complete for the intended use case. App Store listing assets ready. |
+| RC → Stable (1.0-rc → 1.0.0) | Two consecutive RCs with no new bug reports. Apple review approval in hand. |
 
-`[DECIDE: tighten or loosen these gates to taste. They're conservative right now.]`
+> **Note on 0.9 scope:** Per the architectural decision on 2026-04-14, `0.9.x-beta` is the **data continuity & restore** release. Its dominant theme is "the Client / Session / Piece architecture survives any future schema change with zero data loss." Cosmetic and UI work is deferred to `1.0.0-rc.N`.
 
 ## Build numbers
 

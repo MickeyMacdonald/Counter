@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Privacy Policy (DRAFT) &mdash; Counter</title>
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="icon.png" alt="Counter icon"> Counter
+    </a>
+    <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Features</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="donate.html">Support Us</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="legal">
+
+  <!-- ── DRAFT BANNER ── -->
+  <div class="draft-banner" role="alert">
+    <span class="draft-label">⚠ Draft &mdash; Do Not Publish</span>
+    <h2>This is an unreviewed first-pass draft</h2>
+    <p>It exists to give Counter a starting structure for its Privacy Policy. <strong>Every claim in this document needs to be verified against the actual app behavior before publication.</strong> Specific items flagged for review are marked inline with <span class="flag">VERIFY</span> tags.</p>
+    <p>Legal review by a Canadian privacy lawyer is strongly recommended before this is posted publicly or submitted to the App Store. Jurisdictional scope assumed: Canada (PIPEDA), Alberta (PIPA), with App Store global reach implying GDPR (EU/UK) and CCPA (California) considerations as well.</p>
+  </div>
+
+  <h1>Privacy Policy</h1>
+  <p class="legal-meta"><strong>Effective date:</strong> [TO BE SET ON PUBLICATION] &nbsp;·&nbsp; <strong>Last updated:</strong> 2026-04-13</p>
+
+  <h2>1. Summary</h2>
+  <p>Counter is a native iPad application for studio professionals &mdash; tattoo artists, removal specialists, and hairdressers &mdash; to manage their clients, bookings, finances, and portfolio. <strong>Counter is designed to keep all of your data, and your clients' data, on your device.</strong> We do not operate servers that store your business records, and we do not have access to the information you put into the app.</p>
+  <p>This policy explains what little information we <em>do</em> handle, what stays on your device, and your responsibilities when you use Counter to process information about other people (your clients).</p>
+
+  <h2>2. Who this policy applies to</h2>
+  <p>This policy describes the practices of <strong>Mickey Macdonald</strong> ("we", "us", or "Counter"), the developer of the Counter iPad application, based in Calgary, Alberta, Canada.</p>
+  <p>It applies to:</p>
+  <ul>
+    <li>Visitors to <strong>thecounterapp.ca</strong></li>
+    <li>People who contact us at <strong>mickey@thecounterapp.ca</strong></li>
+    <li>Users of the <strong>Counter iPad app</strong></li>
+  </ul>
+  <p>It does <strong>not</strong> govern how <em>you</em>, as a Counter user, handle the personal information of <em>your</em> clients. When you enter client information into Counter, you are the data controller for that information and are responsible for complying with the privacy laws applicable to your business and jurisdiction. See Section 8 below.</p>
+
+  <h2>3. Information we collect</h2>
+
+  <h3>3.1 Information you give us directly</h3>
+  <p>If you email us at <code>mickey@thecounterapp.ca</code> or use the contact form on <code>thecounterapp.ca</code>, we receive whatever you choose to send us &mdash; typically your name, email address, and the contents of your message. We use this only to respond to you.</p>
+
+  <h3>3.2 Information collected automatically by the website</h3>
+  <p><code>thecounterapp.ca</code> is hosted on GitHub Pages. GitHub may collect standard server logs (IP address, user agent, request time) for security and abuse-prevention purposes under <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's Privacy Statement</a>. We do not run our own analytics on the site at this time. <span class="flag">VERIFY</span> confirm no analytics scripts are in <code>docs/index.html</code> and friends; if Cloudflare Analytics is added later, update this section.</p>
+
+  <h3>3.3 Information collected by the Counter iPad app</h3>
+  <p><strong>The Counter app does not transmit your data to us.</strong> Specifically:</p>
+  <ul>
+    <li>Counter does not include any third-party analytics SDK. <span class="flag">VERIFY</span> confirm no Firebase, Mixpanel, Amplitude, TelemetryDeck, Sentry, or other telemetry library is linked.</li>
+    <li>Counter does not send crash reports to us. Crash reports may be sent to <strong>Apple</strong> if you have opted in to "Share With App Developers" in iOS Settings; if so, Apple may share aggregated, anonymized crash data with us through App Store Connect. <span class="flag">VERIFY</span> confirm whether you have access to App Store Connect crash reporting and whether you wish to use it.</li>
+    <li>Counter does not require an account, login, or sign-up.</li>
+    <li>Counter does not use advertising identifiers and does not display ads.</li>
+  </ul>
+
+  <h3>3.4 Information stored locally on your device</h3>
+  <p>When you use Counter, the app stores the following on your iPad only:</p>
+  <ul>
+    <li><strong>Client records</strong> you enter, which may include names, contact information, and any health notes, intake responses, or session history you choose to record.</li>
+    <li><strong>Booking and session data</strong>, including dates, times, prices, and notes.</li>
+    <li><strong>Financial records</strong>, including payments, deposits, balances, and discounts.</li>
+    <li><strong>Images</strong> you import into the gallery, sketches, stencils, reference images, and signed agreements.</li>
+    <li><strong>Templates and settings</strong> you create.</li>
+    <li><strong>Recovery backups</strong> generated by the in-app recovery service, stored on your device. <span class="flag">VERIFY</span> confirm <code>RecoveryService</code> stores backups locally only and not to iCloud / external destinations.</li>
+  </ul>
+  <p>This information is stored in the app's local SwiftData store and is protected by iOS file-system encryption when your device is locked.</p>
+
+  <h3>3.5 Biometric data</h3>
+  <p>Counter offers <strong>Client Mode</strong>, which can be locked behind Face ID or Touch ID. Counter does <strong>not</strong> receive, see, or store your biometric data. Apple's Secure Enclave performs the biometric match locally and only returns a yes/no answer to the app. <span class="flag">VERIFY</span> confirm <code>LAContext</code> is the only biometric API used and no biometric data is logged.</p>
+
+  <h2>4. How we use information</h2>
+  <p>We use the small amount of information we <em>do</em> receive (emails you send us) only to:</p>
+  <ul>
+    <li>Respond to your support requests, feedback, or questions</li>
+    <li>Diagnose problems you report</li>
+    <li>Send you back a reply</li>
+  </ul>
+  <p>We do not sell, rent, trade, or share your information with third parties for marketing purposes. We do not have a marketing list. <span class="flag">VERIFY</span> confirm there is no mailing list or newsletter, or update if one is added later.</p>
+
+  <h2>5. Data sharing and third parties</h2>
+  <p>We do not share information you send us except:</p>
+  <ul>
+    <li>With service providers strictly necessary to operate the website or respond to email (for example, our email host and GitHub Pages), and only to the extent they need it to perform their function</li>
+    <li>When required by law, court order, or a valid legal process under Canadian law</li>
+    <li>To protect the rights, safety, or property of Counter, our users, or the public</li>
+  </ul>
+  <p>The Counter app itself does not share data with third parties because it does not transmit data off your device.</p>
+
+  <h2>6. Data retention</h2>
+  <ul>
+    <li><strong>Emails you send us:</strong> retained for as long as we reasonably need them to provide support and a record of correspondence, then deleted.</li>
+    <li><strong>Data you store in the Counter app:</strong> retained on your device until <em>you</em> delete it. Uninstalling the app will remove its local data subject to iOS behavior. <span class="flag">VERIFY</span> confirm whether uninstalling fully wipes the SwiftData store on iOS.</li>
+  </ul>
+
+  <h2>7. Your rights</h2>
+  <p>Depending on where you live, you may have rights under PIPEDA (Canada), PIPA (Alberta or BC), the GDPR (EU/UK), or the CCPA (California), including the right to:</p>
+  <ul>
+    <li>Know what personal information we hold about you</li>
+    <li>Request a copy of that information</li>
+    <li>Request correction of inaccurate information</li>
+    <li>Request deletion of your information</li>
+    <li>Withdraw consent at any time</li>
+    <li>Lodge a complaint with a privacy regulator</li>
+  </ul>
+  <p>Because the only personal information <em>we</em> typically hold about you is correspondence you have voluntarily sent us, exercising these rights is usually as simple as emailing <code>mickey@thecounterapp.ca</code>.</p>
+  <p>For information <em>you have entered into Counter about your own clients</em>, we cannot help &mdash; that data is on your device and we have no access to it. Your clients should direct their requests to you, the studio operator.</p>
+
+  <h2>8. Your responsibilities as a Counter user</h2>
+  <p>If you use Counter to manage information about your clients, <strong>you are the data controller</strong> for that information under most privacy laws. That means:</p>
+  <ul>
+    <li>You are responsible for collecting, storing, and using client information in compliance with the privacy laws applicable to your jurisdiction and profession.</li>
+    <li>You should obtain appropriate consent from your clients before recording sensitive information such as health notes or intake answers.</li>
+    <li>You are responsible for keeping your iPad physically secure and protected by a strong device passcode.</li>
+    <li>You are responsible for honoring requests from your clients to access, correct, or delete their information.</li>
+    <li>If your iPad is lost or stolen, you are responsible for any breach notification obligations that may apply to you.</li>
+  </ul>
+  <p>Counter is a tool. We provide it; you are accountable for how you use it.</p>
+
+  <h2>9. Children's privacy</h2>
+  <p>Counter is intended for use by adult professionals. We do not knowingly collect personal information from children under 13 (or under 16 in jurisdictions where that is the threshold). If you believe a child has sent us information, please contact us so we can delete it.</p>
+
+  <h2>10. International users</h2>
+  <p>Counter is developed in Canada. If you contact us from outside Canada, your message will be processed in Canada and possibly other jurisdictions where our service providers operate (notably the United States, where GitHub is based). Canadian and U.S. privacy laws may differ from those in your country.</p>
+
+  <h2>11. Security</h2>
+  <p>We take reasonable steps to protect the small amount of information we hold:</p>
+  <ul>
+    <li>Email is handled via Cloudflare email routing forwarding to a standard email provider. <span class="flag">VERIFY</span> confirm email setup matches what's actually configured.</li>
+    <li>The Counter app benefits from iOS sandboxing and file-system encryption.</li>
+    <li>Counter does not transmit your business data over the network. <span class="flag">VERIFY</span> confirm &mdash; and note any exceptions, e.g., PDF export to system Share Sheet, email composition via <code>MFMailComposeViewController</code>, etc.</li>
+  </ul>
+  <p>No system is perfectly secure, and we cannot guarantee absolute security.</p>
+
+  <h2>12. Changes to this policy</h2>
+  <p>We may update this policy from time to time. When we do, we will update the "Last updated" date at the top. Material changes will be noted on our website. Continued use of Counter or our website after a change indicates acceptance of the updated policy.</p>
+
+  <h2>13. Contact</h2>
+  <p>Questions, requests, or complaints about this policy should be directed to:</p>
+  <p>
+    <strong>Mickey Macdonald</strong><br>
+    Counter<br>
+    Calgary, Alberta, Canada<br>
+    Email: <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a>
+  </p>
+  <p>You also have the right to file a complaint with the Office of the Privacy Commissioner of Canada at <a href="https://www.priv.gc.ca">priv.gc.ca</a>.</p>
+
+  <!-- ── Review Checklist ── -->
+  <div class="review-checklist">
+    <h2>Draft review checklist</h2>
+    <ul>
+      <li>Confirm every <span class="flag">VERIFY</span> tag against actual app behavior</li>
+      <li>Confirm there are no third-party SDKs that transmit data</li>
+      <li>Confirm <code>RecoveryService</code> backup destination</li>
+      <li>Confirm whether email composer (<code>MFMailComposeViewController</code>) usage needs disclosure</li>
+      <li>Confirm whether PDF export targets are limited to user-initiated Share Sheet</li>
+      <li>Decide on a real "effective date"</li>
+      <li>Have a Canadian privacy lawyer review, especially Sections 7, 8, and 11</li>
+      <li>Add a link from the website footer and from the in-app About screen</li>
+    </ul>
+  </div>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="icon.png" alt="Counter"> Counter</div>
+      <p style="font-size:0.88rem;max-width:320px;line-height:1.6;">Studio management built for tattoo artists, removal specialists, and hairdressers. Made in Calgary, Alberta.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Features</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="donate.html">Support Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 Counter. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

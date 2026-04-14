@@ -543,6 +543,172 @@ a:hover { color: var(--accent-hover); }
   color: var(--tan);
 }
 
+/* ── Legal Pages (Privacy / Terms) ── */
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  color: var(--text);
+}
+
+.legal h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--espresso);
+  margin-bottom: 0.4rem;
+}
+
+.legal .legal-meta {
+  color: var(--text-light);
+  font-size: 0.88rem;
+  margin-bottom: 2rem;
+}
+
+.legal h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--dark-brown);
+  margin: 2.25rem 0 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--light-tan);
+}
+
+.legal h2:first-of-type { border-top: none; padding-top: 0; }
+
+.legal h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brown);
+  margin: 1.5rem 0 0.4rem;
+}
+
+.legal p,
+.legal ul,
+.legal ol {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.legal ul,
+.legal ol {
+  padding-left: 1.4rem;
+}
+
+.legal li { margin-bottom: 0.4rem; }
+
+.legal strong { color: var(--espresso); }
+
+.legal a { color: var(--accent); text-decoration: underline; }
+.legal a:hover { color: var(--accent-hover); }
+
+.legal code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--cream);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.legal hr {
+  border: none;
+  border-top: 1px solid var(--light-tan);
+  margin: 2rem 0;
+}
+
+/* Loud DRAFT banner — must be impossible to miss */
+.draft-banner {
+  background: #FFF4E5;
+  border: 2px solid #C77700;
+  border-left: 6px solid #C77700;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  color: #5A3300;
+}
+
+.draft-banner .draft-label {
+  display: inline-block;
+  background: #C77700;
+  color: var(--white);
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+}
+
+.draft-banner h2 {
+  border: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: #5A3300;
+}
+
+.draft-banner p {
+  font-size: 0.92rem;
+  margin-bottom: 0.5rem;
+  color: #5A3300;
+}
+
+.draft-banner p:last-child { margin-bottom: 0; }
+
+/* Inline VERIFY / DECIDE flags inside the body copy */
+.legal .flag {
+  display: inline-block;
+  background: #FFF4E5;
+  border: 1px solid #C77700;
+  color: #5A3300;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  margin: 0 0.15rem;
+  vertical-align: baseline;
+}
+
+/* Review checklist at the bottom of each draft */
+.review-checklist {
+  background: var(--cream);
+  border: 1px solid var(--light-tan);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.review-checklist h2 {
+  border: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.review-checklist ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.review-checklist li {
+  font-size: 0.9rem;
+  padding-left: 1.6rem;
+  position: relative;
+  margin-bottom: 0.4rem;
+}
+
+.review-checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--brown);
+  font-size: 1rem;
+}
+
 /* ── Utility ── */
 .text-center { text-align: center; }
 .mt-2 { margin-top: 2rem; }

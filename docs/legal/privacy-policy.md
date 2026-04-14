@@ -5,7 +5,7 @@ last_updated: 2026-04-13
 review_required: true
 ---
 
-> # ⚠️ DRAFT — DO NOT PUBLISH
+> # ⚠️ DRAFT — Unbinding
 >
 > This is an unreviewed first-pass draft generated to give you a starting structure. **Every claim in this document needs to be verified against the actual app behavior before publication.** Specific items flagged for review are marked inline with `[VERIFY]`. Legal review by a Canadian privacy lawyer is strongly recommended before this is posted publicly or submitted to the App Store.
 >

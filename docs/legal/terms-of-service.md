@@ -5,7 +5,7 @@ last_updated: 2026-04-13
 review_required: true
 ---
 
-> # ⚠️ DRAFT — DO NOT PUBLISH
+> # ⚠️ DRAFT — Unbinding
 >
 > This is an unreviewed first-pass draft generated to give you a starting structure. **Every commercial term, liability cap, and jurisdictional clause needs to be verified before publication.** Specific items flagged for review are marked inline with `[VERIFY]` or `[DECIDE]`. Legal review by a Canadian lawyer is strongly recommended before this is posted publicly or submitted to the App Store, especially the limitation of liability, indemnification, and dispute resolution sections.
 >
