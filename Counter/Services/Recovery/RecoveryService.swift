@@ -333,8 +333,8 @@ actor RecoveryService {
         let commLogs = try context.fetch(FetchDescriptor<CommunicationLog>())
         let payments = try context.fetch(FetchDescriptor<Payment>())
         let profiles = try context.fetch(FetchDescriptor<UserProfile>())
-        let customSessionTypes = try context.fetch(FetchDescriptor<SessionType>())
-        let customEmailTemplates = try context.fetch(FetchDescriptor<EmailTemplate>())
+        let customSessionTypes = try context.fetch(FetchDescriptor<SessionCategory>())
+        let customEmailTemplates = try context.fetch(FetchDescriptor<SavedEmailTemplate>())
         let availabilitySlots = try context.fetch(FetchDescriptor<AvailabilitySlot>())
         let availabilityOverrides = try context.fetch(FetchDescriptor<AvailabilityOverride>())
         let sessionRateConfigs = try context.fetch(FetchDescriptor<SessionRateConfig>())
@@ -664,8 +664,8 @@ actor RecoveryService {
         try context.delete(model: Client.self)
         try context.delete(model: PieceImage.self)
         try context.delete(model: UserProfile.self)
-        try context.delete(model: SessionType.self)
-        try context.delete(model: EmailTemplate.self)
+        try context.delete(model: SessionCategory.self)
+        try context.delete(model: SavedEmailTemplate.self)
         try context.delete(model: AvailabilitySlot.self)
         try context.delete(model: AvailabilityOverride.self)
         try context.delete(model: SessionRateConfig.self)
@@ -725,7 +725,7 @@ actor RecoveryService {
         }
 
         for cet in backup.customEmailTemplates {
-            let obj = EmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: EmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
+            let obj = SavedEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: SavedEmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
             obj.createdAt = cet.createdAt
             obj.updatedAt = cet.updatedAt
             context.insert(obj)

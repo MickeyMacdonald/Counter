@@ -22,7 +22,7 @@ final class PreviewContainer {
             AvailabilitySlot.self,
             PieceImage.self,
             Payment.self,
-            EmailTemplate.self,
+            SavedEmailTemplate.self,
             AvailabilityOverride.self,
             SessionType.self,
             FlashPriceTier.self,

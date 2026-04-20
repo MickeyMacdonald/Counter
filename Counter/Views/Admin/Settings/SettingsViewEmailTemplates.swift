@@ -2,15 +2,15 @@ import SwiftUI
 import SwiftData
 
 // Make EmailTemplate usable with .sheet(item:)
-extension EmailTemplate: Identifiable {}
+extension SavedEmailTemplate: Identifiable {}
 
 struct SettingsViewEmailTemplates: View {
-    @Query(sort: \EmailTemplate.name) private var customTemplates: [EmailTemplate]
+    @Query(sort: \SavedEmailTemplate.name) private var customTemplates: [SavedEmailTemplate]
     @Environment(\.modelContext) private var modelContext
 
     @State private var showingNewTemplate = false
-    @State private var editingTemplate: EmailTemplate?
-    @State private var customizingBuiltIn: EmailTemplate?
+    @State private var editingTemplate: SavedEmailTemplate?
+    @State private var customizingBuiltIn: SavedEmailTemplate?
 
     var body: some View {
         List {
@@ -48,7 +48,7 @@ struct SettingsViewEmailTemplates: View {
             }
 
             // MARK: Built-In Templates
-            ForEach(EmailTemplate.TemplateCategory.allCases, id: \.self) { category in
+            ForEach(SavedEmailTemplate.TemplateCategory.allCases, id: \.self) { category in
                 let templates = EmailTemplates.templates(for: category)
                 if !templates.isEmpty {
                     Section(category.rawValue) {
@@ -97,7 +97,7 @@ struct SettingsViewEmailTemplates: View {
 private struct TemplateListRow: View {
     let name: String
     let subject: String
-    let category: EmailTemplate.TemplateCategory
+    let category: SavedEmailTemplate.TemplateCategory
     let isCustom: Bool
 
     var body: some View {

@@ -3,17 +3,17 @@ import SwiftData
 
 /// A user-created email template stored persistently in SwiftData.
 @Model
-final class EmailTemplate {
+final class SavedEmailTemplate {
     var name: String
     var subject: String
     var body: String
-    /// Stores the raw value of EmailTemplate.TemplateCategory
+    /// Stores the raw value of SavedEmailTemplate.TemplateCategory
     var categoryRaw: String
     var createdAt: Date
     var updatedAt: Date
 
-    var category: EmailTemplate.TemplateCategory {
-        get { EmailTemplate.TemplateCategory(rawValue: categoryRaw) ?? .custom }
+    var category: SavedEmailTemplate.TemplateCategory {
+        get { SavedEmailTemplate.TemplateCategory(rawValue: categoryRaw) ?? .custom }
         set { categoryRaw = newValue.rawValue }
     }
 
@@ -21,7 +21,7 @@ final class EmailTemplate {
         name: String = "",
         subject: String = "",
         body: String = "",
-        category: EmailTemplate.TemplateCategory = .custom
+        category: SavedEmailTemplate.TemplateCategory = .custom
     ) {
         self.name = name
         self.subject = subject

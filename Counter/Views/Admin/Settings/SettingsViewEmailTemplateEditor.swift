@@ -73,9 +73,9 @@ enum TemplateToken: String, CaseIterable {
 struct SettingsViewEmailTemplateEditor: View {
     enum Mode {
         case create
-        case edit(EmailTemplate)
+        case edit(SavedEmailTemplate)
         /// Opens a built-in template for customization; saves as a new custom template.
-        case fromBuiltIn(EmailTemplate)
+        case fromBuiltIn(SavedEmailTemplate)
     }
 
     let mode: Mode
@@ -84,7 +84,7 @@ struct SettingsViewEmailTemplateEditor: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String = ""
-    @State private var category: EmailTemplate.TemplateCategory = .custom
+    @State private var category: SavedEmailTemplate.TemplateCategory = .custom
     @State private var subject: String = ""
     @State private var bodyText: String = ""
 
@@ -143,7 +143,7 @@ struct SettingsViewEmailTemplateEditor: View {
                 Section("Template Info") {
                     TextField("Template name", text: $name)
                     Picker("Category", selection: $category) {
-                        ForEach(EmailTemplate.TemplateCategory.allCases, id: \.self) { cat in
+                        ForEach(SavedEmailTemplate.TemplateCategory.allCases, id: \.self) { cat in
                             Label(cat.rawValue, systemImage: cat.systemImage).tag(cat)
                         }
                     }
@@ -312,7 +312,7 @@ struct SettingsViewEmailTemplateEditor: View {
     private func save() {
         switch mode {
         case .create, .fromBuiltIn:
-            let template = EmailTemplate(
+            let template = SavedEmailTemplate(
                 name: name.trimmingCharacters(in: .whitespaces),
                 subject: subject.trimmingCharacters(in: .whitespaces),
                 body: bodyText.trimmingCharacters(in: .whitespaces),

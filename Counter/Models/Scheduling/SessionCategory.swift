@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class SessionType {
+final class SessionCategory {
     var uuid: UUID
     var name: String
     var isChargeable: Bool

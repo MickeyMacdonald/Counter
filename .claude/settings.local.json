@@ -35,7 +35,27 @@
       "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/\\\\.imageGroup/\\\\.sessionProgress/g' {} \\\\;)",
       "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/imageGroups/sessionProgress/g' {} \\\\;)",
       "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/sessionProgresss/sessionProgress/g' {} \\\\;)",
-      "Bash(git commit -m 'Refactor models: simplify naming and improve structure *)"
+      "Bash(git commit -m 'Refactor models: simplify naming and improve structure *)",
+      "Bash(git commit -m 'Organize services into domain-based folder hierarchy *)",
+      "Bash(git commit -m 'Update pbxproj file references for Services folder hierarchy *)",
+      "Bash(git commit -m 'Fix pbxproj: add Services subgroups and move views to correct groups *)",
+      "Bash(git commit -m 'Fix pbxproj: add Models subgroups and fix all file references *)",
+      "Bash(git commit -m 'Fix pbxproj: move GalleryGroup from Configuration to Gallery group *)",
+      "Bash(find Counter -name \"*.swift\" -exec sed -i '' 's/final class SessionType/final class SessionCategory/g; s/\\\\bSessionType\\(\\\\b/SessionCategory\\(/g' {} \\\\;)",
+      "Bash(find Counter -name \"*.swift\" -exec sed -i '' 's/final class EmailTemplate/final class SavedEmailTemplate/g' {} \\\\;)",
+      "Bash(sed -i '' 's/SessionType\\\\.self/SessionCategory.self/g' Counter/Services/Schema/CounterSchemaV1.swift Counter/Services/Schema/CounterSchemaV2.swift)",
+      "Bash(sed -i '' 's/EmailTemplate\\\\.self/SavedEmailTemplate.self/g' Counter/Services/Schema/CounterSchemaV1.swift Counter/Services/Schema/CounterSchemaV2.swift Counter/Services/Preview/PreviewContainer.swift)",
+      "Bash(sed -i '' 's/FetchDescriptor<SessionType>/FetchDescriptor<SessionCategory>/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(sed -i '' 's/context\\\\.delete\\(model: SessionType\\\\.self\\)/context.delete\\(model: SessionCategory.self\\)/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(sed -i '' 's/FetchDescriptor<EmailTemplate>/FetchDescriptor<SavedEmailTemplate>/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(sed -i '' 's/context\\\\.delete\\(model: EmailTemplate\\\\.self\\)/context.delete\\(model: SavedEmailTemplate.self\\)/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(sed -i '' 's/let obj = EmailTemplate\\(name:/let obj = SavedEmailTemplate\\(name:/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(sed -i '' 's/case edit\\(EmailTemplate\\)/case edit\\(SavedEmailTemplate\\)/g; s/case fromBuiltIn\\(EmailTemplate\\)/case fromBuiltIn\\(SavedEmailTemplate\\)/g; s/@State private var category: EmailTemplate\\\\.TemplateCategory/@State private var category: SavedEmailTemplate.TemplateCategory/g; s/ForEach\\(EmailTemplate\\\\.TemplateCategory/ForEach\\(SavedEmailTemplate.TemplateCategory/g; s/let template = EmailTemplate\\(/let template = SavedEmailTemplate\\(/g' Counter/Views/Admin/Settings/SettingsViewEmailTemplateEditor.swift)",
+      "Bash(sed -i '' 's/extension EmailTemplate:/extension SavedEmailTemplate:/g; s/@Query\\(sort: \\\\\\\\EmailTemplate\\\\.name\\) private var customTemplates: \\\\[EmailTemplate\\\\]/@Query\\(sort: \\\\\\\\SavedEmailTemplate.name\\) private var customTemplates: [SavedEmailTemplate]/g; s/@State private var editingTemplate: EmailTemplate?/@State private var editingTemplate: SavedEmailTemplate?/g; s/@State private var customizingBuiltIn: EmailTemplate?/@State private var customizingBuiltIn: SavedEmailTemplate?/g; s/ForEach\\(EmailTemplate\\\\.TemplateCategory/ForEach\\(SavedEmailTemplate.TemplateCategory/g; s/let category: EmailTemplate\\\\.TemplateCategory/let category: SavedEmailTemplate.TemplateCategory/g' Counter/Views/Admin/Settings/SettingsViewEmailTemplates.swift)",
+      "Bash(sed -i '' 's/EmailTemplate\\\\.TemplateCategory/SavedEmailTemplate.TemplateCategory/g' Counter/Models/Configuration/EmailTemplate.swift)",
+      "Bash(sed -i '' 's/let template: EmailTemplate?/let template: SavedEmailTemplate?/g; s/@Query\\(sort: \\\\\\\\EmailTemplate\\\\.name\\) private var customTemplates: \\\\[EmailTemplate\\\\]/@Query\\(sort: \\\\\\\\SavedEmailTemplate.name\\) private var customTemplates: [SavedEmailTemplate]/g; s/@State private var selectedTemplate: EmailTemplate?/@State private var selectedTemplate: SavedEmailTemplate?/g; s/@State private var editingCustomTemplate: EmailTemplate?/@State private var editingCustomTemplate: SavedEmailTemplate?/g; s/ForEach\\(EmailTemplate\\\\.TemplateCategory/ForEach\\(SavedEmailTemplate.TemplateCategory/g; s/let category: EmailTemplate\\\\.TemplateCategory/let category: SavedEmailTemplate.TemplateCategory/g' Counter/Services/Communication/EmailService.swift)",
+      "Bash(sed -i '' 's/EmailTemplate\\\\.TemplateCategory/SavedEmailTemplate.TemplateCategory/g' Counter/Services/Recovery/RecoveryService.swift)",
+      "Bash(git commit -m 'Resolve naming conflicts from model renames *)"
     ]
   }
 }

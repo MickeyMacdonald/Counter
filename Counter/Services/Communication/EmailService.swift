@@ -64,7 +64,7 @@ struct EmailComposerView: UIViewControllerRepresentable {
 /// Composition sheet — pre-populated from a template and editable before sending.
 struct SendEmailView: View {
     let client: Client
-    let template: EmailTemplate?
+    let template: SavedEmailTemplate?
     let piece: Piece?
 
     @Environment(\.modelContext) private var modelContext
@@ -347,11 +347,11 @@ struct EmailTemplatePickerView: View {
     let piece: Piece?
 
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \EmailTemplate.name) private var customTemplates: [EmailTemplate]
+    @Query(sort: \SavedEmailTemplate.name) private var customTemplates: [SavedEmailTemplate]
 
-    @State private var selectedTemplate: EmailTemplate?
+    @State private var selectedTemplate: SavedEmailTemplate?
     @State private var showingSendView = false
-    @State private var editingCustomTemplate: EmailTemplate?
+    @State private var editingCustomTemplate: SavedEmailTemplate?
 
     var body: some View {
         NavigationStack {
@@ -399,7 +399,7 @@ struct EmailTemplatePickerView: View {
                 }
 
                 // Built-in templates grouped by category
-                ForEach(EmailTemplate.TemplateCategory.allCases, id: \.self) { category in
+                ForEach(SavedEmailTemplate.TemplateCategory.allCases, id: \.self) { category in
                     let templates = EmailTemplates.templates(for: category)
                     if !templates.isEmpty {
                         Section(category.rawValue) {
@@ -445,7 +445,7 @@ struct EmailTemplatePickerView: View {
 private struct PickerTemplateRow: View {
     let name: String
     let subject: String
-    let category: EmailTemplate.TemplateCategory
+    let category: SavedEmailTemplate.TemplateCategory
 
     var body: some View {
         Label {
