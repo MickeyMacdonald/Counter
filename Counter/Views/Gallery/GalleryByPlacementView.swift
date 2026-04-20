@@ -4,6 +4,7 @@ import SwiftData
 /// Gallery sub-view showing images organized by body placement.
 struct GalleryByPlacementView: View {
     let pieces: [Piece]
+    var categoryFilter: Set<ImageCategory> = []
 
     @State private var selectedFullScreenImages: [WorkImage] = []
     @State private var selectedFullScreenImage: WorkImage?
@@ -15,7 +16,8 @@ struct GalleryByPlacementView: View {
         var grouped: [String: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             let placement = piece.bodyPlacement.isEmpty ? "Unspecified" : piece.bodyPlacement
-            for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {
+            for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder })
+                where categoryFilter.isEmpty || categoryFilter.contains(image.category) {
                 grouped[placement, default: []].append((image, piece))
             }
         }

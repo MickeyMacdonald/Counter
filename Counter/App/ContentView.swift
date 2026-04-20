@@ -72,7 +72,7 @@ enum AppTab: String, CaseIterable {
         case .settings: "Admin"
         case .work:    "Work"
         case .schedule: "Schedule"
-        case .gallery:  "Gallery"
+        case .gallery:  "Library"
         }
     }
 

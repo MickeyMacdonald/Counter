@@ -12,6 +12,7 @@ final class AppNavigationCoordinator {
     var selectedTab: AppTab = .work
 
     // MARK: - Works deep-link
+
     /// When non-nil, `WorksTabView` should switch to the Clients section
     /// and select this client in the sidebar.
     var pendingClient: Client?
@@ -20,10 +21,15 @@ final class AppNavigationCoordinator {
     /// and select this piece in the sidebar.
     var pendingPiece: Piece?
 
-    // MARK: - Bookings deep-link
+    // MARK: - Scheduling deep-link
 
-    /// When non-nil, `SessionsTabView` should switch to the Sessions group
-    /// and highlight this session in the list.
+    /// When non-nil, `SchedulingView` should switch to the Sessions group
+    /// and select this booking.
+    var pendingBooking: Booking?
+
+    /// Legacy: navigating from PieceDetailView sessions list. Switches to
+    /// the schedule tab; the Sessions group now shows Bookings so this is
+    /// not consumed by SchedulingView — use `navigateToBooking` instead.
     var pendingSession: Session?
 
     // MARK: - Gallery deep-link
@@ -54,10 +60,17 @@ final class AppNavigationCoordinator {
         }
     }
 
-    /// Navigate to a session in the Bookings → Sessions list (switches tab).
+    /// Navigate to a booking in the Scheduling → Sessions list (switches tab).
+    func navigateToBooking(_ booking: Booking) {
+        selectedTab    = .schedule
+        Task { @MainActor in
+            self.pendingBooking = booking
+        }
+    }
+
+    /// Navigate to a session in the Scheduling tab (legacy — switches tab only).
     func navigateToSession(_ session: Session) {
         selectedTab = .schedule
-        // Delay one run-loop so SessionsTabView has appeared before consuming.
         Task { @MainActor in
             self.pendingSession = session
         }

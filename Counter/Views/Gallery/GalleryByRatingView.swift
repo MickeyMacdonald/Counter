@@ -4,6 +4,7 @@ import SwiftData
 /// Gallery sub-view showing images from rated pieces, grouped by star rating (highest first).
 struct GalleryByRatingView: View {
     let pieces: [Piece]
+    var categoryFilter: Set<ImageCategory> = []
 
     @Environment(BusinessLockManager.self) private var lockManager
     @State private var selectedFullScreenImages: [WorkImage] = []
@@ -16,7 +17,8 @@ struct GalleryByRatingView: View {
         var grouped: [Int: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             guard let rating = piece.rating else { continue }
-            for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {
+            for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder })
+                where categoryFilter.isEmpty || categoryFilter.contains(image.category) {
                 grouped[rating, default: []].append((image, piece))
             }
         }

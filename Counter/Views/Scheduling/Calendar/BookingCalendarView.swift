@@ -512,6 +512,11 @@ struct BookingRowView: View {
 
     private var prepTasks: [PrepTask] { booking.prepTasks }
 
+    private func effectiveCompletion(for task: PrepTask) -> Bool {
+        let overridden = booking.checklistOverrides.contains(task.label)
+        return overridden ? !task.isComplete : task.isComplete
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 12) {
@@ -523,20 +528,16 @@ struct BookingRowView: View {
                 // Time column
                 VStack(alignment: .leading, spacing: 2) {
                     Text(booking.startTime.formatted(date: .omitted, time: .shortened))
-                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
                     Text(booking.durationFormatted)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
-                .frame(width: 70, alignment: .leading)
-
-                // Status indicator
-                Image(systemName: booking.status.systemImage)
-                    .foregroundStyle(statusColor(booking.status))
-                    .font(.caption)
+                .frame(width: 80, alignment: .leading)
 
                 // Details
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     if let client = booking.client {
                         Text(client.fullName)
                             .font(.subheadline.weight(.medium))
@@ -546,13 +547,23 @@ struct BookingRowView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    HStack(spacing: 4) {
-                        Image(systemName: booking.bookingType.systemImage)
-                            .font(.caption2)
-                        Text(booking.bookingType.rawValue)
-                            .font(.caption)
+                    HStack(spacing: 8) {
+                        HStack(spacing: 4) {
+                            Image(systemName: booking.bookingType.systemImage)
+                                .font(.caption2)
+                            Text(booking.bookingType.rawValue)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(booking.bookingType.color)
+
+                        HStack(spacing: 3) {
+                            Image(systemName: booking.status.systemImage)
+                                .font(.caption2)
+                            Text(booking.status.rawValue)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(statusColor(booking.status))
                     }
-                    .foregroundStyle(booking.bookingType.color)
                 }
 
                 Spacer()
@@ -568,13 +579,14 @@ struct BookingRowView: View {
             if !prepTasks.isEmpty {
                 HStack(spacing: 8) {
                     ForEach(prepTasks) { task in
+                        let done = effectiveCompletion(for: task)
                         HStack(spacing: 3) {
-                            Image(systemName: task.isComplete ? "checkmark.circle.fill" : "circle")
+                            Image(systemName: done ? "checkmark.circle.fill" : "circle")
                                 .font(.caption2)
-                                .foregroundStyle(task.isComplete ? .green : .secondary)
+                                .foregroundStyle(done ? .green : .secondary)
                             Text(task.label)
                                 .font(.caption2)
-                                .foregroundStyle(task.isComplete ? .primary : .secondary)
+                                .foregroundStyle(done ? .primary : .secondary)
                         }
                     }
                 }

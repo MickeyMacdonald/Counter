@@ -60,7 +60,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
         [
             CounterSchemaV1.self,
             CounterSchemaV2.self,
-            CounterSchemaV3.self
+            CounterSchemaV3.self,
+            CounterSchemaV4.self
         ]
     }
 
@@ -136,6 +137,13 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
                     }
                     try context.save()
                 }
+            ),
+
+            // V3 → V4: additive. Adds `BookingTaskTemplate` as a new entity.
+            // Lightweight is correct: no existing rows are transformed.
+            .lightweight(
+                fromVersion: CounterSchemaV3.self,
+                toVersion: CounterSchemaV4.self
             )
         ]
     }

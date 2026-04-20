@@ -25,6 +25,7 @@ struct AddSessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss)      private var dismiss
     @Query(sort: \Client.lastName) private var allClients: [Client]
+    @Query(sort: \BookingTaskTemplate.sortOrder) private var taskTemplates: [BookingTaskTemplate]
 
     // MARK: - Client step state
     @State private var selectedClient: Client?
@@ -348,10 +349,18 @@ struct AddSessionView: View {
 
     // MARK: - Save
 
+    private func applyTemplates(to booking: Booking) {
+        let tasks = taskTemplates
+            .filter { $0.bookingType == booking.bookingType && $0.isEnabled }
+            .map { BookingCustomTask(label: $0.label) }
+        booking.customChecklistItems = tasks
+    }
+
     private func saveFlash() {
         let booking = Booking(date: flashDate, startTime: flashStart, endTime: flashEnd,
                               status: .confirmed, bookingType: .flashPickup,
                               client: effectiveClient, piece: selectedFlashPiece)
+        applyTemplates(to: booking)
         modelContext.insert(booking)
         dismiss()
     }
@@ -361,6 +370,7 @@ struct AddSessionView: View {
         let booking = Booking(date: customDate, startTime: customStart, endTime: customEnd,
                               status: .confirmed, bookingType: bookingType,
                               notes: customNotes, client: effectiveClient)
+        applyTemplates(to: booking)
         modelContext.insert(booking)
         dismiss()
     }

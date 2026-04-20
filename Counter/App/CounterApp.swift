@@ -28,7 +28,7 @@ struct CounterApp: App {
             // chain V1 → V2 → V3 is declared in CounterMigrationPlan.
             // Fresh installs land directly at V3; existing stores migrate
             // forward automatically on first launch.
-            let schema = Schema(versionedSchema: CounterSchemaV3.self)
+            let schema = Schema(versionedSchema: CounterSchemaV4.self)
             let config = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false

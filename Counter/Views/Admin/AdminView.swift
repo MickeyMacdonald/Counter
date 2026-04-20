@@ -20,6 +20,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 
     case clientMode     = "Client Mode"
     case pieces         = "Pieces"
+    case taskTemplates  = "Task Templates"
     
     // Analytics
     case statistics     = "Statistics"
@@ -43,7 +44,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
                 .clientMode,
                 .pieces,
                 .rates,
-                .schedule:
+                .schedule,
+                .taskTemplates:
             return .settings
         case .statistics,
                 .trends:
@@ -71,7 +73,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .pieces:         "paintbrush.pointed.fill"
         case .recovery:       "arrow.clockwise.icloud"
         case .schedule:       "book.badge.plus"
-        case .rates :         "plus.forwardslash.minus"
+        case .rates:          "plus.forwardslash.minus"
+        case .taskTemplates:  "checklist"
         }
     }
 }
@@ -93,6 +96,7 @@ struct SettingsView: View {
                                                              .clientMode,
                                                              .emailTemplates,
                                                              .schedule,
+                                                             .taskTemplates,
                                                              .rates,
                                                              .about,
                                                              .recovery,
@@ -198,6 +202,8 @@ struct SettingsView: View {
             SettingsViewRecovery()
         case .support:
             SettingsViewDonation()
+        case .taskTemplates:
+            SettingsViewTaskTemplates()
         case .rates:
             SettingsViewFinancial()
         }

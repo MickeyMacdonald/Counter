@@ -4,6 +4,7 @@ import SwiftData
 /// Gallery sub-view showing images organized by client, then by piece.
 struct GalleryByClientView: View {
     let clients: [Client]
+    var categoryFilter: Set<ImageCategory> = []
 
     @State private var selectedFullScreenImages: [WorkImage] = []
     @State private var selectedFullScreenImage: WorkImage?
@@ -88,7 +89,10 @@ struct GalleryByClientView: View {
                             .padding(.horizontal, 14)
 
                         let images = piece.sortedSessionProgress.flatMap { group in
-                            group.images.sorted { $0.sortOrder < $1.sortOrder }.map { (image: $0, stage: group.stage) }
+                            group.images
+                                .sorted { $0.sortOrder < $1.sortOrder }
+                                .filter { categoryFilter.isEmpty || categoryFilter.contains($0.category) }
+                                .map { (image: $0, stage: group.stage) }
                         }
 
                         LazyVGrid(columns: columns, spacing: 6) {

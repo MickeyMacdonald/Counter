@@ -11,8 +11,8 @@ enum ScheduleGroup: String, CaseIterable {
 }
 
 // MARK: - Bookings Sidebar Section
-// Used only for the Tasks, Scheduling and Sessions. Calendar functionality
-// The Sessions group renders its own item list directly in the sidebar.
+// Used only for the Tasks and Calendar groups.
+// The Sessions group renders Booking rows directly in the sidebar.
 
 enum ScheduleSection: String, CaseIterable, Hashable, Identifiable {
     case todo    = "To Do"
@@ -48,9 +48,9 @@ enum ScheduleSection: String, CaseIterable, Hashable, Identifiable {
 struct SchedulingView: View {
     @Environment(AppNavigationCoordinator.self) private var coordinator
 
-    @State private var group: ScheduleGroup            = .tasks
+    @State private var group: ScheduleGroup              = .tasks
     @State private var selectedSection: ScheduleSection? = .list
-    @State private var selectedSession: Session?   = nil
+    @State private var selectedBooking: Booking?         = nil
     @State private var searchText = ""
 
     private var visibleSections: [ScheduleSection] {
@@ -77,11 +77,9 @@ struct SchedulingView: View {
                 Divider()
 
                 if group == .sessions {
-                    // Sessions group: actual session rows fill the sidebar
-                    SessionsSidebarList(selectedSession: $selectedSession,
-                                        searchText: $searchText)
+                    SessionsSidebarList(selectedBooking: $selectedBooking,
+                                       searchText: $searchText)
                 } else {
-                    // Tasks / Schedule groups: section links
                     List(visibleSections, selection: $selectedSection) { section in
                         Label(section.rawValue, systemImage: section.systemImage)
                             .tag(section)
@@ -101,13 +99,13 @@ struct SchedulingView: View {
         } detail: {
             NavigationStack {
                 if group == .sessions {
-                    if let session = selectedSession {
-                        SessionDetailView(session: session)
+                    if let booking = selectedBooking {
+                        BookingDetailView(booking: booking)
                     } else {
                         ContentUnavailableView(
-                            "Select a Session",
-                            systemImage: "clock.arrow.2.circlepath",
-                            description: Text("Choose a session from the list.")
+                            "Select a Booking",
+                            systemImage: "calendar.badge.clock",
+                            description: Text("Choose a booking from the list.")
                         )
                     }
                 } else if let section = selectedSection {
@@ -123,15 +121,14 @@ struct SchedulingView: View {
         }
         .onChange(of: group) {
             selectedSection = group == .sessions ? nil : visibleSections.first
-            selectedSession = nil
+            selectedBooking = nil
             searchText = ""
         }
-        // Deep-link: navigate to a specific session in the Sessions sidebar
-        .onAppear { consumePendingSession() }
-        .onChange(of: coordinator.pendingSession) { _, _ in consumePendingSession() }
+        .onAppear { consumePendingBooking() }
+        .onChange(of: coordinator.pendingBooking) { _, _ in consumePendingBooking() }
     }
 
-    // MARK: - Detail view dispatcher (Tasks / Schedule)
+    // MARK: - Detail view dispatcher (Tasks / Calendar)
 
     @ViewBuilder
     private func detailView(for section: ScheduleSection) -> some View {
@@ -140,20 +137,17 @@ struct SchedulingView: View {
         case .list:    BookingCalendarView(embedded: true, initialMode: .list)
         case .weekly:  BookingCalendarView(embedded: true, initialMode: .week)
         case .monthly: BookingCalendarView(embedded: true, initialMode: .month)
-        // case .daily:   BookingCalendarView(embedded: true, initialMode: ) //TODO: Fix this daily by adjusting the BookingCalendarView
+        // case .daily:   BookingCalendarView(embedded: true, initialMode: ) //TODO: Fix daily
         }
     }
 
     // MARK: - Deep-link consumer
 
-    private func consumePendingSession() {
-        guard let session = coordinator.pendingSession else { return }
-        // Clear pending immediately so onChange(of: group) doesn't see it
-        coordinator.pendingSession = nil
+    private func consumePendingBooking() {
+        guard let booking = coordinator.pendingBooking else { return }
+        coordinator.pendingBooking = nil
         group           = .sessions
         selectedSection = nil
-        // Defer selection to next run-loop tick so onChange(of: group) fires first
-        // and its `selectedSession = nil` reset doesn't overwrite our value.
-        Task { @MainActor in selectedSession = session }
+        Task { @MainActor in selectedBooking = booking }
     }
 }

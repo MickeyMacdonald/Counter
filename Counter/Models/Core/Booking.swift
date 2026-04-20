@@ -60,6 +60,8 @@ final class Booking {
             ]
         case .session:
             return stageChecklist(for: piece, stages: [.sketch, .lineart, .stencil])
+        case .prep:
+            return stageChecklist(for: piece, stages: [.sketch, .stencil])
         case .touchUp:
             return stageChecklist(for: piece, stages: [.freshlyTattooed, .healed])
         case .flashPickup:
@@ -162,25 +164,28 @@ enum BookingStatus: String, Codable, CaseIterable {
 
 enum BookingType: String, Codable, CaseIterable {
     case consultation = "Consultation"
-    case session = "Session"
-    case touchUp = "Touch-Up"
-    case flashPickup = "Flash Pickup"
+    case session      = "Session"
+    case prep         = "Prep"
+    case touchUp      = "Touch-Up"
+    case flashPickup  = "Flash Pickup"
 
     var systemImage: String {
         switch self {
         case .consultation: "bubble.left.and.bubble.right"
-        case .session: "paintbrush.pointed"
-        case .touchUp: "bandage"
-        case .flashPickup: "bolt.fill"
+        case .session:      "paintbrush.pointed"
+        case .prep:         "pencil.tip"
+        case .touchUp:      "bandage"
+        case .flashPickup:  "bolt.fill"
         }
     }
 
     var color: Color {
         switch self {
         case .consultation: .blue
-        case .session: .purple
-        case .touchUp: .orange
-        case .flashPickup: .yellow
+        case .session:      .purple
+        case .prep:         .teal
+        case .touchUp:      .orange
+        case .flashPickup:  .yellow
         }
     }
 }

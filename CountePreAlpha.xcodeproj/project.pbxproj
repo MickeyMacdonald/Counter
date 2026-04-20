@@ -53,7 +53,6 @@
 		AA000036 /* AvailabilitySlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000036 /* AvailabilitySlot.swift */; };
 		AA000037 /* BookingCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000037 /* BookingCalendarView.swift */; };
 		AA000038 /* BookingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000038 /* BookingDetailView.swift */; };
-		AA000039 /* BookingEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000039 /* BookingEditView.swift */; };
 		AA000040 /* DayBookingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000040 /* DayBookingListView.swift */; };
 		AA000041 /* AdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000041 /* AdminView.swift */; };
 		AA000043 /* SettingsViewAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000043 /* SettingsViewAvailability.swift */; };
@@ -113,6 +112,10 @@
 		AA000098 /* CounterSchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000098 /* CounterSchemaV3.swift */; };
 		AA000099 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000099 /* PermissionService.swift */; };
 		AA000100 /* PhotoImportMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000100 /* PhotoImportMetadataView.swift */; };
+		AA000101 /* BookingTaskTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000101 /* BookingTaskTemplate.swift */; };
+		AA000102 /* CounterSchemaV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000102 /* CounterSchemaV4.swift */; };
+		AA000103 /* SettingsViewTaskTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000103 /* SettingsViewTaskTemplates.swift */; };
+		AA000104 /* GalleryByPieceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000104 /* GalleryByPieceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -162,7 +165,6 @@
 		AB000036 /* AvailabilitySlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySlot.swift; sourceTree = "<group>"; };
 		AB000037 /* BookingCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingCalendarView.swift; sourceTree = "<group>"; };
 		AB000038 /* BookingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailView.swift; sourceTree = "<group>"; };
-		AB000039 /* BookingEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingEditView.swift; sourceTree = "<group>"; };
 		AB000040 /* DayBookingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayBookingListView.swift; sourceTree = "<group>"; };
 		AB000041 /* AdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminView.swift; sourceTree = "<group>"; };
 		AB000043 /* SettingsViewAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewAvailability.swift; sourceTree = "<group>"; };
@@ -222,6 +224,10 @@
 		AB000098 /* CounterSchemaV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV3.swift; sourceTree = "<group>"; };
 		AB000099 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		AB000100 /* PhotoImportMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportMetadataView.swift; sourceTree = "<group>"; };
+		AB000101 /* BookingTaskTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingTaskTemplate.swift; sourceTree = "<group>"; };
+		AB000102 /* CounterSchemaV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV4.swift; sourceTree = "<group>"; };
+		AB000103 /* SettingsViewTaskTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewTaskTemplates.swift; sourceTree = "<group>"; };
+		AB000104 /* GalleryByPieceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPieceView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -252,6 +258,7 @@
 				AB000087 /* SettingsViewPieces.swift */,
 				AB000080 /* SettingsViewDonation.swift */,
 				AB000090 /* SettingsViewRecovery.swift */,
+				AB000103 /* SettingsViewTaskTemplates.swift */,
 				AB000062 /* BusinessLockView.swift */,
 			);
 			path = Settings;
@@ -280,7 +287,6 @@
 				AB000037 /* BookingCalendarView.swift */,
 				AB000038 /* BookingDetailView.swift */,
 				AB000040 /* DayBookingListView.swift */,
-				AB000039 /* BookingEditView.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -456,6 +462,7 @@
 				AB000083 /* GalleryByCustomGroupView.swift */,
 				AB000092 /* GalleryByPriceView.swift */,
 				AB000071 /* FlashPortfolioView.swift */,
+				AB000104 /* GalleryByPieceView.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -516,6 +523,7 @@
 				AB000094 /* CounterSchemaV2.swift */,
 				AB000095 /* CounterMigrationPlan.swift */,
 				AB000098 /* CounterSchemaV3.swift */,
+				AB000102 /* CounterSchemaV4.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -551,6 +559,7 @@
 				AB000004 /* Piece.swift */,
 				AB000007 /* Session.swift */,
 				AB000035 /* Booking.swift */,
+				AB000101 /* BookingTaskTemplate.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -721,7 +730,6 @@
 				AA000037 /* BookingCalendarView.swift in Sources */,
 				790D13382F87126800C31CE2 /* SettingsAvailabilityView.swift in Sources */,
 				AA000038 /* BookingDetailView.swift in Sources */,
-				AA000039 /* BookingEditView.swift in Sources */,
 				AA000040 /* DayBookingListView.swift in Sources */,
 				AA000041 /* AdminView.swift in Sources */,
 				AA000043 /* SettingsViewAvailability.swift in Sources */,
@@ -787,6 +795,10 @@
 				AA000098 /* CounterSchemaV3.swift in Sources */,
 				AA000099 /* PermissionService.swift in Sources */,
 				AA000100 /* PhotoImportMetadataView.swift in Sources */,
+				AA000101 /* BookingTaskTemplate.swift in Sources */,
+				AA000102 /* CounterSchemaV4.swift in Sources */,
+				AA000103 /* SettingsViewTaskTemplates.swift in Sources */,
+				AA000104 /* GalleryByPieceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

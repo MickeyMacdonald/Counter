@@ -5,6 +5,7 @@ import SwiftData
 /// Each stage is a collapsible section with a grid of images.
 struct GalleryByStageView: View {
     let pieces: [Piece]
+    var categoryFilter: Set<ImageCategory> = []
 
     @Environment(BusinessLockManager.self) private var lockManager
     @State private var selectedFullScreenImages: [WorkImage] = []
@@ -19,18 +20,17 @@ struct GalleryByStageView: View {
             // Work photos from session image groups
             for session in piece.sessions {
                 for group in session.sessionProgress {
-                    for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
+                    for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder })
+                        where categoryFilter.isEmpty || categoryFilter.contains(image.category) {
                         grouped[group.stage, default: []].append((image, piece))
                     }
                 }
             }
             // Legacy: also check piece.sessionProgress for backward compat
             for group in piece.sessionProgress {
-                for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
-                    // Avoid duplicates if already added via session
-                    if group.session == nil {
-                        grouped[group.stage, default: []].append((image, piece))
-                    }
+                for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder })
+                    where group.session == nil && (categoryFilter.isEmpty || categoryFilter.contains(image.category)) {
+                    grouped[group.stage, default: []].append((image, piece))
                 }
             }
         }

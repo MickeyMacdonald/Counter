@@ -4,31 +4,52 @@ import SwiftData
 // MARK: - Admin Gallery Group
 
 enum AdminGalleryGroup: String, CaseIterable {
-    case library = "Library"
-    case custom  = "Custom"
-    case flash   = "Flash"
+    case all       = "All"
+    case portfolio = "Portfolio"
+    case flash     = "Flash"
 }
 
-// MARK: - Library Filter (Admin)
+// MARK: - All Filter (Admin)
 
-enum LibraryFilter: String, CaseIterable, Hashable, Identifiable {
-    case client    = "Client"
-    case placement = "Placement"
-    case size      = "Size"
-    case stage     = "Stage"
-    case price     = "Price"
-    case rating    = "Rating"
+enum AllFilter: String, CaseIterable, Hashable, Identifiable {
+    case client      = "Client"
+    case piece       = "Piece"
+    case placement   = "Placement"
+    case sessionType = "Session Type"
+    case rating      = "Rating"
 
     var id: String { rawValue }
 
     var systemImage: String {
         switch self {
-        case .client:    "person.2.fill"
-        case .placement: "figure.arms.open"
-        case .size:      "arrow.up.left.and.arrow.down.right"
-        case .stage:     "square.stack.3d.up.fill"
-        case .price:     "dollarsign.circle"
-        case .rating:    "star.fill"
+        case .client:      "person.2.fill"
+        case .piece:       "paintbrush.pointed.fill"
+        case .placement:   "figure.arms.open"
+        case .sessionType: "square.stack.3d.up.fill"
+        case .rating:      "star.fill"
+        }
+    }
+}
+
+// MARK: - Portfolio Sidebar Selection (Admin)
+
+enum PortfolioSelection: Hashable {
+    case customGroup(PersistentIdentifier)
+    case flash
+}
+
+// MARK: - Flash Admin Filter
+
+enum FlashAdminFilter: String, CaseIterable, Hashable, Identifiable {
+    case size  = "Size"
+    case price = "Price"
+
+    var id: String { rawValue }
+
+    var systemImage: String {
+        switch self {
+        case .size:  "arrow.up.left.and.arrow.down.right"
+        case .price: "dollarsign.circle"
         }
     }
 }
@@ -83,10 +104,12 @@ struct GalleryTabView: View {
     @Environment(AppNavigationCoordinator.self) private var coordinator
 
     // Admin state
-    @State private var adminGroup: AdminGalleryGroup = .library
-    @State private var libraryFilter: LibraryFilter? = .stage
-    @State private var selectedCustomGroup: GalleryGroup?
+    @State private var adminGroup: AdminGalleryGroup = .all
+    @State private var allFilter: AllFilter? = .client
+    @State private var portfolioSelection: PortfolioSelection? = .flash
+    @State private var flashFilter: FlashAdminFilter? = .size
     @State private var clientFilter: Client? = nil
+    @State private var categoryFilter: Set<ImageCategory> = []
 
     // Client state
     @State private var clientGroup: ClientGalleryGroup = .portfolio
@@ -135,7 +158,7 @@ struct GalleryTabView: View {
                 }
             }
             .toolbarBackground(AppTab.gallery.sidebarTint.opacity(0.55), for: .navigationBar)
-            .navigationTitle("Gallery")
+            .navigationTitle("Library")
             .navigationBarTitleDisplayMode(.inline)
         } detail: {
             VStack(spacing: 0) {
@@ -153,18 +176,22 @@ struct GalleryTabView: View {
         }
         .onChange(of: coordinator.pendingGalleryClient) { _, client in
             guard let client else { return }
-            adminGroup = .library
-            libraryFilter = .client
+            adminGroup = .all
+            allFilter = .client
             clientFilter = client
             coordinator.pendingGalleryClient = nil
         }
         .onChange(of: adminGroup) {
             searchText = ""
             clientFilter = nil
-            if adminGroup == .custom { selectedCustomGroup = customGroups.first }
+            categoryFilter = []
+            if adminGroup == .portfolio, portfolioSelection == nil {
+                portfolioSelection = customGroups.first.map { .customGroup($0.persistentModelID) } ?? .flash
+            }
         }
-        .onChange(of: libraryFilter) {
-            if libraryFilter != .client { clientFilter = nil }
+        .onChange(of: allFilter) {
+            if allFilter != .client { clientFilter = nil }
+            categoryFilter = []
         }
         .onChange(of: lockManager.isLocked) {
             if lockManager.isLocked { sortOrder = .chronological }
@@ -184,29 +211,42 @@ struct GalleryTabView: View {
     @ViewBuilder
     private var adminSidebar: some View {
         switch adminGroup {
-        case .library:
-            List(LibraryFilter.allCases, selection: $libraryFilter) { filter in
+        case .all:
+            List(AllFilter.allCases, selection: $allFilter) { filter in
                 NavigationLink(value: filter) {
                     Label(filter.rawValue, systemImage: filter.systemImage)
                 }
             }
             .listStyle(.sidebar)
-        case .custom:
-            List(selection: $selectedCustomGroup) {
-                ForEach(customGroups) { group in
-                    Label(group.name, systemImage: "tag.fill")
-                        .tag(group)
+
+        case .portfolio:
+            List(selection: $portfolioSelection) {
+                Section("Custom") {
+                    ForEach(customGroups) { group in
+                        Label(group.name, systemImage: "tag.fill")
+                            .tag(PortfolioSelection.customGroup(group.persistentModelID))
+                    }
+                    Button {
+                        showAddCustomGroup = true
+                    } label: {
+                        Label("New Group", systemImage: "plus")
+                            .foregroundStyle(Color.accentColor)
+                    }
                 }
-                Button {
-                    showAddCustomGroup = true
-                } label: {
-                    Label("New Group", systemImage: "plus")
-                        .foregroundStyle(Color.accentColor)
+                Section("Flash") {
+                    Label("Flash Portfolio", systemImage: "bolt.fill")
+                        .tag(PortfolioSelection.flash)
                 }
             }
             .listStyle(.sidebar)
+
         case .flash:
-            Spacer()
+            List(FlashAdminFilter.allCases, selection: $flashFilter) { filter in
+                NavigationLink(value: filter) {
+                    Label(filter.rawValue, systemImage: filter.systemImage)
+                }
+            }
+            .listStyle(.sidebar)
         }
     }
 
@@ -230,34 +270,54 @@ struct GalleryTabView: View {
     @ViewBuilder
     private var adminDetail: some View {
         switch adminGroup {
-        case .library:
-            if let filter = libraryFilter {
-                libraryDetailView(for: filter)
+        case .all:
+            if let filter = allFilter {
+                VStack(spacing: 0) {
+                    ImageCategoryFilterBar(activeCategories: $categoryFilter)
+                    Divider()
+                    allDetailView(for: filter)
+                }
+                .navigationTitle(filter.rawValue)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) { sortMenu }
+                }
+            } else {
+                ContentUnavailableView("Select a Category", systemImage: "photo.on.rectangle.angled",
+                                       description: Text("Choose a category from the sidebar."))
+            }
+
+        case .portfolio:
+            switch portfolioSelection {
+            case .flash:
+                FlashPortfolioView()
+                    .navigationTitle("Flash")
+            case .customGroup(let id):
+                if let group = customGroups.first(where: { $0.persistentModelID == id }) {
+                    GalleryByCustomGroupView(group: group, pieces: sortedPieces)
+                        .navigationTitle(group.name)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) { sortMenu }
+                        }
+                } else {
+                    ContentUnavailableView("Group Not Found", systemImage: "tag",
+                                           description: Text("This group may have been deleted."))
+                }
+            case nil:
+                ContentUnavailableView("Select a Group", systemImage: "tag",
+                                       description: Text("Choose a group from the sidebar."))
+            }
+
+        case .flash:
+            if let filter = flashFilter {
+                flashDetailView(for: filter)
                     .navigationTitle(filter.rawValue)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) { sortMenu }
                     }
             } else {
-                ContentUnavailableView("Select a Category", systemImage: "photo.on.rectangle.angled",
+                ContentUnavailableView("Select a Category", systemImage: "bolt",
                                        description: Text("Choose a category from the sidebar."))
             }
-        case .custom:
-            if let group = selectedCustomGroup {
-                GalleryByCustomGroupView(group: group, pieces: sortedPieces)
-                    .navigationTitle(group.name)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) { sortMenu }
-                    }
-            } else {
-                ContentUnavailableView(
-                    "Select a Group",
-                    systemImage: "tag",
-                    description: Text("Choose a custom group from the sidebar.")
-                )
-            }
-        case .flash:
-            FlashPortfolioView()
-                .navigationTitle("Flash")
         }
     }
 
@@ -282,16 +342,23 @@ struct GalleryTabView: View {
     }
 
     @ViewBuilder
-    private func libraryDetailView(for filter: LibraryFilter) -> some View {
+    private func allDetailView(for filter: AllFilter) -> some View {
         switch filter {
         case .client:
             let displayed = clientFilter.map { [$0] } ?? clientsWithImages
-            GalleryByClientView(clients: displayed)
-        case .placement: GalleryByPlacementView(pieces: sortedPieces)
-        case .size:      GalleryBySizeView(pieces: sortedPieces)
-        case .stage:     GalleryByStageView(pieces: sortedPieces)
-        case .price:     GalleryByPriceView(pieces: sortedPieces)
-        case .rating:    GalleryByRatingView(pieces: sortedPieces)
+            GalleryByClientView(clients: displayed, categoryFilter: categoryFilter)
+        case .piece:       GalleryByPieceView(pieces: sortedPieces, categoryFilter: categoryFilter)
+        case .placement:   GalleryByPlacementView(pieces: sortedPieces, categoryFilter: categoryFilter)
+        case .sessionType: GalleryByStageView(pieces: sortedPieces, categoryFilter: categoryFilter)
+        case .rating:      GalleryByRatingView(pieces: sortedPieces, categoryFilter: categoryFilter)
+        }
+    }
+
+    @ViewBuilder
+    private func flashDetailView(for filter: FlashAdminFilter) -> some View {
+        switch filter {
+        case .size:  GalleryBySizeView(pieces: sortedPieces)
+        case .price: GalleryByPriceView(pieces: sortedPieces)
         }
     }
 
@@ -328,7 +395,7 @@ struct GalleryTabView: View {
 
     private var showsSearchBar: Bool {
         if lockManager.isLocked { return clientGroup == .portfolio }
-        return adminGroup == .library || adminGroup == .custom
+        return adminGroup == .all || adminGroup == .portfolio
     }
 
     // MARK: - Derived Data
@@ -395,13 +462,52 @@ struct GalleryTabView: View {
             sortIndex: customGroups.count
         )
         modelContext.insert(group)
-        selectedCustomGroup = group
+        portfolioSelection = .customGroup(group.persistentModelID)
         resetNewGroupForm()
     }
 
     private func resetNewGroupForm() {
         newGroupName = ""
         newGroupTags = ""
+    }
+}
+
+// MARK: - Image Category Filter Bar
+
+struct ImageCategoryFilterBar: View {
+    @Binding var activeCategories: Set<ImageCategory>
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(ImageCategory.allCases, id: \.self) { category in
+                    let isActive = activeCategories.contains(category)
+                    Button {
+                        if isActive {
+                            activeCategories.remove(category)
+                        } else {
+                            activeCategories.insert(category)
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: category.systemImage)
+                                .font(.caption2)
+                            Text(category.rawValue)
+                                .font(.caption.weight(.medium))
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(isActive ? Color.accentColor : Color.primary.opacity(0.07),
+                                    in: Capsule())
+                        .foregroundStyle(isActive ? Color.white : Color.primary)
+                    }
+                    .buttonStyle(.plain)
+                    .animation(.easeInOut(duration: 0.15), value: isActive)
+                }
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+        }
     }
 }
 

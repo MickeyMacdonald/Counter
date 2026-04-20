@@ -97,6 +97,7 @@ struct SettingsStatisticsView: View {
         let types: [(BookingType, String)] = [
             (.session,      "Session"),
             (.consultation, "Consult"),
+            (.prep,         "Prep"),
             (.touchUp,      "Touch-Up"),
             (.flashPickup,  "Flash"),
         ]
