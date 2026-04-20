@@ -261,8 +261,6 @@ struct PieceEditView: View {
     }
 
     // MARK: - Sessions
-
-
     private var sessionsSection: some View {
         Section {
             // Existing draft sessions
@@ -411,10 +409,10 @@ struct PieceEditView: View {
                             image,
                             clientID: clientIDStr,
                             pieceID: pieceIDStr,
-                            stage: PieceImageCategory.reference.rawValue
+                            stage: ImageCategory.reference.rawValue
                         ) {
                             await MainActor.run {
-                                let pieceImage = PieceImage(
+                                let pieceImage = WorkImage(
                                     filePath: relativePath,
                                     fileName: "IMG_\(idx + 1)",
                                     sortOrder: idx,
@@ -465,7 +463,7 @@ struct PieceEditView: View {
             if !draftPhotos.isEmpty {
                 let clientIDStr = piece.client.map { String($0.persistentModelID.hashValue) } ?? "unknown"
                 let pieceIDStr = String(piece.persistentModelID.hashValue)
-                let existingCount = piece.directImages.count
+                let existingCount = piece.images.count
                 for (idx, draftPhoto) in draftPhotos.enumerated() {
                     let isPrimary = draftPhoto.isPrimary && piece.primaryImagePath == nil
                     let image = draftPhoto.image
@@ -475,10 +473,10 @@ struct PieceEditView: View {
                             image,
                             clientID: clientIDStr,
                             pieceID: pieceIDStr,
-                            stage: PieceImageCategory.reference.rawValue
+                            stage: ImageCategory.reference.rawValue
                         ) {
                             await MainActor.run {
-                                let pieceImage = PieceImage(
+                                let pieceImage = WorkImage(
                                     filePath: relativePath,
                                     fileName: "IMG_\(sortOffset + 1)",
                                     sortOrder: sortOffset,

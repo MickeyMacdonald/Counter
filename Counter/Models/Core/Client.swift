@@ -35,6 +35,9 @@ final class Client {
     @Relationship(deleteRule: .cascade, inverse: \Piece.client)
     var pieces: [Piece] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \WorkImage.client)
+    var images: [WorkImage] = []
+
     @Relationship(deleteRule: .cascade, inverse: \Agreement.client)
     var agreements: [Agreement] = []
 

@@ -39,7 +39,7 @@ struct AddSessionView: View {
     @State private var flashDate: Date
     @State private var flashStart: Date
     @State private var flashEnd: Date
-    @State private var selectedFlashImage: PieceImage?
+    @State private var selectedFlashImage: WorkImage?
     @State private var selectedFlashPiece: Piece?
     @State private var showFlashGallery = false
 

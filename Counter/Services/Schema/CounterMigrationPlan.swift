@@ -59,7 +59,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [
             CounterSchemaV1.self,
-            CounterSchemaV2.self
+            CounterSchemaV2.self,
+            CounterSchemaV3.self
         ]
     }
 
@@ -73,36 +74,69 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV1.self,
                 toVersion: CounterSchemaV2.self
-            )
+            ),
 
-            // Template for the next stage (the first transforming
-            // migration), kept here as a reminder. When this gets
-            // uncommented and pointed at V3, the willMigrate closure
-            // is the load-bearing piece — it MUST succeed or the
-            // migration must abort.
+            // V2 → V3: PieceImage → WorkImage rename with new fields.
+            // This is a custom stage because we're transforming existing
+            // rows: every PieceImage record is copied into a new WorkImage
+            // record with defaults for the added fields (title, isPortfolio,
+            // healingStage, source, client). PieceImage rows are deleted
+            // after the copy completes.
             //
-            // .custom(
-            //     fromVersion: CounterSchemaV2.self,
-            //     toVersion:   CounterSchemaV3.self,
-            //     willMigrate: { context in
-            //         // Take a fresh backup of the V2 state BEFORE
-            //         // any rows are transformed. If this throws,
-            //         // throw out of willMigrate so SwiftData aborts
-            //         // the migration entirely. Do NOT swallow the
-            //         // error — a corrupt half-migration with no
-            //         // backup is the worst possible outcome.
-            //         //
-            //         // Implementation note: `RecoveryService.shared`
-            //         // is an actor and `performBackup` is async, so
-            //         // wrapping in a semaphore or hop-to-main is
-            //         // required since willMigrate is sync.
-            //     },
-            //     didMigrate: { context in
-            //         // Post-migration verification goes here. Sanity
-            //         // checks, count comparisons, anything that can
-            //         // detect a partial migration.
-            //     }
-            // )
+            // willMigrate takes a RecoveryService backup BEFORE any rows
+            // are touched. If the backup throws, the migration aborts
+            // entirely — no partial state, no data loss.
+            .custom(
+                fromVersion: CounterSchemaV2.self,
+                toVersion: CounterSchemaV3.self,
+                willMigrate: { context in
+                    // Synchronous bridge into the async RecoveryService actor.
+                    // SwiftData calls willMigrate on a background thread; we
+                    // dispatch-and-wait so the backup completes before any
+                    // rows are touched. If this throws, the migration aborts.
+                    let semaphore = DispatchSemaphore(value: 0)
+                    var backupError: Error?
+                    Task {
+                        do {
+                            try await RecoveryService.shared.performBackup(context: context)
+                        } catch {
+                            backupError = error
+                        }
+                        semaphore.signal()
+                    }
+                    semaphore.wait()
+                    if let err = backupError { throw err }
+                },
+                didMigrate: { context in
+                    // Copy every legacy PieceImage into a new WorkImage with
+                    // sensible defaults for the new fields.
+                    let legacyImages = try context.fetch(FetchDescriptor<PieceImage>())
+                    for old in legacyImages {
+                        let img = WorkImage(
+                            filePath: old.filePath,
+                            fileName: old.fileName,
+                            notes: old.notes,
+                            capturedAt: old.capturedAt,
+                            sortOrder: old.sortOrder,
+                            isPrimary: old.isPrimary,
+                            category: {
+                                switch old.category {
+                                case .inspiration: return .inspiration
+                                case .reference:   return .reference
+                                case nil:          return .progress
+                                }
+                            }(),
+                            source: .photoLibrary,
+                            tags: old.tags
+                        )
+                        img.piece = old.piece
+                        img.sessionProgress = old.sessionProgress
+                        context.insert(img)
+                        context.delete(old)
+                    }
+                    try context.save()
+                }
+            )
         ]
     }
 }

@@ -4,8 +4,8 @@ import SwiftUI
 struct GalleryByPriceView: View {
     let pieces: [Piece]
 
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
@@ -37,8 +37,8 @@ struct GalleryByPriceView: View {
         }
     }
 
-    private var priceGroups: [(range: PriceRange, items: [(image: PieceImage, piece: Piece)])] {
-        var grouped: [PriceRange: [(PieceImage, Piece)]] = [:]
+    private var priceGroups: [(range: PriceRange, items: [(image: WorkImage, piece: Piece)])] {
+        var grouped: [PriceRange: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             let range: PriceRange = piece.flatRate.map { PriceRange.bucket(for: $0) } ?? .unpriced
             for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {

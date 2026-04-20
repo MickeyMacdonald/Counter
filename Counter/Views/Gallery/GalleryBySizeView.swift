@@ -4,14 +4,14 @@ import SwiftUI
 struct GalleryBySizeView: View {
     let pieces: [Piece]
 
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
 
-    private var sizeGroups: [(size: TattooSize, items: [(image: PieceImage, piece: Piece)])] {
-        var grouped: [TattooSize: [(PieceImage, Piece)]] = [:]
+    private var sizeGroups: [(size: TattooSize, items: [(image: WorkImage, piece: Piece)])] {
+        var grouped: [TattooSize: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             guard let size = piece.size else { continue }
             for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {

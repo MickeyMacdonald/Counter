@@ -75,12 +75,12 @@ struct SendEmailView: View {
     @State private var messageBody = ""
     @State private var showingComposer = false
     @State private var canSendMail = MFMailComposeViewController.canSendMail()
-    @State private var selectedImages: [PieceImage] = []
+    @State private var selectedImages: [WorkImage] = []
 
     private var profile: UserProfile? { profiles.first }
 
     /// All piece images available for attachment.
-    private var availableImages: [PieceImage] {
+    private var availableImages: [WorkImage] {
         if let piece {
             return piece.allImages
         }
@@ -267,7 +267,7 @@ struct SendEmailView: View {
 
     // MARK: - Photo Selection
 
-    private func toggleImage(_ image: PieceImage) {
+    private func toggleImage(_ image: WorkImage) {
         if let idx = selectedImages.firstIndex(where: { $0.filePath == image.filePath }) {
             selectedImages.remove(at: idx)
         } else {
@@ -293,7 +293,7 @@ struct SendEmailView: View {
 // MARK: - Attachment Thumbnail
 
 private struct AttachmentThumbnail: View {
-    let image: PieceImage
+    let image: WorkImage
     let isSelected: Bool
     let onTap: () -> Void
 

@@ -13,14 +13,13 @@ final class PreviewContainer {
             Client.self,
             Piece.self,
             SessionProgress.self,
-            PieceImage.self,
+            WorkImage.self,
             Session.self,
             Agreement.self,
             CommunicationLog.self,
             UserProfile.self,
             Booking.self,
             AvailabilitySlot.self,
-            PieceImage.self,
             Payment.self,
             SavedEmailTemplate.self,
             AvailabilityOverride.self,
@@ -102,7 +101,7 @@ final class PreviewContainer {
         context.insert(piece2)
 
         // Sample direct images (inspiration/reference on piece)
-        let inspoImage = PieceImage(
+        let inspoImage = WorkImage(
             filePath: "preview/inspo_1.png",
             fileName: "inspo_1.png",
             notes: "Client's Pinterest board reference",

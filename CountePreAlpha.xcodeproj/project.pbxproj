@@ -19,9 +19,9 @@
 		AA000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000002 /* ContentView.swift */; };
 		AA000003 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003 /* Client.swift */; };
 		AA000004 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004 /* Piece.swift */; };
-		AA000005 /* ImageGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005 /* ImageGroup.swift */; };
+		AA000005 /* SessionProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005 /* SessionProgress.swift */; };
 		AA000006 /* PieceImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006 /* PieceImage.swift */; };
-		AA000007 /* TattooSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007 /* TattooSession.swift */; };
+		AA000007 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007 /* Session.swift */; };
 		AA000008 /* Agreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008 /* Agreement.swift */; };
 		AA000009 /* CommunicationLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009 /* CommunicationLog.swift */; };
 		AA000010 /* ImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010 /* ImageStorageService.swift */; };
@@ -61,7 +61,6 @@
 		AA000045 /* FlashGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000045 /* FlashGalleryView.swift */; };
 		AA000046 /* InspirationGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000046 /* InspirationGalleryView.swift */; };
 		AA000047 /* AddSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000047 /* AddSessionView.swift */; };
-		AA000048 /* InspirationImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000048 /* InspirationImage.swift */; };
 		AA000049 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000049 /* Payment.swift */; };
 		AA000050 /* FinancialDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000050 /* FinancialDashboardView.swift */; };
 		AA000051 /* PaymentLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000051 /* PaymentLogView.swift */; };
@@ -77,7 +76,7 @@
 		AA000061 /* BusinessLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000061 /* BusinessLockManager.swift */; };
 		AA000062 /* BusinessLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000062 /* BusinessLockView.swift */; };
 		AA000063 /* PieceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000063 /* PieceListView.swift */; };
-		AA000064 /* CustomEmailTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000064 /* CustomEmailTemplate.swift */; };
+		AA000064 /* EmailTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000064 /* EmailTemplate.swift */; };
 		AA000065 /* SettingsViewEmailTemplateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000065 /* SettingsViewEmailTemplateEditor.swift */; };
 		AA000066 /* SettingsViewEmailTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsViewEmailTemplates.swift */; };
 		AA000067 /* AvailabilityOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000067 /* AvailabilityOverride.swift */; };
@@ -94,10 +93,9 @@
 		AA000078 /* SettingsViewReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000078 /* SettingsViewReports.swift */; };
 		AA000079 /* DonationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000079 /* DonationStore.swift */; };
 		AA000080 /* SettingsViewDonation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000080 /* SettingsViewDonation.swift */; };
-		AA000081 /* CustomGalleryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000081 /* CustomGalleryGroup.swift */; };
+		AA000081 /* GalleryGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000081 /* GalleryGroup.swift */; };
 		AA000082 /* GalleryBySizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000082 /* GalleryBySizeView.swift */; };
 		AA000083 /* GalleryByCustomGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000083 /* GalleryByCustomGroupView.swift */; };
-		AA000092 /* GalleryByPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000092 /* GalleryByPriceView.swift */; };
 		AA000084 /* AppNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000084 /* AppNavigationCoordinator.swift */; };
 		AA000085 /* SessionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000085 /* SessionsListView.swift */; };
 		AA000086 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000086 /* SessionDetailView.swift */; };
@@ -105,11 +103,14 @@
 		AA000088 /* RecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000088 /* RecoveryService.swift */; };
 		AA000089 /* RecoveryBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000089 /* RecoveryBackup.swift */; };
 		AA000090 /* SettingsViewRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000090 /* SettingsViewRecovery.swift */; };
-		AA000091 /* CustomDiscount.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000091 /* CustomDiscount.swift */; };
+		AA000091 /* Discount.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000091 /* Discount.swift */; };
+		AA000092 /* GalleryByPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000092 /* GalleryByPriceView.swift */; };
 		AA000093 /* CounterSchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000093 /* CounterSchemaV1.swift */; };
 		AA000094 /* CounterSchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000094 /* CounterSchemaV2.swift */; };
 		AA000095 /* CounterMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000095 /* CounterMigrationPlan.swift */; };
 		AA000096 /* RecoveryModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000096 /* RecoveryModeView.swift */; };
+		AA000097 /* WorkImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000097 /* WorkImage.swift */; };
+		AA000098 /* CounterSchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000098 /* CounterSchemaV3.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -150,7 +151,6 @@
 		AB000027 /* SignatureCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureCaptureView.swift; sourceTree = "<group>"; };
 		AB000028 /* AgreementEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementEditView.swift; sourceTree = "<group>"; };
 		AB000029 /* AgreementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementDetailView.swift; sourceTree = "<group>"; };
-
 		AB000030 /* EmailTemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateService.swift; sourceTree = "<group>"; };
 		AB000031 /* EmailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
 		AB000032 /* PDFReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReportService.swift; sourceTree = "<group>"; };
@@ -168,7 +168,6 @@
 		AB000045 /* FlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashGalleryView.swift; sourceTree = "<group>"; };
 		AB000046 /* InspirationGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationGalleryView.swift; sourceTree = "<group>"; };
 		AB000047 /* AddSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSessionView.swift; sourceTree = "<group>"; };
-		AB000048 /* InspirationImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationImage.swift; sourceTree = "<group>"; };
 		AB000049 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		AB000050 /* FinancialDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialDashboardView.swift; sourceTree = "<group>"; };
 		AB000051 /* PaymentLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentLogView.swift; sourceTree = "<group>"; };
@@ -204,7 +203,6 @@
 		AB000081 /* GalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGroup.swift; sourceTree = "<group>"; };
 		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
 		AB000083 /* GalleryByCustomGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByCustomGroupView.swift; sourceTree = "<group>"; };
-		AB000092 /* GalleryByPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPriceView.swift; sourceTree = "<group>"; };
 		AB000084 /* AppNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationCoordinator.swift; sourceTree = "<group>"; };
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
@@ -213,10 +211,13 @@
 		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
 		AB000090 /* SettingsViewRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewRecovery.swift; sourceTree = "<group>"; };
 		AB000091 /* Discount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discount.swift; sourceTree = "<group>"; };
+		AB000092 /* GalleryByPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPriceView.swift; sourceTree = "<group>"; };
 		AB000093 /* CounterSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV1.swift; sourceTree = "<group>"; };
 		AB000094 /* CounterSchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV2.swift; sourceTree = "<group>"; };
 		AB000095 /* CounterMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterMigrationPlan.swift; sourceTree = "<group>"; };
 		AB000096 /* RecoveryModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryModeView.swift; sourceTree = "<group>"; };
+		AB000097 /* WorkImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkImage.swift; sourceTree = "<group>"; };
+		AB000098 /* CounterSchemaV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV3.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -327,74 +328,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		AE000030 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AB000003 /* Client.swift */,
-				AB000004 /* Piece.swift */,
-				AB000007 /* Session.swift */,
-				AB000035 /* Booking.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		AE000031 /* Gallery */ = {
-			isa = PBXGroup;
-			children = (
-				AB000005 /* SessionProgress.swift */,
-				AB000006 /* PieceImage.swift */,
-				AB000081 /* GalleryGroup.swift */,
-			);
-			path = Gallery;
-			sourceTree = "<group>";
-		};
-		AE000032 /* Financial */ = {
-			isa = PBXGroup;
-			children = (
-				AB000049 /* Payment.swift */,
-				AB000091 /* Discount.swift */,
-				AB000070 /* FlashPriceTier.swift */,
-			);
-			path = Financial;
-			sourceTree = "<group>";
-		};
-		AE000033 /* Scheduling */ = {
-			isa = PBXGroup;
-			children = (
-				AB000036 /* AvailabilitySlot.swift */,
-				AB000067 /* AvailabilityOverride.swift */,
-				AB000069 /* SessionCategory.swift */,
-				AB000073 /* SessionRateConfig.swift */,
-			);
-			path = Scheduling;
-			sourceTree = "<group>";
-		};
-		AE000034 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				AB000034 /* UserProfile.swift */,
-				AB000064 /* EmailTemplate.swift */,
-				AB000008 /* Agreement.swift */,
-			);
-			path = Configuration;
-			sourceTree = "<group>";
-		};
-		AE000035 /* Communication */ = {
-			isa = PBXGroup;
-			children = (
-				AB000009 /* CommunicationLog.swift */,
-			);
-			path = Communication;
-			sourceTree = "<group>";
-		};
-		AE000036 /* Recovery */ = {
-			isa = PBXGroup;
-			children = (
-				AB000089 /* RecoveryBackup.swift */,
-			);
-			path = Recovery;
-			sourceTree = "<group>";
-		};
 		AE000005 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,69 +385,6 @@
 				AE000027 /* Preview */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		AE000021 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				AB000010 /* ImageStorageService.swift */,
-				AB000022 /* PhotoImportService.swift */,
-				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
-				AB000079 /* DonationStore.swift */,
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
-		AE000022 /* Communication */ = {
-			isa = PBXGroup;
-			children = (
-				AB000030 /* EmailTemplateService.swift */,
-				AB000031 /* EmailService.swift */,
-			);
-			path = Communication;
-			sourceTree = "<group>";
-		};
-		AE000023 /* Export */ = {
-			isa = PBXGroup;
-			children = (
-				AB000032 /* PDFReportService.swift */,
-				AB000033 /* ExportService.swift */,
-			);
-			path = Export;
-			sourceTree = "<group>";
-		};
-		AE000024 /* Schema */ = {
-			isa = PBXGroup;
-			children = (
-				AB000093 /* CounterSchemaV1.swift */,
-				AB000094 /* CounterSchemaV2.swift */,
-				AB000095 /* CounterMigrationPlan.swift */,
-			);
-			path = Schema;
-			sourceTree = "<group>";
-		};
-		AE000025 /* Security */ = {
-			isa = PBXGroup;
-			children = (
-				AB000061 /* BusinessLockManager.swift */,
-			);
-			path = Security;
-			sourceTree = "<group>";
-		};
-		AE000026 /* Recovery */ = {
-			isa = PBXGroup;
-			children = (
-				AB000088 /* RecoveryService.swift */,
-			);
-			path = Recovery;
-			sourceTree = "<group>";
-		};
-		AE000027 /* Preview */ = {
-			isa = PBXGroup;
-			children = (
-				AB000011 /* PreviewContainer.swift */,
-			);
-			path = Preview;
 			sourceTree = "<group>";
 		};
 		AE000010 /* Products */ = {
@@ -604,6 +474,139 @@
 			path = Work;
 			sourceTree = "<group>";
 		};
+		AE000021 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AB000010 /* ImageStorageService.swift */,
+				AB000022 /* PhotoImportService.swift */,
+				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
+				AB000079 /* DonationStore.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AE000022 /* Communication */ = {
+			isa = PBXGroup;
+			children = (
+				AB000030 /* EmailTemplateService.swift */,
+				AB000031 /* EmailService.swift */,
+			);
+			path = Communication;
+			sourceTree = "<group>";
+		};
+		AE000023 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				AB000032 /* PDFReportService.swift */,
+				AB000033 /* ExportService.swift */,
+			);
+			path = Export;
+			sourceTree = "<group>";
+		};
+		AE000024 /* Schema */ = {
+			isa = PBXGroup;
+			children = (
+				AB000093 /* CounterSchemaV1.swift */,
+				AB000094 /* CounterSchemaV2.swift */,
+				AB000095 /* CounterMigrationPlan.swift */,
+				AB000098 /* CounterSchemaV3.swift */,
+			);
+			path = Schema;
+			sourceTree = "<group>";
+		};
+		AE000025 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				AB000061 /* BusinessLockManager.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		AE000026 /* Recovery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000088 /* RecoveryService.swift */,
+			);
+			path = Recovery;
+			sourceTree = "<group>";
+		};
+		AE000027 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				AB000011 /* PreviewContainer.swift */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
+		AE000030 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				AB000003 /* Client.swift */,
+				AB000004 /* Piece.swift */,
+				AB000007 /* Session.swift */,
+				AB000035 /* Booking.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		AE000031 /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000005 /* SessionProgress.swift */,
+				AB000006 /* PieceImage.swift */,
+				AB000081 /* GalleryGroup.swift */,
+				AB000097 /* WorkImage.swift */,
+			);
+			path = Gallery;
+			sourceTree = "<group>";
+		};
+		AE000032 /* Financial */ = {
+			isa = PBXGroup;
+			children = (
+				AB000049 /* Payment.swift */,
+				AB000091 /* Discount.swift */,
+				AB000070 /* FlashPriceTier.swift */,
+			);
+			path = Financial;
+			sourceTree = "<group>";
+		};
+		AE000033 /* Scheduling */ = {
+			isa = PBXGroup;
+			children = (
+				AB000036 /* AvailabilitySlot.swift */,
+				AB000067 /* AvailabilityOverride.swift */,
+				AB000069 /* SessionCategory.swift */,
+				AB000073 /* SessionRateConfig.swift */,
+			);
+			path = Scheduling;
+			sourceTree = "<group>";
+		};
+		AE000034 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				AB000034 /* UserProfile.swift */,
+				AB000064 /* EmailTemplate.swift */,
+				AB000008 /* Agreement.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		AE000035 /* Communication */ = {
+			isa = PBXGroup;
+			children = (
+				AB000009 /* CommunicationLog.swift */,
+			);
+			path = Communication;
+			sourceTree = "<group>";
+		};
+		AE000036 /* Recovery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000089 /* RecoveryBackup.swift */,
+			);
+			path = Recovery;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -678,9 +681,9 @@
 				AA000002 /* ContentView.swift in Sources */,
 				AA000003 /* Client.swift in Sources */,
 				AA000004 /* Piece.swift in Sources */,
-				AA000005 /* ImageGroup.swift in Sources */,
+				AA000005 /* SessionProgress.swift in Sources */,
 				AA000006 /* PieceImage.swift in Sources */,
-				AA000007 /* TattooSession.swift in Sources */,
+				AA000007 /* Session.swift in Sources */,
 				AA000008 /* Agreement.swift in Sources */,
 				AA000009 /* CommunicationLog.swift in Sources */,
 				AA000034 /* UserProfile.swift in Sources */,
@@ -740,7 +743,7 @@
 				AA000062 /* BusinessLockView.swift in Sources */,
 				790D133C2F871B4E00C31CE2 /* SettingsAboutView.swift in Sources */,
 				AA000063 /* PieceListView.swift in Sources */,
-				AA000064 /* CustomEmailTemplate.swift in Sources */,
+				AA000064 /* EmailTemplate.swift in Sources */,
 				AA000065 /* SettingsViewEmailTemplateEditor.swift in Sources */,
 				AA000066 /* SettingsViewEmailTemplates.swift in Sources */,
 				AA000067 /* AvailabilityOverride.swift in Sources */,
@@ -758,8 +761,8 @@
 				AA000078 /* SettingsViewReports.swift in Sources */,
 				AA000079 /* DonationStore.swift in Sources */,
 				AA000080 /* SettingsViewDonation.swift in Sources */,
-				AA000081 /* CustomGalleryGroup.swift in Sources */,
-				AA000091 /* CustomDiscount.swift in Sources */,
+				AA000081 /* GalleryGroup.swift in Sources */,
+				AA000091 /* Discount.swift in Sources */,
 				AA000082 /* GalleryBySizeView.swift in Sources */,
 				AA000083 /* GalleryByCustomGroupView.swift in Sources */,
 				AA000092 /* GalleryByPriceView.swift in Sources */,
@@ -774,6 +777,8 @@
 				AA000094 /* CounterSchemaV2.swift in Sources */,
 				AA000095 /* CounterMigrationPlan.swift in Sources */,
 				AA000096 /* RecoveryModeView.swift in Sources */,
+				AA000097 /* WorkImage.swift in Sources */,
+				AA000098 /* CounterSchemaV3.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

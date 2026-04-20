@@ -2,19 +2,19 @@ import SwiftUI
 import SwiftData
 
 /// Portfolio-wide image grid used when booking a Flash session.
-/// Shows all PieceImages across every piece so the artist can pick a design.
+/// Shows all WorkImages across every piece so the artist can pick a design.
 struct FlashGalleryView: View {
     @Query(sort: \Piece.updatedAt, order: .reverse) private var pieces: [Piece]
-    let onSelect: (PieceImage, Piece) -> Void
+    let onSelect: (WorkImage, Piece) -> Void
 
     @State private var searchText = ""
-    @State private var selectedImage: PieceImage?
+    @State private var selectedImage: WorkImage?
     @State private var selectedPiece: Piece?
 
     private let columns = [GridItem(.adaptive(minimum: 120, maximum: 160), spacing: 6)]
 
-    private var allImages: [(image: PieceImage, piece: Piece)] {
-        var result: [(PieceImage, Piece)] = []
+    private var allImages: [(image: WorkImage, piece: Piece)] {
+        var result: [(WorkImage, Piece)] = []
         for piece in pieces {
             if !searchText.isEmpty {
                 guard piece.title.localizedCaseInsensitiveContains(searchText) ||
@@ -72,7 +72,7 @@ struct FlashGalleryView: View {
 }
 
 private struct FlashThumbnailCell: View {
-    let image: PieceImage
+    let image: WorkImage
     let piece: Piece
     let isSelected: Bool
     @State private var thumbnail: UIImage?

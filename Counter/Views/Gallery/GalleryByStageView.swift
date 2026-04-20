@@ -7,14 +7,14 @@ struct GalleryByStageView: View {
     let pieces: [Piece]
 
     @Environment(BusinessLockManager.self) private var lockManager
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
 
-    private var imagesByStage: [(stage: ImageStage, items: [(image: PieceImage, piece: Piece)])] {
-        var grouped: [ImageStage: [(PieceImage, Piece)]] = [:]
+    private var imagesByStage: [(stage: ImageStage, items: [(image: WorkImage, piece: Piece)])] {
+        var grouped: [ImageStage: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             // Work photos from session image groups
             for session in piece.sessions {

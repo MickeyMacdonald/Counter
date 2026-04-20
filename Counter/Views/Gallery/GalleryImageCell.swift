@@ -7,7 +7,7 @@ struct GalleryImageCell: View {
     let filePath: String
     var title: String? = nil
     var stageBadge: ImageStage? = nil
-    var categoryBadge: PieceImageCategory? = nil
+    var categoryBadge: ImageCategory? = nil
     var priceLabel: String? = nil
     var ratingValue: Int? = nil
     var tags: [String] = []

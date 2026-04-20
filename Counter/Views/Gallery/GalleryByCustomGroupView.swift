@@ -5,13 +5,13 @@ struct GalleryByCustomGroupView: View {
     let group: GalleryGroup
     let pieces: [Piece]
 
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
 
-    private var matchingItems: [(image: PieceImage, piece: Piece)] {
+    private var matchingItems: [(image: WorkImage, piece: Piece)] {
         let matchingPieces: [Piece]
         if group.tags.isEmpty {
             matchingPieces = pieces

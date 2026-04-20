@@ -4,16 +4,16 @@ import SwiftData
 /// Standalone inspiration/reference image library.
 /// Non-tattoo imagery tagged for study — not tied to any client or piece.
 struct InspirationGalleryView: View {
-    @Query(sort: \PieceImage.capturedAt, order: .reverse) private var images: [PieceImage]
+    @Query(sort: \WorkImage.capturedAt, order: .reverse) private var images: [WorkImage]
     @Environment(\.modelContext) private var modelContext
 
     @State private var showImporter = false
     @State private var filterTag = ""
-    @State private var editingImage: PieceImage?
+    @State private var editingImage: WorkImage?
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
 
-    private var filteredImages: [PieceImage] {
+    private var filteredImages: [WorkImage] {
         guard !filterTag.isEmpty else { return images }
         return images.filter { $0.tags.contains { $0.localizedCaseInsensitiveContains(filterTag) } }
     }
@@ -41,10 +41,10 @@ struct InspirationGalleryView: View {
         }
         .sheet(isPresented: $showImporter) {
             PhotoImportPicker(isPresented: $showImporter) { uiImages in
-                Task { await savePieceImages(uiImages) }
+                Task { await saveWorkImages(uiImages) }
             }
         }
-        .sheet(item: $editingImage) { img in PieceImageDetailView(image: img) }
+        .sheet(item: $editingImage) { img in WorkImageDetailView(image: img) }
     }
 
     private var inspirationHeader: some View {
@@ -80,7 +80,7 @@ struct InspirationGalleryView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity).padding(.vertical, 30)
     }
 
-    private func savePieceImages(_ uiImages: [UIImage]) async {
+    private func saveWorkImages(_ uiImages: [UIImage]) async {
         for (idx, img) in uiImages.enumerated() {
             let name = "\(UUID().uuidString).png"
             let path = "CounterImages/inspiration/\(name)"
@@ -90,19 +90,19 @@ struct InspirationGalleryView: View {
                 if let data = img.pngData() { try? data.write(to: dir.appendingPathComponent(name)) }
             }
             await MainActor.run {
-                modelContext.insert(PieceImage(filePath: path, fileName: "Inspiration \(idx + 1)"))
+                modelContext.insert(WorkImage(filePath: path, fileName: "Inspiration \(idx + 1)", category: .inspiration))
             }
         }
     }
 
-    private func deleteInspiration(_ image: PieceImage) {
+    private func deleteInspiration(_ image: WorkImage) {
         Task { try? await ImageStorageService.shared.deleteImage(relativePath: image.filePath) }
         modelContext.delete(image)
     }
 }
 
 private struct InspirationCell: View {
-    let image: PieceImage
+    let image: WorkImage
     @State private var thumbnail: UIImage?
 
     var body: some View {
@@ -140,8 +140,8 @@ private struct InspirationCell: View {
     }
 }
 
-struct PieceImageDetailView: View {
-    @Bindable var image: PieceImage
+struct WorkImageDetailView: View {
+    @Bindable var image: WorkImage
     @Environment(\.dismiss) private var dismiss
     @State private var tagInput = ""
     @State private var thumbnail: UIImage?

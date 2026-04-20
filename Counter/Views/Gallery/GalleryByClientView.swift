@@ -5,8 +5,8 @@ import SwiftData
 struct GalleryByClientView: View {
     let clients: [Client]
 
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
     @State private var expandedClients: Set<PersistentIdentifier> = []
 

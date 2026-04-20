@@ -326,7 +326,7 @@ actor RecoveryService {
         let pieces = try context.fetch(FetchDescriptor<Piece>())
         let sessions = try context.fetch(FetchDescriptor<Session>())
         let sessionProgress = try context.fetch(FetchDescriptor<SessionProgress>())
-        let pieceImages = try context.fetch(FetchDescriptor<PieceImage>())
+        let workImages = try context.fetch(FetchDescriptor<WorkImage>())
         let bookings = try context.fetch(FetchDescriptor<Booking>())
         let agreements = try context.fetch(FetchDescriptor<Agreement>())
         let commLogs = try context.fetch(FetchDescriptor<CommunicationLog>())
@@ -414,15 +414,27 @@ actor RecoveryService {
             )
         }
 
-        let pieceImageBackups = pieceImages.map { pi in
-            let igID = pi.sessionProgress.flatMap { imageGroupIDs[ObjectIdentifier($0)] }
-            let pieceID = pi.piece.flatMap { pieceIDs[ObjectIdentifier($0)] }
-            return PieceImageBackup(
-                backupID: UUID(), imageGroupBackupID: igID, pieceBackupID: pieceID,
-                filePath: pi.filePath, fileName: pi.fileName,
-                notes: pi.notes, capturedAt: pi.capturedAt,
-                sortOrder: pi.sortOrder, isPrimary: pi.isPrimary,
-                category: pi.category?.rawValue, tags: pi.tags
+        let workImageBackups = workImages.map { wi in
+            let igID    = wi.sessionProgress.flatMap { imageGroupIDs[ObjectIdentifier($0)] }
+            let pieceID = wi.piece.flatMap { pieceIDs[ObjectIdentifier($0)] }
+            let clientID = wi.client.flatMap { clientIDs[ObjectIdentifier($0)] }
+            return WorkImageBackup(
+                backupID: UUID(),
+                imageGroupBackupID: igID,
+                pieceBackupID: pieceID,
+                clientBackupID: clientID,
+                filePath: wi.filePath,
+                fileName: wi.fileName,
+                title: wi.title,
+                notes: wi.notes,
+                capturedAt: wi.capturedAt,
+                sortOrder: wi.sortOrder,
+                isPrimary: wi.isPrimary,
+                isPortfolio: wi.isPortfolio,
+                category: wi.category.rawValue,
+                healingStage: wi.healingStage?.rawValue,
+                source: wi.source.rawValue,
+                tags: wi.tags
             )
         }
 
@@ -595,7 +607,8 @@ actor RecoveryService {
             appVersion: RecoveryService.currentAppVersion,
             clients: clientBackups, pieces: pieceBackups,
             sessions: sessionBackups, sessionProgress: imageGroupBackups,
-            pieceImages: pieceImageBackups, inspirationImages: nil,
+            workImages: workImageBackups,
+            pieceImages: nil, inspirationImages: nil,
             bookings: bookingBackups, agreements: agreementBackups,
             communicationLogs: commLogBackups, payments: paymentBackups,
             profiles: profileBackups, customSessionTypes: cstBackups,
@@ -651,7 +664,7 @@ actor RecoveryService {
             try context.fetch(FetchDescriptor<T>()).forEach { context.delete($0) }
         }
         // Leaves first so cascades don't fight us
-        try deleteAll(PieceImage.self)
+        try deleteAll(WorkImage.self)
         try deleteAll(SessionProgress.self)
         try deleteAll(Session.self)
         try deleteAll(Booking.self)
@@ -775,9 +788,11 @@ actor RecoveryService {
             context.insert(obj)
         }
 
+        // Legacy: inspirationImages field from very old backups — insert as WorkImage
         for img in backup.inspirationImages ?? [] {
-            let obj = PieceImage(filePath: img.filePath, fileName: img.fileName, notes: img.notes, tags: img.tags)
-            obj.capturedAt = img.capturedAt
+            let obj = WorkImage(filePath: img.filePath, fileName: img.fileName,
+                                notes: img.notes, capturedAt: img.capturedAt,
+                                category: .inspiration, tags: img.tags)
             context.insert(obj)
         }
 
@@ -858,18 +873,46 @@ actor RecoveryService {
             imageGroupMap[igb.backupID] = ig
         }
 
-        // Phase 6: PieceImages (→ SessionProgress, Piece)
-        for pib in backup.pieceImages {
-            let pi = PieceImage(
+        // Phase 6a: WorkImages — V3+ backups
+        for wib in backup.workImages ?? [] {
+            let img = WorkImage(
+                filePath: wib.filePath,
+                fileName: wib.fileName,
+                title: wib.title,
+                notes: wib.notes,
+                capturedAt: wib.capturedAt,
+                sortOrder: wib.sortOrder,
+                isPrimary: wib.isPrimary,
+                isPortfolio: wib.isPortfolio,
+                category: ImageCategory(rawValue: wib.category) ?? .progress,
+                healingStage: wib.healingStage.flatMap { HealingStage(rawValue: $0) },
+                source: ImageSource(rawValue: wib.source) ?? .photoLibrary,
+                tags: wib.tags
+            )
+            img.sessionProgress = wib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
+            img.piece = wib.pieceBackupID.flatMap { pieceMap[$0] }
+            img.client = wib.clientBackupID.flatMap { clientMap[$0] }
+            context.insert(img)
+        }
+
+        // Phase 6b: Legacy PieceImages (pre-V3 backups only)
+        for pib in backup.pieceImages ?? [] {
+            let category: ImageCategory = {
+                switch pib.category {
+                case "Inspiration": return .inspiration
+                case "Reference":   return .reference
+                default:            return .progress
+                }
+            }()
+            let img = WorkImage(
                 filePath: pib.filePath, fileName: pib.fileName,
                 notes: pib.notes, capturedAt: pib.capturedAt,
                 sortOrder: pib.sortOrder, isPrimary: pib.isPrimary,
-                category: pib.category.flatMap { PieceImageCategory(rawValue: $0) }
+                category: category, tags: pib.tags
             )
-            pi.tags = pib.tags
-            pi.sessionProgress = pib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
-            pi.piece = pib.pieceBackupID.flatMap { pieceMap[$0] }
-            context.insert(pi)
+            img.sessionProgress = pib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
+            img.piece = pib.pieceBackupID.flatMap { pieceMap[$0] }
+            context.insert(img)
         }
 
         // Phase 7: Agreements, CommunicationLogs (→ Client)
@@ -1153,7 +1196,9 @@ actor RecoveryService {
 
     private func totalModelCount(_ backup: RecoveryBackup) -> Int {
         backup.clients.count + backup.pieces.count + backup.sessions.count +
-        backup.sessionProgress.count + backup.pieceImages.count +
+        backup.sessionProgress.count +
+        (backup.workImages?.count ?? 0) +
+        (backup.pieceImages?.count ?? 0) +
         (backup.inspirationImages?.count ?? 0) + backup.bookings.count +
         backup.agreements.count + backup.communicationLogs.count +
         backup.payments.count + backup.profiles.count +

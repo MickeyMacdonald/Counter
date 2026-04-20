@@ -8,8 +8,8 @@ struct SessionDetailView: View {
     @Query private var profiles: [UserProfile]
 
     @State private var showingEditSession   = false
-    @State private var galleryImages: [PieceImage] = []
-    @State private var galleryInitialImage: PieceImage?
+    @State private var galleryImages: [WorkImage] = []
+    @State private var galleryInitialImage: WorkImage?
     @State private var showingImageGallery  = false
 
     // MARK: - Helpers
@@ -257,7 +257,7 @@ struct SessionDetailView: View {
 
     private func imageGroupRow(_ group: SessionProgress) -> some View {
         Button {
-            // group.images is already [PieceImage] — use directly, sorted by sortOrder
+            // group.images is already [WorkImage] — use directly, sorted by sortOrder
             let images = group.images.sorted { $0.sortOrder < $1.sortOrder }
             if let first = images.first {
                 galleryImages        = images

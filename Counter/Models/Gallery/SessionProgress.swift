@@ -12,8 +12,8 @@ final class SessionProgress {
     var piece: Piece?       // Kept temporarily during migration
     var session: Session?  // New: session owns work photo groups
 
-    @Relationship(deleteRule: .cascade, inverse: \PieceImage.sessionProgress)
-    var images: [PieceImage] = []
+    @Relationship(deleteRule: .cascade, inverse: \WorkImage.sessionProgress)
+    var images: [WorkImage] = []
 
     var timeSpentFormatted: String {
         let hours = timeSpentMinutes / 60

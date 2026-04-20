@@ -6,8 +6,8 @@ struct ClientGalleryView: View {
     let client: Client
 
     @State private var selectedTab: ClientGalleryTab = .custom
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
@@ -26,8 +26,8 @@ struct ClientGalleryView: View {
             .sorted { $0.updatedAt > $1.updatedAt }
     }
 
-    private func tattooImages(for pieces: [Piece]) -> [(image: PieceImage, piece: Piece, stage: ImageStage)] {
-        var result: [(PieceImage, Piece, ImageStage)] = []
+    private func tattooImages(for pieces: [Piece]) -> [(image: WorkImage, piece: Piece, stage: ImageStage)] {
+        var result: [(WorkImage, Piece, ImageStage)] = []
         for piece in pieces {
             for group in piece.sortedSessionProgress {
                 for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
@@ -38,23 +38,23 @@ struct ClientGalleryView: View {
         return result
     }
 
-    private var inspirationImages: [(image: PieceImage, piece: Piece, category: PieceImageCategory)] {
-        var result: [(PieceImage, Piece, PieceImageCategory)] = []
+    private var inspirationImages: [(image: WorkImage, piece: Piece, category: ImageCategory)] {
+        var result: [(WorkImage, Piece, ImageCategory)] = []
         for piece in client.pieces.sorted(by: { $0.updatedAt > $1.updatedAt }) {
-            for image in piece.directImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {
-                if let category = image.category {
-                    result.append((image, piece, category))
-                }
+            for image in piece.images
+                    .filter({ $0.category == .inspiration || $0.category == .reference })
+                    .sorted(by: { $0.sortOrder < $1.sortOrder }) {
+                result.append((image, piece, image.category))
             }
         }
         return result
     }
 
-    private var customImages: [(image: PieceImage, piece: Piece, stage: ImageStage)] {
+    private var customImages: [(image: WorkImage, piece: Piece, stage: ImageStage)] {
         tattooImages(for: customPieces)
     }
 
-    private var flashImages: [(image: PieceImage, piece: Piece, stage: ImageStage)] {
+    private var flashImages: [(image: WorkImage, piece: Piece, stage: ImageStage)] {
         tattooImages(for: flashPieces)
     }
 
@@ -114,7 +114,7 @@ struct ClientGalleryView: View {
     // MARK: - Piece-Grouped Grid
 
     /// Shows pieces as section headers with their images underneath
-    private func pieceGroupedGrid(pieces: [Piece], images: [(image: PieceImage, piece: Piece, stage: ImageStage)]) -> some View {
+    private func pieceGroupedGrid(pieces: [Piece], images: [(image: WorkImage, piece: Piece, stage: ImageStage)]) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
                 ForEach(pieces) { piece in

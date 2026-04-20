@@ -5,14 +5,14 @@ import SwiftData
 struct GalleryByPlacementView: View {
     let pieces: [Piece]
 
-    @State private var selectedFullScreenImages: [PieceImage] = []
-    @State private var selectedFullScreenImage: PieceImage?
+    @State private var selectedFullScreenImages: [WorkImage] = []
+    @State private var selectedFullScreenImage: WorkImage?
     @State private var showingFullScreen = false
 
     private let columns = [GridItem(.adaptive(minimum: 110, maximum: 150), spacing: 6)]
 
-    private var placementGroups: [(placement: String, items: [(image: PieceImage, piece: Piece)])] {
-        var grouped: [String: [(PieceImage, Piece)]] = [:]
+    private var placementGroups: [(placement: String, items: [(image: WorkImage, piece: Piece)])] {
+        var grouped: [String: [(WorkImage, Piece)]] = [:]
         for piece in pieces {
             let placement = piece.bodyPlacement.isEmpty ? "Unspecified" : piece.bodyPlacement
             for image in piece.allImages.sorted(by: { $0.sortOrder < $1.sortOrder }) {

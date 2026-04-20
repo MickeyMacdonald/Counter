@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "156"
             endingLineNumber = "156"
-            landmarkName = "TattooSize"
-            landmarkType = "13">
+            landmarkName = "init(title:bodyPlacement:descriptionText:status:pieceType:tags:rating:hourlyRate:flatRate:depositAmount:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

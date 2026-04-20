@@ -8,15 +8,25 @@ struct RecoveryBackup: Codable {
     let createdAt: Date
     let appVersion: String
 
-    // All 18 model tables
+    // All model tables
     let clients: [ClientBackup]
     let pieces: [PieceBackup]
     let sessions: [SessionBackup]
     let sessionProgress: [SessionProgressBackup]
-    let pieceImages: [PieceImageBackup]
-    /// Legacy field — inspiration images are now stored as PieceImage with category `.inspiration`
-    /// and are included in `pieceImages`. Kept optional so old backups still decode.
+
+    /// V3+: WorkImage is the current image model (replaces PieceImage).
+    /// Optional so that pre-V3 backups (which carry `pieceImages` instead) still decode.
+    let workImages: [WorkImageBackup]?
+
+    /// Legacy (pre-V3): kept optional so old backup files still decode.
+    /// On restore, `workImages` is checked first; fall back to this only
+    /// when `workImages` is nil (old backup from a V1/V2 build).
+    let pieceImages: [PieceImageBackup]?
+
+    /// Legacy field — inspiration images are now stored with category `.inspiration`.
+    /// Kept optional so old backups still decode.
     let inspirationImages: [PieceImageBackup]?
+
     let bookings: [BookingBackup]
     let agreements: [AgreementBackup]
     let communicationLogs: [CommunicationLogBackup]
@@ -31,15 +41,8 @@ struct RecoveryBackup: Codable {
     let customGalleryGroups: [GalleryGroupBackup]
 
     /// Added in the V2 schema slice (0.8.x). Optional so that backups
-    /// written by pre-V2 builds still decode into the current
-    /// `RecoveryBackup` shape — the field is simply absent in the
-    /// JSON and will be `nil` after decoding. New backups always write
+    /// written by pre-V2 builds still decode. New backups always write
     /// a (possibly empty) array.
-    ///
-    /// Keep this field optional even after V2 has been live for a
-    /// while. The `RecoveryBackup.currentVersion` bump that would let
-    /// us require it is gated on the "forward migration of backups"
-    /// task in pillar 1, which has not landed yet.
     let customDiscounts: [DiscountBackup]?
 
     let userDefaults: UserDefaultsBackup
@@ -204,6 +207,27 @@ struct SessionProgressBackup: Codable {
     let createdAt: Date
 }
 
+struct WorkImageBackup: Codable {
+    let backupID: UUID
+    let imageGroupBackupID: UUID?
+    let pieceBackupID: UUID?
+    let clientBackupID: UUID?
+    let filePath: String
+    let fileName: String
+    let title: String
+    let notes: String
+    let capturedAt: Date
+    let sortOrder: Int
+    let isPrimary: Bool
+    let isPortfolio: Bool
+    let category: String
+    let healingStage: String?
+    let source: String
+    let tags: [String]
+}
+
+// MARK: - Legacy PieceImageBackup (pre-V3 backups only)
+
 struct PieceImageBackup: Codable {
     let backupID: UUID
     let imageGroupBackupID: UUID?
@@ -218,8 +242,7 @@ struct PieceImageBackup: Codable {
     let tags: [String]
 }
 
-// Custom decoder in extension so the struct retains its synthesized memberwise init
-// (placing init(from:) inside the struct body suppresses it).
+// Custom decoder so the struct retains its synthesized memberwise init.
 // Legacy backups used a simpler PieceImageBackup without sortOrder/isPrimary/category —
 // decodeIfPresent with defaults keeps those old JSON entries decodable.
 extension PieceImageBackup {

@@ -10,7 +10,7 @@ struct ImageGalleryView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var showingImportPicker = false
-    @State private var selectedImage: PieceImage?
+    @State private var selectedImage: WorkImage?
     @State private var showingFullScreen = false
     @State private var isProcessing = false
 
@@ -84,7 +84,7 @@ struct ImageGalleryView: View {
         }
     }
 
-    private var sortedImages: [PieceImage] {
+    private var sortedImages: [WorkImage] {
         imageGroup.images.sorted { $0.sortOrder < $1.sortOrder }
     }
 
@@ -164,7 +164,7 @@ struct ImageGalleryView: View {
                 )
 
                 await MainActor.run {
-                    let pieceImage = PieceImage(
+                    let pieceImage = WorkImage(
                         filePath: relativePath,
                         fileName: "IMG_\(currentCount + index + 1)",
                         sortOrder: currentCount + index
@@ -183,7 +183,7 @@ struct ImageGalleryView: View {
         }
     }
 
-    private func deleteImage(_ pieceImage: PieceImage) {
+    private func deleteImage(_ pieceImage: WorkImage) {
         Task {
             try? await ImageStorageService.shared.deleteImage(relativePath: pieceImage.filePath)
         }
@@ -193,7 +193,7 @@ struct ImageGalleryView: View {
 
 /// Single thumbnail cell in the gallery grid
 struct ImageThumbnailCell: View {
-    let pieceImage: PieceImage
+    let pieceImage: WorkImage
     @State private var thumbnail: UIImage?
 
     var body: some View {

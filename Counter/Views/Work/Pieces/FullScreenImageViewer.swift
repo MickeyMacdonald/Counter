@@ -2,15 +2,15 @@ import SwiftUI
 
 /// Image viewer with a proper top navigation bar, metadata pills, and forward/back arrows.
 struct FullScreenImageViewer: View {
-    let images: [PieceImage]
-    let initialImage: PieceImage
+    let images: [WorkImage]
+    let initialImage: WorkImage
 
     @Environment(\.dismiss) private var dismiss
     @Environment(BusinessLockManager.self) private var lockManager
     @State private var currentIndex: Int = 0
     @State private var showingShareSheet = false
 
-    private var currentImage: PieceImage? {
+    private var currentImage: WorkImage? {
         guard currentIndex >= 0, currentIndex < images.count else { return nil }
         return images[currentIndex]
     }
@@ -93,7 +93,7 @@ struct FullScreenImageViewer: View {
 
     // MARK: - Info Bar
 
-    private func infoBar(_ image: PieceImage) -> some View {
+    private func infoBar(_ image: WorkImage) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 // 1. Rating (business only)
@@ -223,7 +223,7 @@ struct FullScreenImageViewer: View {
 // MARK: - Zoomable Image
 
 struct ZoomableImageView: View {
-    let pieceImage: PieceImage
+    let pieceImage: WorkImage
     @State private var image: UIImage?
     @State private var scale: CGFloat = 1
     @State private var lastScale: CGFloat = 1
@@ -277,7 +277,7 @@ struct ZoomableImageView: View {
 // MARK: - Share Sheet
 
 struct ShareSheetView: UIViewControllerRepresentable {
-    let pieceImage: PieceImage
+    let pieceImage: WorkImage
     @State private var loadedImage: UIImage?
 
     func makeUIViewController(context: Context) -> UIViewController {

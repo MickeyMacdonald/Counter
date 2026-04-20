@@ -49,12 +49,12 @@ final class Booking {
             return [
                 PrepTask(
                     label: "Inspiration",
-                    icon: PieceImageCategory.inspiration.systemImage,
+                    icon: ImageCategory.inspiration.systemImage,
                     isComplete: !piece.inspirationImages.isEmpty
                 ),
                 PrepTask(
                     label: "Reference",
-                    icon: PieceImageCategory.reference.systemImage,
+                    icon: ImageCategory.reference.systemImage,
                     isComplete: !piece.referenceImages.isEmpty
                 )
             ]

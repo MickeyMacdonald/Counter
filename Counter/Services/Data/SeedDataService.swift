@@ -45,7 +45,7 @@ enum SeedDataService {
         func deleteAll<T: PersistentModel>(_ type: T.Type) {
             (try? context.fetch(FetchDescriptor<T>()))?.forEach { context.delete($0) }
         }
-        deleteAll(PieceImage.self)
+        deleteAll(WorkImage.self)
         deleteAll(SessionProgress.self)
         deleteAll(Session.self)
         deleteAll(Booking.self)

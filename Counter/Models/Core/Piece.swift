@@ -42,30 +42,42 @@ final class Piece {
     @Relationship(deleteRule: .cascade, inverse: \Payment.piece)
     var payments: [Payment] = []
 
-    /// Direct images owned by the piece (inspiration & reference)
-    @Relationship(deleteRule: .cascade, inverse: \PieceImage.piece)
-    var directImages: [PieceImage] = []
+    /// Images owned by the piece (inspiration, reference, progress, healed, portfolio)
+    @Relationship(deleteRule: .cascade, inverse: \WorkImage.piece)
+    var images: [WorkImage] = []
 
-    // MARK: - Direct Image Filters
+    // MARK: - Image Filters
 
-    var inspirationImages: [PieceImage] {
-        directImages
+    var inspirationImages: [WorkImage] {
+        images
             .filter { $0.category == .inspiration }
             .sorted { $0.sortOrder < $1.sortOrder }
     }
 
-    var referenceImages: [PieceImage] {
-        directImages
+    var referenceImages: [WorkImage] {
+        images
             .filter { $0.category == .reference }
             .sorted { $0.sortOrder < $1.sortOrder }
     }
 
-    /// All images across both direct ownership and session image groups
-    var allImages: [PieceImage] {
+    var progressImages: [WorkImage] {
+        images
+            .filter { $0.category == .progress }
+            .sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    var portfolioImages: [WorkImage] {
+        images
+            .filter { $0.isPortfolio }
+            .sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    /// All images across piece-owned and session image groups
+    var allImages: [WorkImage] {
         let sessionImages = sessions
             .flatMap { $0.sessionProgress }
             .flatMap { $0.images }
-        return directImages + sessionImages
+        return images + sessionImages
     }
 
     var totalHours: Double {

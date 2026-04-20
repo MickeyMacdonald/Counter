@@ -24,13 +24,11 @@ struct CounterApp: App {
 
     init() {
         do {
-            // V2 adds `Discount` to the schema. The V1 → V2 jump
-            // is a lightweight migration declared in
-            // `CounterMigrationPlan`. For users on V1, SwiftData will
-            // create the new `Discount` table on first launch
-            // and leave every other row untouched. For fresh
-            // installs, V2 is the starting schema.
-            let schema = Schema(versionedSchema: CounterSchemaV2.self)
+            // V3 replaces PieceImage with WorkImage. The full migration
+            // chain V1 → V2 → V3 is declared in CounterMigrationPlan.
+            // Fresh installs land directly at V3; existing stores migrate
+            // forward automatically on first launch.
+            let schema = Schema(versionedSchema: CounterSchemaV3.self)
             let config = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false

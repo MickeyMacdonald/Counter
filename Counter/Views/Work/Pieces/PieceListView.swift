@@ -179,7 +179,7 @@ struct PieceListRowView: View {
     }
 
     /// The primary image, or the first available image for this piece
-    private var primaryImage: PieceImage? {
+    private var primaryImage: WorkImage? {
         let all = piece.allImages
         return all.first(where: { $0.isPrimary }) ?? all.first
     }

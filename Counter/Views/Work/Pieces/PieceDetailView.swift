@@ -14,8 +14,8 @@ struct PieceDetailView: View {
     @State private var showingLogPayment = false
     @State private var showingFinancialDetail = false
     @State private var editingSession: Session?
-    @State private var galleryImages: [PieceImage] = []
-    @State private var galleryInitialImage: PieceImage?
+    @State private var galleryImages: [WorkImage] = []
+    @State private var galleryInitialImage: WorkImage?
     @State private var showingImageGallery = false
     @State private var showingEmailPicker = false
     @State private var showDiscount = false
@@ -193,7 +193,7 @@ struct PieceDetailView: View {
 
             // MARK: - Photos
             Section {
-                if piece.directImages.isEmpty {
+                if piece.images.isEmpty {
                     Button {
                         showingEditPiece = true
                     } label: {
@@ -467,7 +467,7 @@ struct PieceDetailView: View {
 
     // MARK: - Gallery helper
 
-    private func openGallery(_ images: [PieceImage]) {
+    private func openGallery(_ images: [WorkImage]) {
         guard !images.isEmpty else { return }
         galleryImages = images
         galleryInitialImage = images[0]
@@ -549,7 +549,7 @@ struct PieceDetailView: View {
 
     // MARK: - Direct Image Row
 
-    private func directImageRow(label: String, icon: String, images: [PieceImage]) -> some View {
+    private func directImageRow(label: String, icon: String, images: [WorkImage]) -> some View {
         HStack {
             Label(label, systemImage: icon)
             Spacer()
