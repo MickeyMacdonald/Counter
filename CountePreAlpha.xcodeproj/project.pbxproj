@@ -120,7 +120,7 @@
 		790D133D2F871C5400C31CE2 /* AnalyticsViewStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsViewStatistics.swift; sourceTree = "<group>"; };
 		790D133F2F871FAA00C31CE2 /* WelcomeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSetupView.swift; sourceTree = "<group>"; };
 		790D13432F87210D00C31CE2 /* AnalyticsViewTrends.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsViewTrends.swift; sourceTree = "<group>"; };
-		79481E2E2F65F2A100349BEA /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedDataService.swift; sourceTree = "<group>"; };
+		79481E2E2F65F2A100349BEA /* SeedDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Data/SeedDataService.swift; sourceTree = "<group>"; };
 		AB000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
 		AB000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AB000003 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
@@ -130,8 +130,8 @@
 		AB000007 /* TattooSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TattooSession.swift; sourceTree = "<group>"; };
 		AB000008 /* Agreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agreement.swift; sourceTree = "<group>"; };
 		AB000009 /* CommunicationLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationLog.swift; sourceTree = "<group>"; };
-		AB000010 /* ImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStorageService.swift; sourceTree = "<group>"; };
-		AB000011 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContainer.swift; sourceTree = "<group>"; };
+		AB000010 /* ImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Data/ImageStorageService.swift; sourceTree = "<group>"; };
+		AB000011 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Preview/PreviewContainer.swift; sourceTree = "<group>"; };
 		AB000012 /* ClientListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListView.swift; sourceTree = "<group>"; };
 		AB000013 /* ClientRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRowView.swift; sourceTree = "<group>"; };
 		AB000014 /* ClientEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEditView.swift; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 		AB000019 /* SessionEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEditView.swift; sourceTree = "<group>"; };
 		AB000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AB000021 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		AB000022 /* PhotoImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportService.swift; sourceTree = "<group>"; };
+		AB000022 /* PhotoImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Data/PhotoImportService.swift; sourceTree = "<group>"; };
 		AB000023 /* ImageGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryView.swift; sourceTree = "<group>"; };
 		AB000024 /* FullScreenImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageViewer.swift; sourceTree = "<group>"; };
 		AB000025 /* StageManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageManagerView.swift; sourceTree = "<group>"; };
@@ -150,10 +150,10 @@
 		AB000027 /* SignatureCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureCaptureView.swift; sourceTree = "<group>"; };
 		AB000028 /* AgreementEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementEditView.swift; sourceTree = "<group>"; };
 		AB000029 /* AgreementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementDetailView.swift; sourceTree = "<group>"; };
-		AB000030 /* EmailTemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplateService.swift; sourceTree = "<group>"; };
-		AB000031 /* EmailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
-		AB000032 /* PDFReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReportService.swift; sourceTree = "<group>"; };
-		AB000033 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		AB000030 /* EmailTemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Communication/EmailTemplateService.swift; sourceTree = "<group>"; };
+		AB000031 /* EmailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Communication/EmailService.swift; sourceTree = "<group>"; };
+		AB000032 /* PDFReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Export/PDFReportService.swift; sourceTree = "<group>"; };
+		AB000033 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Export/ExportService.swift; sourceTree = "<group>"; };
 		AB000034 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		AB000035 /* Booking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Booking.swift; sourceTree = "<group>"; };
 		AB000036 /* AvailabilitySlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySlot.swift; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 		AB000058 /* GalleryByRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByRatingView.swift; sourceTree = "<group>"; };
 		AB000059 /* GalleryByPlacementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPlacementView.swift; sourceTree = "<group>"; };
 		AB000060 /* ClientGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientGalleryView.swift; sourceTree = "<group>"; };
-		AB000061 /* BusinessLockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockManager.swift; sourceTree = "<group>"; };
+		AB000061 /* BusinessLockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Security/BusinessLockManager.swift; sourceTree = "<group>"; };
 		AB000062 /* BusinessLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockView.swift; sourceTree = "<group>"; };
 		AB000063 /* PieceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceListView.swift; sourceTree = "<group>"; };
 		AB000064 /* CustomEmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmailTemplate.swift; sourceTree = "<group>"; };
@@ -198,7 +198,7 @@
 		AB000076 /* WorkTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTabView.swift; sourceTree = "<group>"; };
 		AB000077 /* AvailableFlashGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableFlashGalleryView.swift; sourceTree = "<group>"; };
 		AB000078 /* SettingsViewReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewReports.swift; sourceTree = "<group>"; };
-		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationStore.swift; sourceTree = "<group>"; };
+		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Data/DonationStore.swift; sourceTree = "<group>"; };
 		AB000080 /* SettingsViewDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewDonation.swift; sourceTree = "<group>"; };
 		AB000081 /* CustomGalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGalleryGroup.swift; sourceTree = "<group>"; };
 		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
@@ -208,13 +208,13 @@
 		AB000085 /* SessionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListView.swift; sourceTree = "<group>"; };
 		AB000086 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		AB000087 /* SettingsViewPieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewPieces.swift; sourceTree = "<group>"; };
-		AB000088 /* RecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryService.swift; sourceTree = "<group>"; };
+		AB000088 /* RecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Recovery/RecoveryService.swift; sourceTree = "<group>"; };
 		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
 		AB000090 /* SettingsViewRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewRecovery.swift; sourceTree = "<group>"; };
 		AB000091 /* CustomDiscount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDiscount.swift; sourceTree = "<group>"; };
-		AB000093 /* CounterSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV1.swift; sourceTree = "<group>"; };
-		AB000094 /* CounterSchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV2.swift; sourceTree = "<group>"; };
-		AB000095 /* CounterMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterMigrationPlan.swift; sourceTree = "<group>"; };
+		AB000093 /* CounterSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Schema/CounterSchemaV1.swift; sourceTree = "<group>"; };
+		AB000094 /* CounterSchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Schema/CounterSchemaV2.swift; sourceTree = "<group>"; };
+		AB000095 /* CounterMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/Schema/CounterMigrationPlan.swift; sourceTree = "<group>"; };
 		AB000096 /* RecoveryModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryModeView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
