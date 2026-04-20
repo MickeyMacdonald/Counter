@@ -350,7 +350,7 @@ struct StatBlock: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(value)
-                .font(.system(.title3, design: .monospaced, weight: .bold))
+                .font(.title3.weight(.bold))
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)

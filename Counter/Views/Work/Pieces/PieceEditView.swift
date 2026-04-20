@@ -460,6 +460,42 @@ struct PieceEditView: View {
             piece.hourlyRate = hourlyRate
             piece.depositAmount = depositAmount
             applySize(to: piece)
+
+            // Save any newly added draft photos
+            if !draftPhotos.isEmpty {
+                let clientIDStr = piece.client.map { String($0.persistentModelID.hashValue) } ?? "unknown"
+                let pieceIDStr = String(piece.persistentModelID.hashValue)
+                let existingCount = piece.directImages.count
+                for (idx, draftPhoto) in draftPhotos.enumerated() {
+                    let isPrimary = draftPhoto.isPrimary && piece.primaryImagePath == nil
+                    let image = draftPhoto.image
+                    let sortOffset = existingCount + idx
+                    Task {
+                        if let relativePath = try? await ImageStorageService.shared.saveImage(
+                            image,
+                            clientID: clientIDStr,
+                            pieceID: pieceIDStr,
+                            stage: PieceImageCategory.reference.rawValue
+                        ) {
+                            await MainActor.run {
+                                let pieceImage = PieceImage(
+                                    filePath: relativePath,
+                                    fileName: "IMG_\(sortOffset + 1)",
+                                    sortOrder: sortOffset,
+                                    isPrimary: isPrimary,
+                                    category: .reference
+                                )
+                                pieceImage.piece = piece
+                                modelContext.insert(pieceImage)
+                                if isPrimary {
+                                    piece.primaryImagePath = relativePath
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             piece.updatedAt = Date()
         }
 

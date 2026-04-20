@@ -17,12 +17,28 @@ struct PieceDetailView: View {
     @State private var galleryImages: [PieceImage] = []
     @State private var galleryInitialImage: PieceImage?
     @State private var showingImageGallery = false
+    @State private var showingEmailPicker = false
+    @State private var showDiscount = false
+    @State private var selectedDiscount: Discount?
+    @Query(sort: \Discount.sortOrder) private var discounts: [Discount]
 
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
     @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
 
     private var chargeableTypes: [String] {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
+    }
+
+    private var effectiveCost: Decimal {
+        let base = piece.totalCost
+        if showDiscount, let pct = selectedDiscount?.percentage {
+            return base * (1 - pct / 100)
+        }
+        return base
+    }
+
+    private var adjustedOutstanding: Decimal {
+        effectiveCost - piece.totalPaymentsReceived
     }
 
     private var clientID: String {
@@ -99,40 +115,68 @@ struct PieceDetailView: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
+
+                    // MARK: Client Button
+                    if let client = piece.client {
+                        Button {
+                            coordinator.navigateToClient(client)
+                        } label: {
+                            HStack(spacing: 12) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.accentColor.opacity(0.12))
+                                        .frame(width: 35, height: 35)
+                                    Text(client.initialsDisplay)
+                                        .font(.system(.caption, design: .monospaced, weight: .bold))
+                                        .foregroundStyle(Color.accentColor)
+                                }
+                                Text(client.fullName)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .containerRelativeFrame(.horizontal) { width, _ in width / 3 }
+                    }
+
+                    // MARK: Quick Actions
+                    HStack(spacing: 20) {
+                        actionButton(icon: "envelope.fill", label: "Email",
+                                     disabled: piece.client?.email.isEmpty ?? true) {
+                            showingEmailPicker = true
+                        }
+                        actionButton(icon: "message.fill", label: "Message",
+                                     disabled: piece.client?.phone.isEmpty ?? true) {
+                            openSMS()
+                        }
+                        actionButton(icon: "clock.badge", label: "Session",
+                                     disabled: false) {
+                            showingAddSession = true
+                        }
+                        actionButton(icon: "photo.badge.plus", label: "Photo",
+                                     disabled: false) {
+                            showingEditPiece = true
+                        }
+                        actionButton(icon: "banknote", label: "Payment",
+                                     disabled: false) {
+                            showingLogPayment = true
+                        }
+                        actionButton(icon: "photo.on.rectangle.angled", label: "Gallery",
+                                     disabled: piece.allImages.isEmpty) {
+                            openGallery(piece.allImages)
+                        }
+                    }
+                    .padding(.top, 4)
                 }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
-            }
-
-            // MARK: - Client Link
-            if let client = piece.client {
-                Section {
-                    NavigationLink {
-                        ClientDetailView(client: client)
-                    } label: {
-                        HStack(spacing: 12) {
-                            ZStack {
-                                Circle()
-                                    .fill(.primary.opacity(0.08))
-                                    .frame(width: 40, height: 40)
-                                Text(client.initialsDisplay)
-                                    .font(.system(.caption, design: .monospaced, weight: .bold))
-                            }
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(client.fullName)
-                                    .font(.subheadline.weight(.medium))
-                                if !client.pronouns.isEmpty {
-                                    Text(client.pronouns)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                    }
-                } header: {
-                    Text("Client")
-                }
             }
 
             // MARK: - Quick Stats
@@ -144,31 +188,35 @@ struct PieceDetailView: View {
                     Divider()
                     StatBlock(label: "Cost", value: piece.chargeableCost(using: chargeableTypes).currencyFormatted)
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, 2)
             }
 
-            // MARK: - Inspiration & Reference
-            if !piece.directImages.isEmpty {
-                Section {
+            // MARK: - Photos
+            Section {
+                if piece.directImages.isEmpty {
+                    Button {
+                        showingEditPiece = true
+                    } label: {
+                        Label("Add Photos", systemImage: "photo.badge.plus")
+                    }
+                } else {
                     if !piece.inspirationImages.isEmpty {
-                        directImageRow(
-                            label: "Inspiration",
-                            icon: "sparkles",
-                            images: piece.inspirationImages
-                        )
-                        .onTapGesture { openGallery(piece.inspirationImages) }
+                        directImageRow(label: "Inspiration", icon: "sparkles", images: piece.inspirationImages)
+                            .onTapGesture { openGallery(piece.inspirationImages) }
                     }
-
                     if !piece.referenceImages.isEmpty {
-                        directImageRow(
-                            label: "Reference",
-                            icon: "photo.on.rectangle",
-                            images: piece.referenceImages
-                        )
-                        .onTapGesture { openGallery(piece.referenceImages) }
+                        directImageRow(label: "Reference", icon: "photo.on.rectangle", images: piece.referenceImages)
+                            .onTapGesture { openGallery(piece.referenceImages) }
                     }
-                } header: {
-                    Text("Inspiration & Reference")
+                }
+            } header: {
+                HStack {
+                    Text("Photos")
+                    Spacer()
+                    Button { showingEditPiece = true } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.body)
+                    }
                 }
             }
 
@@ -182,23 +230,29 @@ struct PieceDetailView: View {
                     }
                 } else {
                     ForEach(piece.sessions.sorted(by: { $0.date > $1.date })) { session in
-                        sessionRow(session)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
+                        Button {
+                            coordinator.navigateToSession(session)
+                        } label: {
+                            HStack {
+                                sessionRow(session)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            Button {
+                                editingSession = session
+                            } label: {
+                                Label("Edit Session", systemImage: "pencil")
+                            }
+                            Button {
                                 coordinator.navigateToSession(session)
+                            } label: {
+                                Label("View in Bookings", systemImage: "book")
                             }
-                            .contextMenu {
-                                Button {
-                                    editingSession = session
-                                } label: {
-                                    Label("Edit Session", systemImage: "pencil")
-                                }
-                                Button {
-                                    coordinator.navigateToSession(session)
-                                } label: {
-                                    Label("View in Bookings", systemImage: "book")
-                                }
-                            }
+                        }
                     }
                 }
             } header: {
@@ -214,70 +268,90 @@ struct PieceDetailView: View {
                 }
             }
 
-            // MARK: - Tags
-            if !piece.tags.isEmpty {
-                Section("Tags") {
-                    FlowLayout(spacing: 6) {
-                        ForEach(piece.tags, id: \.self) { tag in
-                            Text(tag)
-                                .font(.caption.weight(.medium))
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(.primary.opacity(0.06), in: Capsule())
+            // MARK: - Details
+            Section("Details") {
+                if !piece.bodyPlacement.isEmpty {
+                    LabeledContent("Body Location", value: piece.bodyPlacement)
+                }
+                LabeledContent("Type", value: piece.pieceType.rawValue)
+                if !piece.tags.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Tags")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        FlowLayout(spacing: 6) {
+                            ForEach(piece.tags, id: \.self) { tag in
+                                Text(tag)
+                                    .font(.caption.weight(.medium))
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(.primary.opacity(0.06), in: Capsule())
+                            }
                         }
                     }
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .padding(.vertical, 4)
                 }
             }
 
-            // MARK: - Financials
-            Section {
-                if let flat = piece.flatRate {
-                    LabeledContent("Flat Rate", value: flat.currencyFormatted)
-                } else {
-                    LabeledContent("Hourly Rate", value: piece.hourlyRate.currencyFormatted)
-                }
-
-                if piece.depositAmount > 0 {
-                    LabeledContent("Deposit Required", value: piece.depositAmount.currencyFormatted)
-                    LabeledContent("Deposit Received") {
-                        Text(piece.depositReceived.currencyFormatted)
-                            .foregroundStyle(piece.depositReceived >= piece.depositAmount ? .green : .orange)
+            // MARK: - Discount
+            if !discounts.isEmpty {
+                Section {
+                    Toggle(isOn: $showDiscount.animation()) {
+                        Text("Apply Discount")
                     }
+                    .onChange(of: showDiscount) { _, on in
+                        if on && selectedDiscount == nil { selectedDiscount = discounts.first }
+                        if !on { selectedDiscount = nil }
+                    }
+                    if showDiscount {
+                        Picker("Discount", selection: $selectedDiscount) {
+                            ForEach(discounts) { discount in
+                                Text("\(discount.name) (\(discount.percentage.formatted())%)")
+                                    .tag(Optional(discount))
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Discount")
                 }
+            }
 
+            // MARK: - Summary
+            Section {
+                LabeledContent("Session Hours") {
+                    Text(String(format: "%.1f hrs", piece.totalHours))
+                }
+                LabeledContent("Total Charge") {
+                    Text(effectiveCost.currencyFormatted)
+                        .foregroundStyle(showDiscount ? Color.orange : Color.primary)
+                }
                 HStack {
                     Text("Outstanding")
                         .fontWeight(.medium)
                     Spacer()
-                    Text(piece.outstandingBalance.currencyFormatted)
+                    Text(adjustedOutstanding.currencyFormatted)
                         .fontWeight(.bold)
-                        .foregroundStyle(piece.isFullyPaid ? .green : .orange)
+                        .foregroundStyle(adjustedOutstanding <= 0 ? Color.green : Color.orange)
                 }
-
-                HStack(spacing: 12) {
-                    Button {
-                        showingLogPayment = true
-                    } label: {
-                        Label("Log Payment", systemImage: "plus.circle.fill")
-                    }
-
-                    Spacer()
-
-                    NavigationLink {
-                        PieceFinancialDetailView(piece: piece)
-                    } label: {
-                        Text("Full Breakdown")
-                            .font(.subheadline)
-                    }
+                NavigationLink {
+                    PieceFinancialDetailView(piece: piece)
+                } label: {
+                    Text("Full Breakdown").font(.subheadline)
                 }
             } header: {
-                Text("Financials")
+                Text("Summary")
             }
 
             // MARK: - Payments
-            if !piece.payments.isEmpty {
-                Section("Payment History") {
+            Section {
+                if piece.payments.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Payments", systemImage: "banknote")
+                    } description: {
+                        Text("Log a payment to track income.")
+                    }
+                    .padding(.vertical, 4)
+                } else {
                     ForEach(piece.payments.sorted(by: { $0.paymentDate > $1.paymentDate })) { payment in
                         HStack(spacing: 12) {
                             Image(systemName: payment.paymentMethod.systemImage)
@@ -299,6 +373,15 @@ struct PieceDetailView: View {
                         }
                     }
                 }
+            } header: {
+                HStack {
+                    Text("Payments")
+                    Spacer()
+                    Button { showingLogPayment = true } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.body)
+                    }
+                }
             }
 
            
@@ -312,7 +395,7 @@ struct PieceDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle(piece.title)
+        .navigationTitle("")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -346,6 +429,40 @@ struct PieceDetailView: View {
                     .environment(lockManager)
             }
         }
+        .sheet(isPresented: $showingEmailPicker) {
+            if let client = piece.client {
+                EmailTemplatePickerView(client: client, piece: piece)
+            }
+        }
+    }
+
+    // MARK: - Quick Action Helpers
+
+    private func actionButton(icon: String, label: String, disabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                ZStack {
+                    Circle()
+                        .fill(disabled ? Color.primary.opacity(0.04) : Color.accentColor.opacity(0.12))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: icon)
+                        .font(.system(size: 18))
+                        .foregroundStyle(disabled ? Color.gray.opacity(0.3) : Color.accentColor)
+                }
+                Text(label)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(disabled ? Color.gray.opacity(0.3) : Color.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+    }
+
+    private func openSMS() {
+        guard let phone = piece.client?.phone, !phone.isEmpty else { return }
+        let cleaned = phone.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
+        guard let url = URL(string: "sms:\(cleaned)") else { return }
+        UIApplication.shared.open(url)
     }
 
     // MARK: - Gallery helper

@@ -37,6 +37,30 @@ struct PaymentLogView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section("Client & Piece") {
+                    Picker("Client", selection: $selectedClient) {
+                        Text("None").tag(Client?.none)
+                        ForEach(allClients) { client in
+                            Text(client.fullName).tag(Client?.some(client))
+                        }
+                    }
+                    .onChange(of: selectedClient) { _, newClient in
+                        // Reset piece if client changes
+                        if selectedPiece?.client?.persistentModelID != newClient?.persistentModelID {
+                            selectedPiece = nil
+                        }
+                    }
+                    
+                    if !clientPieces.isEmpty {
+                        Picker("Piece", selection: $selectedPiece) {
+                            Text("None").tag(Piece?.none)
+                            ForEach(clientPieces) { piece in
+                                Text(piece.title).tag(Piece?.some(piece))
+                            }
+                        }
+                    }
+                }
+
                 Section("Amount") {
                     HStack {
                         Text("$")
@@ -47,7 +71,7 @@ struct PaymentLogView: View {
                             .keyboardType(.decimalPad)
                     }
                 }
-
+                    
                 Section("Details") {
                     Picker("Type", selection: $paymentType) {
                         ForEach(PaymentType.allCases, id: \.self) { type in
@@ -62,30 +86,6 @@ struct PaymentLogView: View {
                     }
 
                     DatePicker("Date", selection: $paymentDate, displayedComponents: .date)
-                }
-
-                Section("Client & Piece") {
-                    Picker("Client", selection: $selectedClient) {
-                        Text("None").tag(Client?.none)
-                        ForEach(allClients) { client in
-                            Text(client.fullName).tag(Client?.some(client))
-                        }
-                    }
-                    .onChange(of: selectedClient) { _, newClient in
-                        // Reset piece if client changes
-                        if selectedPiece?.client?.persistentModelID != newClient?.persistentModelID {
-                            selectedPiece = nil
-                        }
-                    }
-
-                    if !clientPieces.isEmpty {
-                        Picker("Piece", selection: $selectedPiece) {
-                            Text("None").tag(Piece?.none)
-                            ForEach(clientPieces) { piece in
-                                Text(piece.title).tag(Piece?.some(piece))
-                            }
-                        }
-                    }
                 }
 
                 Section("Notes") {
