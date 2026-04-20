@@ -86,6 +86,7 @@ struct GalleryTabView: View {
     @State private var adminGroup: AdminGalleryGroup = .library
     @State private var libraryFilter: LibraryFilter? = .stage
     @State private var selectedCustomGroup: GalleryGroup?
+    @State private var clientFilter: Client? = nil
 
     // Client state
     @State private var clientGroup: ClientGalleryGroup = .portfolio
@@ -150,9 +151,20 @@ struct GalleryTabView: View {
                 }
             }
         }
+        .onChange(of: coordinator.pendingGalleryClient) { _, client in
+            guard let client else { return }
+            adminGroup = .library
+            libraryFilter = .client
+            clientFilter = client
+            coordinator.pendingGalleryClient = nil
+        }
         .onChange(of: adminGroup) {
             searchText = ""
+            clientFilter = nil
             if adminGroup == .custom { selectedCustomGroup = customGroups.first }
+        }
+        .onChange(of: libraryFilter) {
+            if libraryFilter != .client { clientFilter = nil }
         }
         .onChange(of: lockManager.isLocked) {
             if lockManager.isLocked { sortOrder = .chronological }
@@ -272,7 +284,9 @@ struct GalleryTabView: View {
     @ViewBuilder
     private func libraryDetailView(for filter: LibraryFilter) -> some View {
         switch filter {
-        case .client:    GalleryByClientView(clients: clientsWithImages)
+        case .client:
+            let displayed = clientFilter.map { [$0] } ?? clientsWithImages
+            GalleryByClientView(clients: displayed)
         case .placement: GalleryByPlacementView(pieces: sortedPieces)
         case .size:      GalleryBySizeView(pieces: sortedPieces)
         case .stage:     GalleryByStageView(pieces: sortedPieces)

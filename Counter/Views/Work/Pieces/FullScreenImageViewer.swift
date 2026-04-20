@@ -1,53 +1,51 @@
 import SwiftUI
 
-/// Image viewer with a proper top navigation bar, metadata pills, and forward/back arrows.
 struct FullScreenImageViewer: View {
     let images: [WorkImage]
     let initialImage: WorkImage
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
     @State private var currentIndex: Int = 0
     @State private var showingShareSheet = false
+    @State private var showingDeleteConfirm = false
 
     private var currentImage: WorkImage? {
         guard currentIndex >= 0, currentIndex < images.count else { return nil }
         return images[currentIndex]
     }
 
-    private var currentGroup: SessionProgress? {
-        currentImage?.sessionProgress
-    }
-
-    /// Resolves the piece via direct ownership or through the image group chain
     private var currentPiece: Piece? {
-        currentImage?.piece ?? currentGroup?.piece
+        currentImage?.piece ?? currentImage?.sessionProgress?.piece
     }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Metadata pills
-                if let image = currentImage {
-                    infoBar(image)
-                    Divider()
-                }
-
-                // Image
+                // Photo — top, fixed height, zoomable
                 ZStack {
-                    Color.black.ignoresSafeArea()
-
+                    Color.black
                     if let image = currentImage {
                         ZoomableImageView(pieceImage: image)
                     }
                 }
+                .frame(height: 360)
+
+                // Navigation strip
+                navStrip
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color(uiColor: .systemBackground))
 
                 Divider()
 
-                // Bottom navigation
-                bottomBar
+                // Editable metadata
+                if let image = currentImage {
+                    ImageMetadataPanel(image: image, piece: currentPiece, lockManager: lockManager)
+                }
             }
-            .background(Color.black)
+            .background(Color(uiColor: .systemGroupedBackground))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -62,18 +60,21 @@ struct FullScreenImageViewer: View {
                         }
                     }
                 }
-
                 ToolbarItem(placement: .principal) {
                     Text("\(currentIndex + 1) of \(images.count)")
                         .font(.system(.caption, design: .monospaced, weight: .semibold))
                         .foregroundStyle(.secondary)
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showingShareSheet = true
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
+                    HStack {
+                        Button { showingShareSheet = true } label: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        Button(role: .destructive) {
+                            showingDeleteConfirm = true
+                        } label: {
+                            Image(systemName: "trash")
+                        }
                     }
                 }
             }
@@ -84,6 +85,12 @@ struct FullScreenImageViewer: View {
                 ShareSheetView(pieceImage: image)
             }
         }
+        .confirmationDialog("Delete Photo", isPresented: $showingDeleteConfirm, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) { deleteCurrentImage() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This photo will be permanently deleted.")
+        }
         .onAppear {
             if let idx = images.firstIndex(where: { $0.id == initialImage.id }) {
                 currentIndex = idx
@@ -91,95 +98,34 @@ struct FullScreenImageViewer: View {
         }
     }
 
-    // MARK: - Info Bar
+    // MARK: - Delete
 
-    private func infoBar(_ image: WorkImage) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                // 1. Rating (business only)
-                if !lockManager.isLocked, let rating = currentPiece?.rating {
-                    infoPill(
-                        icon: "star.fill",
-                        text: "\(rating)/5",
-                        tint: .yellow
-                    )
-                }
-
-                // 2. Date
-                infoPill(
-                    icon: "calendar",
-                    text: image.capturedAt.formatted(date: .abbreviated, time: .omitted),
-                    tint: .blue
-                )
-
-                // 3. Stage or Category
-                if let stage = currentGroup?.stage {
-                    infoPill(
-                        icon: stage.systemImage,
-                        text: stage.rawValue,
-                        tint: .purple
-                    )
-                } else if let category = currentImage?.category {
-                    infoPill(
-                        icon: category.systemImage,
-                        text: category.rawValue,
-                        tint: .purple
-                    )
-                }
-
-                // 4. Piece
-                if let piece = currentPiece, !piece.title.isEmpty {
-                    infoPill(
-                        icon: piece.pieceType.systemImage,
-                        text: piece.title,
-                        tint: .green
-                    )
-                }
-
-                // 5. Placement
-                if let placement = currentPiece?.bodyPlacement, !placement.isEmpty {
-                    infoPill(
-                        icon: "figure.arms.open",
-                        text: placement,
-                        tint: .orange
-                    )
-                }
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+    private func deleteCurrentImage() {
+        guard let image = currentImage else { return }
+        if image.isPrimary {
+            currentPiece?.primaryImagePath = nil
         }
-        .background(Color(uiColor: .systemBackground))
+        Task { try? await ImageStorageService.shared.deleteImage(relativePath: image.filePath) }
+        modelContext.delete(image)
+        // Move index back if we were at the last image
+        if currentIndex >= images.count - 1 {
+            currentIndex = max(0, currentIndex - 1)
+        }
+        if images.isEmpty { dismiss() }
     }
 
-    private func infoPill(icon: String, text: String, tint: Color) -> some View {
-        HStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(tint)
-            Text(text)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(.primary)
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
-        .background(tint.opacity(0.1), in: Capsule())
-    }
+    // MARK: - Navigation Strip
 
-    // MARK: - Bottom Bar
-
-    private var bottomBar: some View {
-        HStack(spacing: 24) {
-            // Previous
+    private var navStrip: some View {
+        HStack {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     currentIndex = max(0, currentIndex - 1)
                 }
             } label: {
                 HStack(spacing: 4) {
-                    Image(systemName: "chevron.left")
-                        .fontWeight(.semibold)
-                    Text("Previous")
-                        .font(.subheadline.weight(.medium))
+                    Image(systemName: "chevron.left").fontWeight(.semibold)
+                    Text("Previous").font(.subheadline.weight(.medium))
                 }
             }
             .disabled(currentIndex <= 0)
@@ -187,36 +133,104 @@ struct FullScreenImageViewer: View {
 
             Spacer()
 
-            // Notes preview
-            if let image = currentImage, !image.notes.isEmpty {
-                Text(image.notes)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .frame(maxWidth: 180)
-            }
-
-            Spacer()
-
-            // Next
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     currentIndex = min(images.count - 1, currentIndex + 1)
                 }
             } label: {
                 HStack(spacing: 4) {
-                    Text("Next")
-                        .font(.subheadline.weight(.medium))
-                    Image(systemName: "chevron.right")
-                        .fontWeight(.semibold)
+                    Text("Next").font(.subheadline.weight(.medium))
+                    Image(systemName: "chevron.right").fontWeight(.semibold)
                 }
             }
             .disabled(currentIndex >= images.count - 1)
             .opacity(currentIndex >= images.count - 1 ? 0.3 : 1)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(Color(uiColor: .systemBackground))
+    }
+}
+
+// MARK: - Metadata Panel
+
+private struct ImageMetadataPanel: View {
+    @Bindable var image: WorkImage
+    let piece: Piece?
+    let lockManager: BusinessLockManager
+
+    private let editableCategories: [ImageCategory] = [
+        .reference, .inspiration, .progress, .healed, .portfolio
+    ]
+
+    private var isThumbnail: Bool { image.isPrimary }
+
+    var body: some View {
+        List {
+            Section("Image Details") {
+                LabeledContent("Name") {
+                    TextField("Untitled", text: $image.title)
+                        .multilineTextAlignment(.trailing)
+                }
+
+                Picker("Type", selection: $image.category) {
+                    ForEach(editableCategories, id: \.self) { cat in
+                        Label(cat.rawValue, systemImage: cat.systemImage).tag(cat)
+                    }
+                }
+
+                Toggle("Portfolio / Client Visible", isOn: $image.isPortfolio)
+
+                // Thumbnail designation — only one per piece
+                Button {
+                    setAsThumbnail()
+                } label: {
+                    HStack {
+                        Label(
+                            isThumbnail ? "Piece Thumbnail" : "Set as Piece Thumbnail",
+                            systemImage: isThumbnail ? "star.fill" : "star"
+                        )
+                        .foregroundStyle(isThumbnail ? Color.yellow : Color.primary)
+                        Spacer()
+                        if isThumbnail {
+                            Text("Current")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .disabled(isThumbnail)
+
+                LabeledContent("Notes") {
+                    TextField("Add notes…", text: $image.notes, axis: .vertical)
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(2...4)
+                }
+            }
+
+            Section("Context") {
+                LabeledContent("Captured", value: image.capturedAt.formatted(date: .abbreviated, time: .omitted))
+
+                if let piece {
+                    LabeledContent("Piece", value: piece.title)
+                    if !piece.bodyPlacement.isEmpty {
+                        LabeledContent("Placement", value: piece.bodyPlacement)
+                    }
+                    if !lockManager.isLocked, let rating = piece.rating {
+                        LabeledContent("Piece Rating", value: "\(rating) / 5")
+                    }
+                }
+
+                if let stage = image.sessionProgress?.stage {
+                    LabeledContent("Session Stage", value: stage.rawValue)
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    private func setAsThumbnail() {
+        // Clear isPrimary on all sibling images
+        piece?.images.forEach { $0.isPrimary = false }
+        image.isPrimary = true
+        piece?.primaryImagePath = image.filePath
     }
 }
 
@@ -237,28 +251,15 @@ struct ZoomableImageView: View {
                     .scaleEffect(scale)
                     .gesture(
                         MagnifyGesture()
-                            .onChanged { value in
-                                scale = lastScale * value.magnification
-                            }
+                            .onChanged { value in scale = lastScale * value.magnification }
                             .onEnded { _ in
                                 lastScale = scale
-                                if scale < 1 {
-                                    withAnimation(.spring()) {
-                                        scale = 1
-                                        lastScale = 1
-                                    }
-                                }
+                                if scale < 1 { withAnimation(.spring()) { scale = 1; lastScale = 1 } }
                             }
                     )
                     .onTapGesture(count: 2) {
                         withAnimation(.spring()) {
-                            if scale > 1 {
-                                scale = 1
-                                lastScale = 1
-                            } else {
-                                scale = 3
-                                lastScale = 3
-                            }
+                            if scale > 1 { scale = 1; lastScale = 1 } else { scale = 3; lastScale = 3 }
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)
@@ -268,7 +269,8 @@ struct ZoomableImageView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             }
         }
-        .task {
+        .task(id: pieceImage.filePath) {
+            image = nil
             image = await ImageStorageService.shared.loadImage(relativePath: pieceImage.filePath)
         }
     }
@@ -278,34 +280,21 @@ struct ZoomableImageView: View {
 
 struct ShareSheetView: UIViewControllerRepresentable {
     let pieceImage: WorkImage
-    @State private var loadedImage: UIImage?
 
     func makeUIViewController(context: Context) -> UIViewController {
         let placeholder = UIViewController()
-
         Task {
             guard let image = await ImageStorageService.shared.loadImage(relativePath: pieceImage.filePath) else { return }
-
             await MainActor.run {
-                let activityVC = UIActivityViewController(
-                    activityItems: [image],
-                    applicationActivities: nil
-                )
-                // On iPad UIActivityViewController is presented as a popover and MUST have a
-                // sourceView set — omitting it raises UIPopoverPresentationController exception.
+                let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
                 if let popover = activityVC.popoverPresentationController {
                     popover.sourceView = placeholder.view
-                    popover.sourceRect = CGRect(
-                        x: placeholder.view.bounds.midX,
-                        y: placeholder.view.bounds.midY,
-                        width: 0, height: 0
-                    )
+                    popover.sourceRect = CGRect(x: placeholder.view.bounds.midX, y: placeholder.view.bounds.midY, width: 0, height: 0)
                     popover.permittedArrowDirections = []
                 }
                 placeholder.present(activityVC, animated: true)
             }
         }
-
         return placeholder
     }
 

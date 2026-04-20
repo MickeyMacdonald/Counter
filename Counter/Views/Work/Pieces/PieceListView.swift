@@ -238,10 +238,11 @@ struct PieceListRowView: View {
             Spacer(minLength: 0)
         }
         .padding(.vertical, 4)
-        .task { await loadThumbnail() }
+        .task(id: piece.primaryImagePath) { await loadThumbnail() }
     }
 
     private func loadThumbnail() async {
+        await MainActor.run { thumbnail = nil }
         guard let path = primaryImage?.filePath,
               let img = await ImageStorageService.shared.loadImage(relativePath: path) else { return }
         let size = CGSize(width: 150, height: 150)

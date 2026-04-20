@@ -40,7 +40,7 @@ struct InspirationGalleryView: View {
             }
         }
         .sheet(isPresented: $showImporter) {
-            PhotoImportPicker(isPresented: $showImporter) { uiImages in
+            PhotoImportPicker(isPresented: $showImporter) { uiImages, _ in
                 Task { await saveWorkImages(uiImages) }
             }
         }

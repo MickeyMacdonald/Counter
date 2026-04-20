@@ -7,7 +7,8 @@ struct PieceDetailView: View {
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(AppNavigationCoordinator.self) private var coordinator
     @Query private var profiles: [UserProfile]
-    @State private var showingEditPiece = false
+    @State private var showingPhotoImporter = false
+    @State private var isRemovingPhotos = false
     @State private var showingAddSession = false
     @State private var showingStageManager = false
     @State private var showingTimeLog: SessionProgress?
@@ -20,6 +21,7 @@ struct PieceDetailView: View {
     @State private var showingEmailPicker = false
     @State private var showDiscount = false
     @State private var selectedDiscount: Discount?
+    @State private var newTagInput = ""
     @Query(sort: \Discount.sortOrder) private var discounts: [Discount]
 
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
@@ -162,15 +164,17 @@ struct PieceDetailView: View {
                         }
                         actionButton(icon: "photo.badge.plus", label: "Photo",
                                      disabled: false) {
-                            showingEditPiece = true
+                            showingPhotoImporter = true
                         }
                         actionButton(icon: "banknote", label: "Payment",
                                      disabled: false) {
                             showingLogPayment = true
                         }
                         actionButton(icon: "photo.on.rectangle.angled", label: "Gallery",
-                                     disabled: piece.allImages.isEmpty) {
-                            openGallery(piece.allImages)
+                                     disabled: piece.client == nil) {
+                            if let client = piece.client {
+                                coordinator.navigateToGallery(client: client)
+                            }
                         }
                     }
                     .padding(.top, 4)
@@ -193,27 +197,33 @@ struct PieceDetailView: View {
 
             // MARK: - Photos
             Section {
-                if piece.images.isEmpty {
+                if piece.allImages.isEmpty {
                     Button {
-                        showingEditPiece = true
+                        showingPhotoImporter = true
                     } label: {
                         Label("Add Photos", systemImage: "photo.badge.plus")
                     }
                 } else {
-                    if !piece.inspirationImages.isEmpty {
-                        directImageRow(label: "Inspiration", icon: "sparkles", images: piece.inspirationImages)
-                            .onTapGesture { openGallery(piece.inspirationImages) }
-                    }
-                    if !piece.referenceImages.isEmpty {
-                        directImageRow(label: "Reference", icon: "photo.on.rectangle", images: piece.referenceImages)
-                            .onTapGesture { openGallery(piece.referenceImages) }
-                    }
+                    photoCategoryRow("Reference",   icon: ImageCategory.reference.systemImage,   images: piece.referenceImages)
+                    photoCategoryRow("Inspiration", icon: ImageCategory.inspiration.systemImage, images: piece.inspirationImages)
+                    photoCategoryRow("Progress",    icon: ImageCategory.progress.systemImage,    images: allProgressImages)
+                    photoCategoryRow("Healed",      icon: ImageCategory.healed.systemImage,      images: healedImages)
+                    photoCategoryRow("Portfolio",   icon: ImageCategory.portfolio.systemImage,   images: piece.portfolioImages)
                 }
             } header: {
                 HStack {
                     Text("Photos")
                     Spacer()
-                    Button { showingEditPiece = true } label: {
+                    if !piece.allImages.isEmpty {
+                        Button {
+                            withAnimation { isRemovingPhotos.toggle() }
+                        } label: {
+                            Image(systemName: isRemovingPhotos ? "minus.circle.fill" : "minus.circle")
+                                .font(.body)
+                                .foregroundStyle(isRemovingPhotos ? .red : .secondary)
+                        }
+                    }
+                    Button { showingPhotoImporter = true } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.body)
                     }
@@ -268,29 +278,76 @@ struct PieceDetailView: View {
                 }
             }
 
-            // MARK: - Details
-            Section("Details") {
-                if !piece.bodyPlacement.isEmpty {
-                    LabeledContent("Body Location", value: piece.bodyPlacement)
+            // MARK: - Summary (Details + Financials)
+            Section {
+                LabeledContent("Body Location") {
+                    TextField("Location", text: $piece.bodyPlacement)
+                        .multilineTextAlignment(.trailing)
                 }
-                LabeledContent("Type", value: piece.pieceType.rawValue)
-                if !piece.tags.isEmpty {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Tags")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+
+                Picker("Type", selection: $piece.pieceType) {
+                    ForEach(PieceType.allCases, id: \.self) { type in
+                        Label(type.rawValue, systemImage: type.systemImage).tag(type)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Tags")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    if !piece.tags.isEmpty {
                         FlowLayout(spacing: 6) {
                             ForEach(piece.tags, id: \.self) { tag in
-                                Text(tag)
-                                    .font(.caption.weight(.medium))
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 5)
-                                    .background(.primary.opacity(0.06), in: Capsule())
+                                HStack(spacing: 3) {
+                                    Text(tag)
+                                        .font(.caption.weight(.medium))
+                                    Button {
+                                        piece.tags.removeAll { $0 == tag }
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(.primary.opacity(0.06), in: Capsule())
                             }
                         }
                     }
-                    .padding(.vertical, 4)
+                    HStack {
+                        TextField("Add tag…", text: $newTagInput)
+                            .font(.caption)
+                            .onSubmit { addTag() }
+                        if !newTagInput.trimmingCharacters(in: .whitespaces).isEmpty {
+                            Button(action: addTag) {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 }
+                .padding(.vertical, 4)
+
+                LabeledContent("Session Hours") {
+                    Text(String(format: "%.1f hrs", piece.totalHours))
+                }
+                LabeledContent("Total Charge") {
+                    Text(effectiveCost.currencyFormatted)
+                        .foregroundStyle(showDiscount ? Color.orange : Color.primary)
+                }
+                HStack {
+                    Text("Outstanding")
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text(adjustedOutstanding.currencyFormatted)
+                        .fontWeight(.bold)
+                        .foregroundStyle(adjustedOutstanding <= 0 ? Color.green : Color.orange)
+                }
+            } header: {
+                Text("Summary")
             }
 
             // MARK: - Discount
@@ -316,35 +373,10 @@ struct PieceDetailView: View {
                 }
             }
 
-            // MARK: - Summary
-            Section {
-                LabeledContent("Session Hours") {
-                    Text(String(format: "%.1f hrs", piece.totalHours))
-                }
-                LabeledContent("Total Charge") {
-                    Text(effectiveCost.currencyFormatted)
-                        .foregroundStyle(showDiscount ? Color.orange : Color.primary)
-                }
-                HStack {
-                    Text("Outstanding")
-                        .fontWeight(.medium)
-                    Spacer()
-                    Text(adjustedOutstanding.currencyFormatted)
-                        .fontWeight(.bold)
-                        .foregroundStyle(adjustedOutstanding <= 0 ? Color.green : Color.orange)
-                }
-                NavigationLink {
-                    PieceFinancialDetailView(piece: piece)
-                } label: {
-                    Text("Full Breakdown").font(.subheadline)
-                }
-            } header: {
-                Text("Summary")
-            }
-
             // MARK: - Payments
             Section {
-                if piece.payments.isEmpty {
+                let allPayments = piece.payments.sorted(by: { $0.paymentDate > $1.paymentDate })
+                if allPayments.isEmpty {
                     ContentUnavailableView {
                         Label("No Payments", systemImage: "banknote")
                     } description: {
@@ -352,7 +384,7 @@ struct PieceDetailView: View {
                     }
                     .padding(.vertical, 4)
                 } else {
-                    ForEach(piece.payments.sorted(by: { $0.paymentDate > $1.paymentDate })) { payment in
+                    ForEach(allPayments) { payment in
                         HStack(spacing: 12) {
                             Image(systemName: payment.paymentMethod.systemImage)
                                 .foregroundStyle(Color.accentColor)
@@ -396,18 +428,6 @@ struct PieceDetailView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingEditPiece = true
-                } label: {
-                    Image(systemName: "pencil.circle")
-                }
-            }
-        }
-        .sheet(isPresented: $showingEditPiece) {
-            PieceEditView(mode: .edit(piece))
-        }
         .sheet(isPresented: $showingAddSession) {
             SessionEditView(piece: piece)
         }
@@ -434,6 +454,53 @@ struct PieceDetailView: View {
                 EmailTemplatePickerView(client: client, piece: piece)
             }
         }
+        .sheet(isPresented: $showingPhotoImporter) {
+            PhotoImportPicker(isPresented: $showingPhotoImporter) { images, category in
+                Task { await importPhotos(images, category: category) }
+            }
+        }
+    }
+
+    // MARK: - Photo Import
+
+    private func importPhotos(_ images: [UIImage], category: ImageCategory) async {
+        let existingCount = piece.images.count
+        for (idx, image) in images.enumerated() {
+            let sortOffset = existingCount + idx
+            if let relativePath = try? await ImageStorageService.shared.saveImage(
+                image,
+                clientID: clientID,
+                pieceID: pieceID,
+                stage: category.rawValue
+            ) {
+                await MainActor.run {
+                    let workImage = WorkImage(
+                        filePath: relativePath,
+                        fileName: "IMG_\(sortOffset + 1)",
+                        sortOrder: sortOffset,
+                        isPrimary: sortOffset == 0 && piece.primaryImagePath == nil,
+                        category: category
+                    )
+                    workImage.piece = piece
+                    modelContext.insert(workImage)
+                    if workImage.isPrimary {
+                        piece.primaryImagePath = relativePath
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Tag Helpers
+
+    private func addTag() {
+        let trimmed = newTagInput.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !piece.tags.contains(trimmed) else {
+            newTagInput = ""
+            return
+        }
+        piece.tags.append(trimmed)
+        newTagInput = ""
     }
 
     // MARK: - Quick Action Helpers
@@ -467,11 +534,59 @@ struct PieceDetailView: View {
 
     // MARK: - Gallery helper
 
-    private func openGallery(_ images: [WorkImage]) {
+    private func openGallery(_ images: [WorkImage], initial: WorkImage? = nil) {
         guard !images.isEmpty else { return }
         galleryImages = images
-        galleryInitialImage = images[0]
+        galleryInitialImage = initial ?? images[0]
         showingImageGallery = true
+    }
+
+    // MARK: - Computed image groups
+
+    private var healedImages: [WorkImage] {
+        piece.images.filter { $0.category == .healed }.sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    private var allProgressImages: [WorkImage] {
+        let sessionImages = piece.sessions
+            .flatMap { $0.sessionProgress }
+            .flatMap { $0.images }
+        return (piece.progressImages + sessionImages).sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    // MARK: - Photo category row
+
+    @ViewBuilder
+    private func photoCategoryRow(_ label: String, icon: String, images: [WorkImage]) -> some View {
+        if !images.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Label(label, systemImage: icon)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 6) {
+                        ForEach(images) { image in
+                            PieceThumbnailCell(image: image, isRemoving: isRemovingPhotos) {
+                                deleteImage(image)
+                            }
+                            .onTapGesture {
+                                if !isRemovingPhotos { openGallery(images, initial: image) }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 1)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+    }
+
+    private func deleteImage(_ image: WorkImage) {
+        if image.isPrimary {
+            piece.primaryImagePath = nil
+        }
+        Task { try? await ImageStorageService.shared.deleteImage(relativePath: image.filePath) }
+        modelContext.delete(image)
     }
 
     // MARK: - Rating View
@@ -494,71 +609,85 @@ struct PieceDetailView: View {
     // MARK: - Session Row
 
     private func sessionRow(_ session: Session) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 8) {
-                Image(systemName: session.sessionType.systemImage)
-                    .font(.caption)
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 16)
-                Text(session.sessionType.rawValue)
-                    .font(.subheadline.weight(.medium))
-                Spacer()
-                if session.isNoShow {
-                    Image(systemName: "person.slash")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
+        HStack(spacing: 10) {
+            Image(systemName: session.sessionType.systemImage)
+                .font(.caption)
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 16)
+            Text(session.sessionType.rawValue)
+                .font(.subheadline.weight(.medium))
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
                 Text(session.durationFormatted)
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
-            }
-
-            HStack {
                 Text(session.date.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Spacer()
-                Text(session.cost.currencyFormatted)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.secondary)
             }
-
-            // Show image groups attached to this session
-            if !session.sessionProgress.isEmpty {
-                HStack(spacing: 6) {
-                    ForEach(session.sortedSessionProgress) { group in
-                        Label("\(group.images.count)", systemImage: group.stage.systemImage)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(Color.accentColor.opacity(0.1), in: Capsule())
-                            .foregroundStyle(Color.accentColor)
-                    }
-                }
-            }
-
-            if !session.notes.isEmpty {
-                Text(session.notes)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
+            Text(session.cost.currencyFormatted)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
     }
 
-    // MARK: - Direct Image Row
+}
 
-    private func directImageRow(label: String, icon: String, images: [WorkImage]) -> some View {
-        HStack {
-            Label(label, systemImage: icon)
-            Spacer()
-            Text("\(images.count)")
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(.primary.opacity(0.08), in: Capsule())
+// MARK: - Thumbnail cell
+
+private struct PieceThumbnailCell: View {
+    let image: WorkImage
+    var isRemoving: Bool = false
+    var onDelete: (() -> Void)? = nil
+    @State private var thumbnail: UIImage?
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(.primary.opacity(0.06))
+            .frame(width: 80, height: 80)
+            .overlay {
+                if let thumb = thumbnail {
+                    Image(uiImage: thumb)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                }
+            }
+            .overlay(alignment: .topTrailing) {
+                if isRemoving {
+                    Button {
+                        onDelete?()
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.red)
+                            .background(Color.white.clipShape(Circle()).padding(3))
+                    }
+                    .buttonStyle(.plain)
+                    .padding(2)
+                } else if image.isPrimary {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.yellow)
+                        .shadow(color: .black.opacity(0.4), radius: 2, x: 0, y: 1)
+                        .padding(4)
+                }
+            }
+            .clipped()
+            .task { await loadThumbnail() }
+    }
+
+    private func loadThumbnail() async {
+        guard let full = await ImageStorageService.shared.loadImage(relativePath: image.filePath) else { return }
+        let size = CGSize(width: 160, height: 160)
+        let thumb = UIGraphicsImageRenderer(size: size).image { _ in
+            full.draw(in: CGRect(origin: .zero, size: size))
         }
+        await MainActor.run { thumbnail = thumb }
     }
 }
 

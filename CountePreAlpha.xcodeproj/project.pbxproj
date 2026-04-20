@@ -111,6 +111,8 @@
 		AA000096 /* RecoveryModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000096 /* RecoveryModeView.swift */; };
 		AA000097 /* WorkImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000097 /* WorkImage.swift */; };
 		AA000098 /* CounterSchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000098 /* CounterSchemaV3.swift */; };
+		AA000099 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000099 /* PermissionService.swift */; };
+		AA000100 /* PhotoImportMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000100 /* PhotoImportMetadataView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -218,6 +220,8 @@
 		AB000096 /* RecoveryModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryModeView.swift; sourceTree = "<group>"; };
 		AB000097 /* WorkImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkImage.swift; sourceTree = "<group>"; };
 		AB000098 /* CounterSchemaV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV3.swift; sourceTree = "<group>"; };
+		AB000099 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
+		AB000100 /* PhotoImportMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoImportMetadataView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -369,6 +373,7 @@
 				AB000045 /* FlashGalleryView.swift */,
 				AB000046 /* InspirationGalleryView.swift */,
 				AB000027 /* SignatureCaptureView.swift */,
+				AB000100 /* PhotoImportMetadataView.swift */,
 			);
 			path = Pieces;
 			sourceTree = "<group>";
@@ -383,6 +388,7 @@
 				AE000025 /* Security */,
 				AE000026 /* Recovery */,
 				AE000027 /* Preview */,
+				AB000099 /* PermissionService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -779,6 +785,8 @@
 				AA000096 /* RecoveryModeView.swift in Sources */,
 				AA000097 /* WorkImage.swift in Sources */,
 				AA000098 /* CounterSchemaV3.swift in Sources */,
+				AA000099 /* PermissionService.swift in Sources */,
+				AA000100 /* PhotoImportMetadataView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -903,7 +911,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -937,7 +947,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

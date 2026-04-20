@@ -55,7 +55,9 @@
       "Bash(sed -i '' 's/EmailTemplate\\\\.TemplateCategory/SavedEmailTemplate.TemplateCategory/g' Counter/Models/Configuration/EmailTemplate.swift)",
       "Bash(sed -i '' 's/let template: EmailTemplate?/let template: SavedEmailTemplate?/g; s/@Query\\(sort: \\\\\\\\EmailTemplate\\\\.name\\) private var customTemplates: \\\\[EmailTemplate\\\\]/@Query\\(sort: \\\\\\\\SavedEmailTemplate.name\\) private var customTemplates: [SavedEmailTemplate]/g; s/@State private var selectedTemplate: EmailTemplate?/@State private var selectedTemplate: SavedEmailTemplate?/g; s/@State private var editingCustomTemplate: EmailTemplate?/@State private var editingCustomTemplate: SavedEmailTemplate?/g; s/ForEach\\(EmailTemplate\\\\.TemplateCategory/ForEach\\(SavedEmailTemplate.TemplateCategory/g; s/let category: EmailTemplate\\\\.TemplateCategory/let category: SavedEmailTemplate.TemplateCategory/g' Counter/Services/Communication/EmailService.swift)",
       "Bash(sed -i '' 's/EmailTemplate\\\\.TemplateCategory/SavedEmailTemplate.TemplateCategory/g' Counter/Services/Recovery/RecoveryService.swift)",
-      "Bash(git commit -m 'Resolve naming conflicts from model renames *)"
+      "Bash(git commit -m 'Resolve naming conflicts from model renames *)",
+      "Bash(xcodebuild -scheme Counter -destination 'platform=iOS Simulator,name=iPhone 16' build)",
+      "Bash(DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -scheme Counter -destination 'platform=iOS Simulator,name=iPhone 16' build)"
     ]
   }
 }

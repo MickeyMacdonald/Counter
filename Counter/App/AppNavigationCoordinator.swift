@@ -26,6 +26,12 @@ final class AppNavigationCoordinator {
     /// and highlight this session in the list.
     var pendingSession: Session?
 
+    // MARK: - Gallery deep-link
+
+    /// When non-nil, GalleryTabView should switch to Library → Client view
+    /// and filter to this specific client.
+    var pendingGalleryClient: Client?
+
     // MARK: - Convenience navigators
 
     /// Navigate to a client in the Works sidebar (switches tab if needed).
@@ -38,6 +44,14 @@ final class AppNavigationCoordinator {
     func navigateToPiece(_ piece: Piece) {
         selectedTab  = .work
         pendingPiece = piece
+    }
+
+    /// Navigate to Gallery → Library → Client, filtered to the given client.
+    func navigateToGallery(client: Client) {
+        selectedTab = .gallery
+        Task { @MainActor in
+            pendingGalleryClient = client
+        }
     }
 
     /// Navigate to a session in the Bookings → Sessions list (switches tab).

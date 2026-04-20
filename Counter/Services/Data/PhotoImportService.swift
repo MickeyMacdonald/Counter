@@ -2,77 +2,53 @@ import SwiftUI
 import PhotosUI
 
 /// Wraps PhotosPicker and camera capture into a unified import flow.
-/// Returns UIImage instances ready to be saved via ImageStorageService.
+/// Navigates to a metadata step within the same sheet before calling onImport.
 struct PhotoImportPicker: View {
     @Binding var isPresented: Bool
-    let onImport: ([UIImage]) -> Void
+    let onImport: ([UIImage], ImageCategory) -> Void
 
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var showingCamera = false
-    @State private var showingSourcePicker = true
+    @State private var showingLibrary = false
+    @State private var showingFilePicker = false
+    @State private var showingCameraPermissionAlert = false
+    @State private var showingLibraryPermissionAlert = false
+    @State private var pendingImages: [UIImage] = []
+    @State private var showingMetadata = false
+    @State private var isLoading = false
 
     var body: some View {
-        Group {
-            if showingSourcePicker {
-                sourcePickerSheet
-            }
-        }
-        .photosPicker(
-            isPresented: $showingLibrary,
-            selection: $selectedItems,
-            maxSelectionCount: 20,
-            matching: .images
-        )
-        .fullScreenCover(isPresented: $showingCamera) {
-            CameraCapture { image in
-                if let image {
-                    onImport([image])
-                }
-                showingCamera = false
-                isPresented = false
-            }
-        }
-        .onChange(of: selectedItems) { _, newItems in
-            Task {
-                var images: [UIImage] = []
-                for item in newItems {
-                    if let data = try? await item.loadTransferable(type: Data.self),
-                       let image = UIImage(data: data) {
-                        images.append(image)
-                    }
-                }
-                if !images.isEmpty {
-                    onImport(images)
-                }
-                selectedItems = []
-                isPresented = false
-            }
-        }
-    }
-
-    @State private var showingLibrary = false
-
-    private var sourcePickerSheet: some View {
         NavigationStack {
             List {
                 Button {
-                    showingSourcePicker = false
-                    showingCamera = true
+                    Task {
+                        let granted = await PermissionService.shared.requestCamera()
+                        if granted {
+                            showingCamera = true
+                        } else {
+                            showingCameraPermissionAlert = true
+                        }
+                    }
                 } label: {
                     Label("Take Photo", systemImage: "camera.fill")
                         .font(.body.weight(.medium))
                 }
 
                 Button {
-                    showingSourcePicker = false
-                    showingLibrary = true
+                    Task {
+                        let granted = await PermissionService.shared.requestPhotoLibrary()
+                        if granted {
+                            showingLibrary = true
+                        } else {
+                            showingLibraryPermissionAlert = true
+                        }
+                    }
                 } label: {
                     Label("Photo Library", systemImage: "photo.on.rectangle")
                         .font(.body.weight(.medium))
                 }
 
                 Button {
-                    showingSourcePicker = false
                     showingFilePicker = true
                 } label: {
                     Label("Import File", systemImage: "folder")
@@ -83,8 +59,57 @@ struct PhotoImportPicker: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        isPresented = false
+                    Button("Cancel") { isPresented = false }
+                }
+            }
+            .overlay {
+                if isLoading {
+                    ZStack {
+                        Color.black.opacity(0.2).ignoresSafeArea()
+                        ProgressView("Loading…")
+                            .padding(20)
+                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+                    }
+                }
+            }
+            .navigationDestination(isPresented: $showingMetadata) {
+                PhotoImportMetadataView(images: pendingImages) { category in
+                    onImport(pendingImages, category)
+                    isPresented = false
+                }
+            }
+        }
+        .photosPicker(
+            isPresented: $showingLibrary,
+            selection: $selectedItems,
+            maxSelectionCount: 20,
+            matching: .images
+        )
+        .fullScreenCover(isPresented: $showingCamera, onDismiss: {
+            if !pendingImages.isEmpty { showingMetadata = true }
+        }) {
+            CameraCapture { image in
+                if let image { pendingImages = [image] }
+                showingCamera = false
+            }
+        }
+        .onChange(of: selectedItems) { _, newItems in
+            guard !newItems.isEmpty else { return }
+            Task {
+                await MainActor.run { isLoading = true }
+                var images: [UIImage] = []
+                for item in newItems {
+                    if let data = try? await item.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        images.append(image)
+                    }
+                }
+                await MainActor.run {
+                    selectedItems = []
+                    isLoading = false
+                    if !images.isEmpty {
+                        pendingImages = images
+                        showingMetadata = true
                     }
                 }
             }
@@ -94,8 +119,9 @@ struct PhotoImportPicker: View {
             allowedContentTypes: [.image, .png, .jpeg, .tiff],
             allowsMultipleSelection: true
         ) { result in
-            switch result {
-            case .success(let urls):
+            guard case .success(let urls) = result else { return }
+            Task {
+                await MainActor.run { isLoading = true }
                 var images: [UIImage] = []
                 for url in urls {
                     guard url.startAccessingSecurityScopedResource() else { continue }
@@ -105,20 +131,22 @@ struct PhotoImportPicker: View {
                         images.append(image)
                     }
                 }
-                if !images.isEmpty {
-                    onImport(images)
+                await MainActor.run {
+                    isLoading = false
+                    if !images.isEmpty {
+                        pendingImages = images
+                        showingMetadata = true
+                    }
                 }
-            case .failure:
-                break
             }
-            isPresented = false
         }
+        .permissionDeniedAlert(isPresented: $showingCameraPermissionAlert, permissionName: "Camera")
+        .permissionDeniedAlert(isPresented: $showingLibraryPermissionAlert, permissionName: "Photo Library")
     }
-
-    @State private var showingFilePicker = false
 }
 
-/// UIKit camera wrapper for SwiftUI
+// MARK: - UIKit camera wrapper
+
 struct CameraCapture: UIViewControllerRepresentable {
     let onCapture: (UIImage?) -> Void
 
@@ -131,20 +159,14 @@ struct CameraCapture: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onCapture: onCapture)
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(onCapture: onCapture) }
 
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let onCapture: (UIImage?) -> Void
-
-        init(onCapture: @escaping (UIImage?) -> Void) {
-            self.onCapture = onCapture
-        }
+        init(onCapture: @escaping (UIImage?) -> Void) { self.onCapture = onCapture }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            let image = info[.originalImage] as? UIImage
-            onCapture(image)
+            onCapture(info[.originalImage] as? UIImage)
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

@@ -69,7 +69,7 @@ struct PieceEditView: View {
             }
             .onAppear(perform: loadExistingData)
             .sheet(isPresented: $showPhotoImporter) {
-                PhotoImportPicker(isPresented: $showPhotoImporter) { images in
+                PhotoImportPicker(isPresented: $showPhotoImporter) { images, _ in
                     for image in images {
                         draftPhotos.append(
                             DraftPhoto(image: image, isPrimary: draftPhotos.isEmpty)

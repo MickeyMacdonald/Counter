@@ -68,7 +68,7 @@ struct ImageGalleryView: View {
             }
         }
         .sheet(isPresented: $showingImportPicker) {
-            PhotoImportPicker(isPresented: $showingImportPicker) { images in
+            PhotoImportPicker(isPresented: $showingImportPicker) { images, _ in
                 Task {
                     await importImages(images)
                 }
