@@ -40,7 +40,7 @@ struct RecoveryModeView: View {
     @State private var showErrorDetails = false
     @State private var resetResult: ResetResult?
 
-    private enum ResetResult {
+    fileprivate enum ResetResult {
         case success
         case failure(String)
     }
@@ -75,8 +75,8 @@ struct RecoveryModeView: View {
                     """
                 )
             }
-            .alert(item: resetResultBinding) { result in
-                switch result {
+            .alert(item: resetResultBinding) { item in
+                switch item.result {
                 case .success:
                     return Alert(
                         title: Text("Reset complete"),
@@ -91,6 +91,7 @@ struct RecoveryModeView: View {
                     )
                 }
             }
+
         }
     }
 

@@ -18,7 +18,13 @@
       "Bash(\"/c/Program Files/GitHub:*)",
       "Bash(grep -v \"//\")",
       "Bash(grep -n \"class\\\\|struct\" /c/Users/Mickey/iCloudDrive/Documents/Code/Counter/Counter/Models/*.swift)",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "Bash(git mv *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Organize models into semantic folder hierarchy *)",
+      "Bash(gh pr create --title 'Organize models into semantic folder hierarchy' --body 'Restructures the Models folder with logical subfolders: *)",
+      "Bash(brew list *)",
+      "Bash(git push *)"
     ]
   }
 }
