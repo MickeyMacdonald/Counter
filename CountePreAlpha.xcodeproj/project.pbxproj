@@ -125,9 +125,9 @@
 		AB000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AB000003 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		AB000004 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
-		AB000005 /* ImageGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGroup.swift; sourceTree = "<group>"; };
+		AB000005 /* SessionProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionProgress.swift; sourceTree = "<group>"; };
 		AB000006 /* PieceImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceImage.swift; sourceTree = "<group>"; };
-		AB000007 /* TattooSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TattooSession.swift; sourceTree = "<group>"; };
+		AB000007 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		AB000008 /* Agreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agreement.swift; sourceTree = "<group>"; };
 		AB000009 /* CommunicationLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationLog.swift; sourceTree = "<group>"; };
 		AB000010 /* ImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStorageService.swift; sourceTree = "<group>"; };
@@ -184,12 +184,12 @@
 		AB000061 /* BusinessLockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockManager.swift; sourceTree = "<group>"; };
 		AB000062 /* BusinessLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessLockView.swift; sourceTree = "<group>"; };
 		AB000063 /* PieceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceListView.swift; sourceTree = "<group>"; };
-		AB000064 /* CustomEmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmailTemplate.swift; sourceTree = "<group>"; };
+		AB000064 /* EmailTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplate.swift; sourceTree = "<group>"; };
 		AB000065 /* SettingsViewEmailTemplateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplateEditor.swift; sourceTree = "<group>"; };
 		AB000066 /* SettingsViewEmailTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplates.swift; sourceTree = "<group>"; };
 		AB000067 /* AvailabilityOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityOverride.swift; sourceTree = "<group>"; };
 		AB000068 /* SettingsViewBooking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewBooking.swift; sourceTree = "<group>"; };
-		AB000069 /* CustomSessionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSessionType.swift; sourceTree = "<group>"; };
+		AB000069 /* SessionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionType.swift; sourceTree = "<group>"; };
 		AB000070 /* FlashPriceTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPriceTier.swift; sourceTree = "<group>"; };
 		AB000071 /* FlashPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPortfolioView.swift; sourceTree = "<group>"; };
 		AB000072 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 		AB000078 /* SettingsViewReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewReports.swift; sourceTree = "<group>"; };
 		AB000079 /* DonationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationStore.swift; sourceTree = "<group>"; };
 		AB000080 /* SettingsViewDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewDonation.swift; sourceTree = "<group>"; };
-		AB000081 /* CustomGalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomGalleryGroup.swift; sourceTree = "<group>"; };
+		AB000081 /* GalleryGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryGroup.swift; sourceTree = "<group>"; };
 		AB000082 /* GalleryBySizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBySizeView.swift; sourceTree = "<group>"; };
 		AB000083 /* GalleryByCustomGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByCustomGroupView.swift; sourceTree = "<group>"; };
 		AB000092 /* GalleryByPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPriceView.swift; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 		AB000088 /* RecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryService.swift; sourceTree = "<group>"; };
 		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
 		AB000090 /* SettingsViewRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewRecovery.swift; sourceTree = "<group>"; };
-		AB000091 /* CustomDiscount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDiscount.swift; sourceTree = "<group>"; };
+		AB000091 /* Discount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discount.swift; sourceTree = "<group>"; };
 		AB000093 /* CounterSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV1.swift; sourceTree = "<group>"; };
 		AB000094 /* CounterSchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV2.swift; sourceTree = "<group>"; };
 		AB000095 /* CounterMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterMigrationPlan.swift; sourceTree = "<group>"; };
@@ -316,28 +316,83 @@
 		AE000004 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				AB000003 /* Client.swift */,
-				AB000004 /* Piece.swift */,
-				AB000005 /* ImageGroup.swift */,
-				AB000006 /* PieceImage.swift */,
-				AB000007 /* TattooSession.swift */,
-				AB000008 /* Agreement.swift */,
-				AB000009 /* CommunicationLog.swift */,
-				AB000034 /* UserProfile.swift */,
-				AB000035 /* Booking.swift */,
-				AB000036 /* AvailabilitySlot.swift */,
-				AB000048 /* InspirationImage.swift */,
-				AB000049 /* Payment.swift */,
-				AB000064 /* CustomEmailTemplate.swift */,
-				AB000067 /* AvailabilityOverride.swift */,
-				AB000069 /* CustomSessionType.swift */,
-				AB000070 /* FlashPriceTier.swift */,
-				AB000073 /* SessionRateConfig.swift */,
-				AB000081 /* CustomGalleryGroup.swift */,
-				AB000091 /* CustomDiscount.swift */,
-				AB000089 /* RecoveryBackup.swift */,
+				AE000030 /* Core */,
+				AE000031 /* Gallery */,
+				AE000032 /* Financial */,
+				AE000033 /* Scheduling */,
+				AE000034 /* Configuration */,
+				AE000035 /* Communication */,
+				AE000036 /* Recovery */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AE000030 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				AB000003 /* Client.swift */,
+				AB000004 /* Piece.swift */,
+				AB000007 /* Session.swift */,
+				AB000035 /* Booking.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		AE000031 /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000005 /* SessionProgress.swift */,
+				AB000006 /* PieceImage.swift */,
+			);
+			path = Gallery;
+			sourceTree = "<group>";
+		};
+		AE000032 /* Financial */ = {
+			isa = PBXGroup;
+			children = (
+				AB000049 /* Payment.swift */,
+				AB000091 /* Discount.swift */,
+				AB000070 /* FlashPriceTier.swift */,
+			);
+			path = Financial;
+			sourceTree = "<group>";
+		};
+		AE000033 /* Scheduling */ = {
+			isa = PBXGroup;
+			children = (
+				AB000036 /* AvailabilitySlot.swift */,
+				AB000067 /* AvailabilityOverride.swift */,
+				AB000069 /* SessionType.swift */,
+				AB000073 /* SessionRateConfig.swift */,
+			);
+			path = Scheduling;
+			sourceTree = "<group>";
+		};
+		AE000034 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				AB000034 /* UserProfile.swift */,
+				AB000064 /* EmailTemplate.swift */,
+				AB000008 /* Agreement.swift */,
+				AB000081 /* GalleryGroup.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		AE000035 /* Communication */ = {
+			isa = PBXGroup;
+			children = (
+				AB000009 /* CommunicationLog.swift */,
+			);
+			path = Communication;
+			sourceTree = "<group>";
+		};
+		AE000036 /* Recovery */ = {
+			isa = PBXGroup;
+			children = (
+				AB000089 /* RecoveryBackup.swift */,
+			);
+			path = Recovery;
 			sourceTree = "<group>";
 		};
 		AE000005 /* Views */ = {
@@ -665,7 +720,6 @@
 				AA000045 /* FlashGalleryView.swift in Sources */,
 				AA000046 /* InspirationGalleryView.swift in Sources */,
 				AA000047 /* AddSessionView.swift in Sources */,
-				AA000048 /* InspirationImage.swift in Sources */,
 				AA000049 /* Payment.swift in Sources */,
 				AA000050 /* FinancialDashboardView.swift in Sources */,
 				AA000051 /* PaymentLogView.swift in Sources */,
