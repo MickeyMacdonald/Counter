@@ -75,7 +75,7 @@ struct SettingsViewEmailTemplateEditor: View {
         case create
         case edit(SavedEmailTemplate)
         /// Opens a built-in template for customization; saves as a new custom template.
-        case fromBuiltIn(SavedEmailTemplate)
+        case fromBuiltIn(EmailTemplate)
     }
 
     let mode: Mode
@@ -84,7 +84,7 @@ struct SettingsViewEmailTemplateEditor: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String = ""
-    @State private var category: SavedEmailTemplate.TemplateCategory = .custom
+    @State private var category: EmailTemplate.TemplateCategory = .custom
     @State private var subject: String = ""
     @State private var bodyText: String = ""
 
@@ -143,7 +143,7 @@ struct SettingsViewEmailTemplateEditor: View {
                 Section("Template Info") {
                     TextField("Template name", text: $name)
                     Picker("Category", selection: $category) {
-                        ForEach(SavedEmailTemplate.TemplateCategory.allCases, id: \.self) { cat in
+                        ForEach(EmailTemplate.TemplateCategory.allCases, id: \.self) { cat in
                             Label(cat.rawValue, systemImage: cat.systemImage).tag(cat)
                         }
                     }

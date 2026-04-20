@@ -10,7 +10,7 @@ struct SettingsViewEmailTemplates: View {
 
     @State private var showingNewTemplate = false
     @State private var editingTemplate: SavedEmailTemplate?
-    @State private var customizingBuiltIn: SavedEmailTemplate?
+    @State private var customizingBuiltIn: EmailTemplate?
 
     var body: some View {
         List {
@@ -48,7 +48,7 @@ struct SettingsViewEmailTemplates: View {
             }
 
             // MARK: Built-In Templates
-            ForEach(SavedEmailTemplate.TemplateCategory.allCases, id: \.self) { category in
+            ForEach(EmailTemplate.TemplateCategory.allCases, id: \.self) { category in
                 let templates = EmailTemplates.templates(for: category)
                 if !templates.isEmpty {
                     Section(category.rawValue) {
@@ -97,7 +97,7 @@ struct SettingsViewEmailTemplates: View {
 private struct TemplateListRow: View {
     let name: String
     let subject: String
-    let category: SavedEmailTemplate.TemplateCategory
+    let category: EmailTemplate.TemplateCategory
     let isCustom: Bool
 
     var body: some View {

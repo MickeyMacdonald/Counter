@@ -409,7 +409,7 @@ struct PieceDetailView: View {
             // Show image groups attached to this session
             if !session.sessionProgress.isEmpty {
                 HStack(spacing: 6) {
-                    ForEach(session.sortedSessionProgresss) { group in
+                    ForEach(session.sortedSessionProgress) { group in
                         Label("\(group.images.count)", systemImage: group.stage.systemImage)
                             .font(.caption2.weight(.medium))
                             .padding(.horizontal, 6)

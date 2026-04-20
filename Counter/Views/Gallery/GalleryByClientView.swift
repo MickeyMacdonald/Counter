@@ -87,7 +87,7 @@ struct GalleryByClientView: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 14)
 
-                        let images = piece.sortedSessionProgresss.flatMap { group in
+                        let images = piece.sortedSessionProgress.flatMap { group in
                             group.images.sorted { $0.sortOrder < $1.sortOrder }.map { (image: $0, stage: group.stage) }
                         }
 

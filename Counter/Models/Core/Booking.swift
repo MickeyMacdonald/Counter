@@ -25,7 +25,7 @@ final class Booking {
     var updatedAt: Date
 
     // Relationships
-    var client: Client
+    var client: Client?
     var piece: Piece?
 
     var durationFormatted: String {
@@ -97,7 +97,7 @@ final class Booking {
         notes: String = "",
         depositPaid: Bool = false,
         reminderSent: Bool = false,
-        client: Client,
+        client: Client? = nil,
         piece: Piece? = nil
     ) {
         self.date = date

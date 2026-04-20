@@ -327,7 +327,6 @@ actor RecoveryService {
         let sessions = try context.fetch(FetchDescriptor<Session>())
         let sessionProgress = try context.fetch(FetchDescriptor<SessionProgress>())
         let pieceImages = try context.fetch(FetchDescriptor<PieceImage>())
-        let inspirationImages = try context.fetch(FetchDescriptor<PieceImage>())
         let bookings = try context.fetch(FetchDescriptor<Booking>())
         let agreements = try context.fetch(FetchDescriptor<Agreement>())
         let commLogs = try context.fetch(FetchDescriptor<CommunicationLog>())
@@ -424,14 +423,6 @@ actor RecoveryService {
                 notes: pi.notes, capturedAt: pi.capturedAt,
                 sortOrder: pi.sortOrder, isPrimary: pi.isPrimary,
                 category: pi.category?.rawValue, tags: pi.tags
-            )
-        }
-
-        let inspirationBackups = inspirationImages.map { img in
-            PieceImageBackup(
-                backupID: UUID(),
-                filePath: img.filePath, fileName: img.fileName,
-                tags: img.tags, notes: img.notes, capturedAt: img.capturedAt
             )
         }
 
@@ -604,7 +595,7 @@ actor RecoveryService {
             appVersion: RecoveryService.currentAppVersion,
             clients: clientBackups, pieces: pieceBackups,
             sessions: sessionBackups, sessionProgress: imageGroupBackups,
-            pieceImages: pieceImageBackups, inspirationImages: inspirationBackups,
+            pieceImages: pieceImageBackups, inspirationImages: nil,
             bookings: bookingBackups, agreements: agreementBackups,
             communicationLogs: commLogBackups, payments: paymentBackups,
             profiles: profileBackups, customSessionTypes: cstBackups,
@@ -718,14 +709,14 @@ actor RecoveryService {
         }
 
         for cst in backup.customSessionTypes {
-            let obj = SessionType(name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
+            let obj = SessionCategory(name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
             obj.uuid = cst.uuid
             obj.createdAt = cst.createdAt
             context.insert(obj)
         }
 
         for cet in backup.customEmailTemplates {
-            let obj = SavedEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: SavedEmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
+            let obj = SavedEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: EmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
             obj.createdAt = cet.createdAt
             obj.updatedAt = cet.updatedAt
             context.insert(obj)
@@ -778,8 +769,8 @@ actor RecoveryService {
             context.insert(obj)
         }
 
-        for img in backup.inspirationImages {
-            let obj = PieceImage(filePath: img.filePath, fileName: img.fileName, tags: img.tags, notes: img.notes)
+        for img in backup.inspirationImages ?? [] {
+            let obj = PieceImage(filePath: img.filePath, fileName: img.fileName, notes: img.notes, tags: img.tags)
             obj.capturedAt = img.capturedAt
             context.insert(obj)
         }
@@ -870,7 +861,7 @@ actor RecoveryService {
                 category: pib.category.flatMap { PieceImageCategory(rawValue: $0) }
             )
             pi.tags = pib.tags
-            pi.sessionProgress = pib.sessionProgressBackupID.flatMap { imageGroupMap[$0] }
+            pi.sessionProgress = pib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
             pi.piece = pib.pieceBackupID.flatMap { pieceMap[$0] }
             context.insert(pi)
         }
@@ -1157,7 +1148,7 @@ actor RecoveryService {
     private func totalModelCount(_ backup: RecoveryBackup) -> Int {
         backup.clients.count + backup.pieces.count + backup.sessions.count +
         backup.sessionProgress.count + backup.pieceImages.count +
-        backup.inspirationImages.count + backup.bookings.count +
+        (backup.inspirationImages?.count ?? 0) + backup.bookings.count +
         backup.agreements.count + backup.communicationLogs.count +
         backup.payments.count + backup.profiles.count +
         backup.customSessionTypes.count + backup.customEmailTemplates.count +

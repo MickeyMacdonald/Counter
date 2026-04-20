@@ -14,7 +14,9 @@ struct RecoveryBackup: Codable {
     let sessions: [SessionBackup]
     let sessionProgress: [SessionProgressBackup]
     let pieceImages: [PieceImageBackup]
-    let inspirationImages: [PieceImageBackup]
+    /// Legacy field — inspiration images are now stored as PieceImage with category `.inspiration`
+    /// and are included in `pieceImages`. Kept optional so old backups still decode.
+    let inspirationImages: [PieceImageBackup]?
     let bookings: [BookingBackup]
     let agreements: [AgreementBackup]
     let communicationLogs: [CommunicationLogBackup]
@@ -214,15 +216,6 @@ struct PieceImageBackup: Codable {
     let isPrimary: Bool
     let category: String?
     let tags: [String]
-}
-
-struct PieceImageBackup: Codable {
-    let backupID: UUID
-    let filePath: String
-    let fileName: String
-    let tags: [String]
-    let notes: String
-    let capturedAt: Date
 }
 
 struct BookingBackup: Codable {

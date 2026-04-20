@@ -45,7 +45,7 @@ enum SeedDataService {
             Booking.self, Payment.self, Agreement.self,
             CommunicationLog.self, PieceImage.self,
             Piece.self, Client.self, UserProfile.self,
-            SessionType.self, EmailTemplate.self,
+            SessionCategory.self, SavedEmailTemplate.self,
             AvailabilitySlot.self, AvailabilityOverride.self,
             SessionRateConfig.self, FlashPriceTier.self, GalleryGroup.self
         ]

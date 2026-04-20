@@ -122,7 +122,7 @@ final class Piece {
             .reduce(Decimal.zero) { $0 + $1.amount }
     }
 
-    var sortedSessionProgresss: [SessionProgress] {
+    var sortedSessionProgress: [SessionProgress] {
         sessionProgress.sorted { $0.stage.sortOrder < $1.stage.sortOrder }
     }
 

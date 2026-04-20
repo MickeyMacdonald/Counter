@@ -82,7 +82,7 @@
 		AA000066 /* SettingsViewEmailTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000066 /* SettingsViewEmailTemplates.swift */; };
 		AA000067 /* AvailabilityOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000067 /* AvailabilityOverride.swift */; };
 		AA000068 /* SettingsViewBooking.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000068 /* SettingsViewBooking.swift */; };
-		AA000069 /* CustomSessionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000069 /* CustomSessionType.swift */; };
+		AA000069 /* SessionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000069 /* SessionCategory.swift */; };
 		AA000070 /* FlashPriceTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000070 /* FlashPriceTier.swift */; };
 		AA000071 /* FlashPortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000071 /* FlashPortfolioView.swift */; };
 		AA000072 /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000072 /* ToDoView.swift */; };
@@ -189,7 +189,7 @@
 		AB000066 /* SettingsViewEmailTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewEmailTemplates.swift; sourceTree = "<group>"; };
 		AB000067 /* AvailabilityOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityOverride.swift; sourceTree = "<group>"; };
 		AB000068 /* SettingsViewBooking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewBooking.swift; sourceTree = "<group>"; };
-		AB000069 /* SessionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionType.swift; sourceTree = "<group>"; };
+		AB000069 /* SessionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCategory.swift; sourceTree = "<group>"; };
 		AB000070 /* FlashPriceTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPriceTier.swift; sourceTree = "<group>"; };
 		AB000071 /* FlashPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashPortfolioView.swift; sourceTree = "<group>"; };
 		AB000072 /* ToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
@@ -363,7 +363,7 @@
 			children = (
 				AB000036 /* AvailabilitySlot.swift */,
 				AB000067 /* AvailabilityOverride.swift */,
-				AB000069 /* SessionType.swift */,
+				AB000069 /* SessionCategory.swift */,
 				AB000073 /* SessionRateConfig.swift */,
 			);
 			path = Scheduling;
@@ -745,7 +745,7 @@
 				AA000066 /* SettingsViewEmailTemplates.swift in Sources */,
 				AA000067 /* AvailabilityOverride.swift in Sources */,
 				AA000068 /* SettingsViewBooking.swift in Sources */,
-				AA000069 /* CustomSessionType.swift in Sources */,
+				AA000069 /* SessionCategory.swift in Sources */,
 				AA000070 /* FlashPriceTier.swift in Sources */,
 				AA000071 /* FlashPortfolioView.swift in Sources */,
 				AA000072 /* ToDoView.swift in Sources */,

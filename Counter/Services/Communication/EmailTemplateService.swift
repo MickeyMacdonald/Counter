@@ -2,7 +2,7 @@ import Foundation
 
 /// Pre-built email templates for common tattoo artist communications.
 /// Templates use placeholder tokens that get replaced with client/piece data.
-struct EmailTemplate {
+struct EmailTemplate: Identifiable {
     let id: String
     let name: String
     let subject: String

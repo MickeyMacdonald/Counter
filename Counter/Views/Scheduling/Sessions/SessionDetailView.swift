@@ -248,7 +248,7 @@ struct SessionDetailView: View {
     private var stageImagesSection: some View {
         if !session.sessionProgress.isEmpty {
             Section("Stage Images") {
-                ForEach(session.sortedSessionProgresss) { group in
+                ForEach(session.sortedSessionProgress) { group in
                     imageGroupRow(group)
                 }
             }

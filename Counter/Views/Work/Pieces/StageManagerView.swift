@@ -23,11 +23,11 @@ struct StageManagerView: View {
             List {
                 // Active stages
                 Section("Active Stages") {
-                    if piece.sortedSessionProgresss.isEmpty {
+                    if piece.sortedSessionProgress.isEmpty {
                         Text("No stages added yet")
                             .foregroundStyle(.secondary)
                     } else {
-                        ForEach(piece.sortedSessionProgresss) { group in
+                        ForEach(piece.sortedSessionProgress) { group in
                             HStack {
                                 Label(group.stage.rawValue, systemImage: group.stage.systemImage)
                                 Spacer()

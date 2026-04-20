@@ -24,7 +24,7 @@ final class PreviewContainer {
             Payment.self,
             SavedEmailTemplate.self,
             AvailabilityOverride.self,
-            SessionType.self,
+            SessionCategory.self,
             FlashPriceTier.self,
             SessionRateConfig.self,
             GalleryGroup.self

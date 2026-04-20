@@ -7,13 +7,13 @@ final class SavedEmailTemplate {
     var name: String
     var subject: String
     var body: String
-    /// Stores the raw value of SavedEmailTemplate.TemplateCategory
+    /// Stores the raw value of EmailTemplate.TemplateCategory
     var categoryRaw: String
     var createdAt: Date
     var updatedAt: Date
 
-    var category: SavedEmailTemplate.TemplateCategory {
-        get { SavedEmailTemplate.TemplateCategory(rawValue: categoryRaw) ?? .custom }
+    var category: EmailTemplate.TemplateCategory {
+        get { EmailTemplate.TemplateCategory(rawValue: categoryRaw) ?? .custom }
         set { categoryRaw = newValue.rawValue }
     }
 
@@ -21,7 +21,7 @@ final class SavedEmailTemplate {
         name: String = "",
         subject: String = "",
         body: String = "",
-        category: SavedEmailTemplate.TemplateCategory = .custom
+        category: EmailTemplate.TemplateCategory = .custom
     ) {
         self.name = name
         self.subject = subject
