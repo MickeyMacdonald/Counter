@@ -5,11 +5,11 @@ import SwiftData
 extension EmailTemplate: Identifiable {}
 
 struct SettingsViewEmailTemplates: View {
-    @Query(sort: \CustomEmailTemplate.name) private var customTemplates: [CustomEmailTemplate]
+    @Query(sort: \EmailTemplate.name) private var customTemplates: [EmailTemplate]
     @Environment(\.modelContext) private var modelContext
 
     @State private var showingNewTemplate = false
-    @State private var editingTemplate: CustomEmailTemplate?
+    @State private var editingTemplate: EmailTemplate?
     @State private var customizingBuiltIn: EmailTemplate?
 
     var body: some View {

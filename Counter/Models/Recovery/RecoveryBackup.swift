@@ -12,21 +12,21 @@ struct RecoveryBackup: Codable {
     let clients: [ClientBackup]
     let pieces: [PieceBackup]
     let sessions: [SessionBackup]
-    let imageGroups: [ImageGroupBackup]
+    let sessionProgress: [SessionProgressBackup]
     let pieceImages: [PieceImageBackup]
-    let inspirationImages: [InspirationImageBackup]
+    let inspirationImages: [PieceImageBackup]
     let bookings: [BookingBackup]
     let agreements: [AgreementBackup]
     let communicationLogs: [CommunicationLogBackup]
     let payments: [PaymentBackup]
     let profiles: [UserProfileBackup]
-    let customSessionTypes: [CustomSessionTypeBackup]
-    let customEmailTemplates: [CustomEmailTemplateBackup]
+    let customSessionTypes: [SessionTypeBackup]
+    let customEmailTemplates: [EmailTemplateBackup]
     let availabilitySlots: [AvailabilitySlotBackup]
     let availabilityOverrides: [AvailabilityOverrideBackup]
     let sessionRateConfigs: [SessionRateConfigBackup]
     let flashPriceTiers: [FlashPriceTierBackup]
-    let customGalleryGroups: [CustomGalleryGroupBackup]
+    let customGalleryGroups: [GalleryGroupBackup]
 
     /// Added in the V2 schema slice (0.8.x). Optional so that backups
     /// written by pre-V2 builds still decode into the current
@@ -38,7 +38,7 @@ struct RecoveryBackup: Codable {
     /// while. The `RecoveryBackup.currentVersion` bump that would let
     /// us require it is gated on the "forward migration of backups"
     /// task in pillar 1, which has not landed yet.
-    let customDiscounts: [CustomDiscountBackup]?
+    let customDiscounts: [DiscountBackup]?
 
     let userDefaults: UserDefaultsBackup
 
@@ -192,7 +192,7 @@ struct SessionBackup: Codable {
     let notes: String
 }
 
-struct ImageGroupBackup: Codable {
+struct SessionProgressBackup: Codable {
     let backupID: UUID
     let pieceBackupID: UUID?
     let sessionBackupID: UUID?
@@ -216,7 +216,7 @@ struct PieceImageBackup: Codable {
     let tags: [String]
 }
 
-struct InspirationImageBackup: Codable {
+struct PieceImageBackup: Codable {
     let backupID: UUID
     let filePath: String
     let fileName: String
@@ -316,7 +316,7 @@ struct UserProfileBackup: Codable {
     let updatedAt: Date
 }
 
-struct CustomSessionTypeBackup: Codable {
+struct SessionTypeBackup: Codable {
     let backupID: UUID
     let uuid: UUID
     let name: String
@@ -325,7 +325,7 @@ struct CustomSessionTypeBackup: Codable {
     let createdAt: Date
 }
 
-struct CustomEmailTemplateBackup: Codable {
+struct EmailTemplateBackup: Codable {
     let backupID: UUID
     let name: String
     let subject: String
@@ -374,7 +374,7 @@ struct FlashPriceTierBackup: Codable {
     let sortOrder: Int
 }
 
-struct CustomGalleryGroupBackup: Codable {
+struct GalleryGroupBackup: Codable {
     let backupID: UUID
     let name: String
     let tags: [String]
@@ -382,7 +382,7 @@ struct CustomGalleryGroupBackup: Codable {
     let createdAt: Date
 }
 
-struct CustomDiscountBackup: Codable {
+struct DiscountBackup: Codable {
     let backupID: UUID
     let name: String
     let percentage: Decimal

@@ -15,8 +15,8 @@ struct FullScreenImageViewer: View {
         return images[currentIndex]
     }
 
-    private var currentGroup: ImageGroup? {
-        currentImage?.imageGroup
+    private var currentGroup: SessionProgress? {
+        currentImage?.sessionProgress
     }
 
     /// Resolves the piece via direct ownership or through the image group chain

@@ -77,7 +77,7 @@ enum GallerySortOrder: String, CaseIterable {
 struct GalleryTabView: View {
     @Query(sort: \Piece.updatedAt, order: .reverse) private var allPieces: [Piece]
     @Query(sort: \Client.lastName) private var allClients: [Client]
-    @Query(sort: \CustomGalleryGroup.sortIndex) private var customGroups: [CustomGalleryGroup]
+    @Query(sort: \GalleryGroup.sortIndex) private var customGroups: [GalleryGroup]
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(AppNavigationCoordinator.self) private var coordinator
@@ -85,7 +85,7 @@ struct GalleryTabView: View {
     // Admin state
     @State private var adminGroup: AdminGalleryGroup = .library
     @State private var libraryFilter: LibraryFilter? = .stage
-    @State private var selectedCustomGroup: CustomGalleryGroup?
+    @State private var selectedCustomGroup: GalleryGroup?
 
     // Client state
     @State private var clientGroup: ClientGalleryGroup = .portfolio
@@ -375,7 +375,7 @@ struct GalleryTabView: View {
             .split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-        let group = CustomGalleryGroup(
+        let group = GalleryGroup(
             name: newGroupName.trimmingCharacters(in: .whitespaces),
             tags: tags,
             sortIndex: customGroups.count

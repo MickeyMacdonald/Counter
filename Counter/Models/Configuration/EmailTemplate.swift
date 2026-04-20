@@ -3,7 +3,7 @@ import SwiftData
 
 /// A user-created email template stored persistently in SwiftData.
 @Model
-final class CustomEmailTemplate {
+final class EmailTemplate {
     var name: String
     var subject: String
     var body: String

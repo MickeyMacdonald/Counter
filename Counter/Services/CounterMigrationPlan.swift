@@ -9,11 +9,11 @@
 //  ## Current state
 //
 //  - V1: the Alpha 0.8 baseline. 18 models.
-//  - V2: V1 + `CustomDiscount`. Additive-only. Lands in 0.8.x.
+//  - V2: V1 + `Discount`. Additive-only. Lands in 0.8.x.
 //
 //  ## V1 → V2 is `.lightweight` — and that is a load-bearing decision
 //
-//  V1 → V2 adds `CustomDiscount` as a new entity. No existing model
+//  V1 → V2 adds `Discount` as a new entity. No existing model
 //  changes, no relationship changes, no transformations. SwiftData
 //  handles this case via lightweight migration: it sees the new entity
 //  in the V2 schema, creates the corresponding table, and moves on
@@ -38,7 +38,7 @@
 //  ## The next migration MUST add the willMigrate hook
 //
 //  The next stage to land — currently planned as the formal
-//  `Drafting → initialDrafting` consolidation and the `piece.imageGroups`
+//  `Drafting → initialDrafting` consolidation and the `piece.sessionProgress`
 //  cleanup — is a **transforming** migration. It rewrites existing
 //  rows. That stage MUST be `.custom` and MUST take a fresh backup in
 //  `willMigrate` before any rows are touched. See the commented
@@ -65,7 +65,7 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
 
     static var stages: [MigrationStage] {
         [
-            // V1 → V2: additive. Adds `CustomDiscount` as a new entity.
+            // V1 → V2: additive. Adds `Discount` as a new entity.
             // Lightweight is correct here because no existing rows are
             // transformed. See the long comment at the top of this file
             // for why the willMigrate auto-backup hook is intentionally

@@ -434,7 +434,7 @@ struct PieceEditView: View {
 
             // Persist draft sessions
             for draft in draftSessions {
-                let session = TattooSession(
+                let session = Session(
                     date: draft.date,
                     startTime: draft.startTime,
                     endTime: draft.isManualOverride ? nil : draft.endTime,

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Gallery view that shows images from pieces matching a custom group's tags.
 struct GalleryByCustomGroupView: View {
-    let group: CustomGalleryGroup
+    let group: GalleryGroup
     let pieces: [Piece]
 
     @State private var selectedFullScreenImages: [PieceImage] = []

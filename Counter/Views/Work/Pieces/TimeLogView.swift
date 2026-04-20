@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Inline time logger for an ImageGroup stage.
+/// Inline time logger for an SessionProgress stage.
 /// Allows quick input of time spent on design work per stage.
 struct TimeLogView: View {
-    @Bindable var imageGroup: ImageGroup
+    @Bindable var imageGroup: SessionProgress
     @Environment(\.dismiss) private var dismiss
 
     @State private var hours: Int = 0

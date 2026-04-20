@@ -29,7 +29,7 @@ struct ClientGalleryView: View {
     private func tattooImages(for pieces: [Piece]) -> [(image: PieceImage, piece: Piece, stage: ImageStage)] {
         var result: [(PieceImage, Piece, ImageStage)] = []
         for piece in pieces {
-            for group in piece.sortedImageGroups {
+            for group in piece.sortedSessionProgresss {
                 for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
                     result.append((image, piece, group.stage))
                 }

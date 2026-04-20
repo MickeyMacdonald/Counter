@@ -24,7 +24,18 @@
       "Bash(git commit -m 'Organize models into semantic folder hierarchy *)",
       "Bash(gh pr create --title 'Organize models into semantic folder hierarchy' --body 'Restructures the Models folder with logical subfolders: *)",
       "Bash(brew list *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/TattooSession/Session/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/CustomDiscount/Discount/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/CustomSessionType/SessionType/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/CustomGalleryGroup/GalleryGroup/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/CustomEmailTemplate/EmailTemplate/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/InspirationImage/PieceImage/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/ImageGroup/SessionProgress/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/\\\\.imageGroup/\\\\.sessionProgress/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/imageGroups/sessionProgress/g' {} \\\\;)",
+      "Bash(find Models Views Services App -type f -name \"*.swift\" -exec sed -i '' 's/sessionProgresss/sessionProgress/g' {} \\\\;)",
+      "Bash(git commit -m 'Refactor models: simplify naming and improve structure *)"
     ]
   }
 }

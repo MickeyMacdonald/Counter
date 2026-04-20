@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// Manages adding/removing image stages for a piece.
-/// Each stage (inspiration, lineart, shading, etc.) is an ImageGroup.
+/// Each stage (inspiration, lineart, shading, etc.) is an SessionProgress.
 struct StageManagerView: View {
     @Bindable var piece: Piece
     @Environment(\.modelContext) private var modelContext
@@ -11,7 +11,7 @@ struct StageManagerView: View {
     @State private var timeInput: [ImageStage: Int] = [:]
 
     private var existingStages: Set<ImageStage> {
-        Set(piece.imageGroups.map(\.stage))
+        Set(piece.sessionProgress.map(\.stage))
     }
 
     private var availableStages: [ImageStage] {
@@ -23,11 +23,11 @@ struct StageManagerView: View {
             List {
                 // Active stages
                 Section("Active Stages") {
-                    if piece.sortedImageGroups.isEmpty {
+                    if piece.sortedSessionProgresss.isEmpty {
                         Text("No stages added yet")
                             .foregroundStyle(.secondary)
                     } else {
-                        ForEach(piece.sortedImageGroups) { group in
+                        ForEach(piece.sortedSessionProgresss) { group in
                             HStack {
                                 Label(group.stage.rawValue, systemImage: group.stage.systemImage)
                                 Spacer()
@@ -93,7 +93,7 @@ struct StageManagerView: View {
     }
 
     private func addStage(_ stage: ImageStage) {
-        let group = ImageGroup(stage: stage)
+        let group = SessionProgress(stage: stage)
         group.piece = piece
         modelContext.insert(group)
         piece.updatedAt = Date()
@@ -101,14 +101,14 @@ struct StageManagerView: View {
 
     private func addAllStages() {
         for stage in availableStages {
-            let group = ImageGroup(stage: stage)
+            let group = SessionProgress(stage: stage)
             group.piece = piece
             modelContext.insert(group)
         }
         piece.updatedAt = Date()
     }
 
-    private func removeStage(_ group: ImageGroup) {
+    private func removeStage(_ group: SessionProgress) {
         // Delete associated image files
         for image in group.images {
             Task {

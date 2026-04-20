@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct SessionDetailView: View {
-    @Bindable var session: TattooSession
+    @Bindable var session: Session
     @Environment(AppNavigationCoordinator.self) private var coordinator
     @Environment(BusinessLockManager.self) private var lockManager
     @Query private var profiles: [UserProfile]
@@ -246,16 +246,16 @@ struct SessionDetailView: View {
 
     @ViewBuilder
     private var stageImagesSection: some View {
-        if !session.imageGroups.isEmpty {
+        if !session.sessionProgress.isEmpty {
             Section("Stage Images") {
-                ForEach(session.sortedImageGroups) { group in
+                ForEach(session.sortedSessionProgresss) { group in
                     imageGroupRow(group)
                 }
             }
         }
     }
 
-    private func imageGroupRow(_ group: ImageGroup) -> some View {
+    private func imageGroupRow(_ group: SessionProgress) -> some View {
         Button {
             // group.images is already [PieceImage] — use directly, sorted by sortOrder
             let images = group.images.sorted { $0.sortOrder < $1.sortOrder }
@@ -315,7 +315,7 @@ struct SessionDetailView: View {
 #Preview {
     NavigationStack {
         SessionDetailView(session: {
-            let s = TattooSession(
+            let s = Session(
                 date: Date(),
                 startTime: Calendar.current.date(byAdding: .hour, value: -3, to: Date())!,
                 endTime: Date(),

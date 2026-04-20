@@ -1,10 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// Grid gallery showing all images within an ImageGroup stage.
+/// Grid gallery showing all images within an SessionProgress stage.
 /// Supports adding new images, deleting, and tapping to view full-screen.
 struct ImageGalleryView: View {
-    @Bindable var imageGroup: ImageGroup
+    @Bindable var imageGroup: SessionProgress
     let clientID: String
     let pieceID: String
 
@@ -169,7 +169,7 @@ struct ImageGalleryView: View {
                         fileName: "IMG_\(currentCount + index + 1)",
                         sortOrder: currentCount + index
                     )
-                    pieceImage.imageGroup = imageGroup
+                    pieceImage.sessionProgress = imageGroup
                     modelContext.insert(pieceImage)
                 }
             } catch {

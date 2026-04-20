@@ -3,10 +3,10 @@
 //  Counter
 //
 //  V2 of Counter's persisted schema. The only difference from V1 is the
-//  formal addition of `CustomDiscount`, which existed as a `@Model` file
+//  formal addition of `Discount`, which existed as a `@Model` file
 //  under `Counter/Models/` since 0.7 but was never registered in the
 //  schema. The view layer (`SettingsViewFinancial`) was already inserting
-//  and querying `CustomDiscount` records, which meant pre-V2 the data was
+//  and querying `Discount` records, which meant pre-V2 the data was
 //  living in an undefined corner of SwiftData — possibly persisted,
 //  possibly ephemeral, definitely never backed up.
 //
@@ -25,7 +25,7 @@
 //       every schema change is a versioned step. "Adding a model that
 //       was always supposed to be there" is still a schema change.
 //    3. Future migrations (the formal `Drafting → initialDrafting` and
-//       `piece.imageGroups` stages) will ride on this same V1 → V2 →
+//       `piece.sessionProgress` stages) will ride on this same V1 → V2 →
 //       V3 → … chain. V2 is the entry point for that chain.
 //
 //  See `docs/internal/VERSION_HISTORY.md` (0.8.x section) for context.
@@ -42,24 +42,24 @@ enum CounterSchemaV2: VersionedSchema {
             // All 18 V1 models, unchanged. Order matches V1 for diffability.
             Client.self,
             Piece.self,
-            ImageGroup.self,
+            SessionProgress.self,
             PieceImage.self,
-            TattooSession.self,
+            Session.self,
             Agreement.self,
             CommunicationLog.self,
             UserProfile.self,
             Booking.self,
             AvailabilitySlot.self,
-            InspirationImage.self,
+            PieceImage.self,
             Payment.self,
-            CustomEmailTemplate.self,
+            EmailTemplate.self,
             AvailabilityOverride.self,
-            CustomSessionType.self,
+            SessionType.self,
             FlashPriceTier.self,
             SessionRateConfig.self,
-            CustomGalleryGroup.self,
+            GalleryGroup.self,
             // New in V2: the model that should have been in V1 from day one.
-            CustomDiscount.self
+            Discount.self
         ]
     }
 }

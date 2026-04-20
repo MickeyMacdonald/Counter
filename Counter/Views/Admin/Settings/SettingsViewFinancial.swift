@@ -20,7 +20,7 @@ struct SettingsViewFinancial: View {
 
 private struct FinancialContent: View {
     @Bindable var profile: UserProfile
-    @Query(sort: \CustomDiscount.sortOrder) private var customDiscounts: [CustomDiscount]
+    @Query(sort: \Discount.sortOrder) private var customDiscounts: [Discount]
     @Query(sort: \FlashPriceTier.sortOrder) private var allFlashTiers: [FlashPriceTier]
     @Environment(\.modelContext) private var modelContext
 
@@ -90,7 +90,7 @@ private struct FinancialContent: View {
                 }
 
                 ForEach(customDiscounts) { discount in
-                    CustomDiscountRow(discount: discount)
+                    DiscountRow(discount: discount)
                 }
                 .onDelete { indexSet in
                     indexSet.map { customDiscounts[$0] }.forEach { modelContext.delete($0) }
@@ -98,7 +98,7 @@ private struct FinancialContent: View {
 
                 Button {
                     withAnimation {
-                        modelContext.insert(CustomDiscount(sortOrder: customDiscounts.count))
+                        modelContext.insert(Discount(sortOrder: customDiscounts.count))
                     }
                 } label: {
                     Label("Create New", systemImage: "plus")
@@ -366,8 +366,8 @@ private struct DimensionFlashTierRow: View {
 
 // MARK: - Custom Discount Row
 
-private struct CustomDiscountRow: View {
-    @Bindable var discount: CustomDiscount
+private struct DiscountRow: View {
+    @Bindable var discount: Discount
 
     var body: some View {
         HStack {

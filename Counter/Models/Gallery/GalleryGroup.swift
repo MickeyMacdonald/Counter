@@ -3,7 +3,7 @@ import SwiftData
 
 /// A user-defined gallery grouping that collects pieces by matching tags.
 @Model
-final class CustomGalleryGroup {
+final class GalleryGroup {
     var name: String
     var tags: [String]
     var sortIndex: Int

@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class TattooSession {
+final class Session {
     var date: Date
     var startTime: Date
     var endTime: Date?
@@ -18,11 +18,11 @@ final class TattooSession {
     // Relationships
     var piece: Piece?
 
-    @Relationship(deleteRule: .cascade, inverse: \ImageGroup.session)
-    var imageGroups: [ImageGroup] = []
+    @Relationship(deleteRule: .cascade, inverse: \SessionProgress.session)
+    var sessionProgress: [SessionProgress] = []
 
-    var sortedImageGroups: [ImageGroup] {
-        imageGroups.sorted { $0.stage.sortOrder < $1.stage.sortOrder }
+    var sortedSessionProgress: [SessionProgress] {
+        sessionProgress.sorted { $0.stage.sortOrder < $1.stage.sortOrder }
     }
 
     var durationHours: Double {

@@ -73,7 +73,7 @@ enum TemplateToken: String, CaseIterable {
 struct SettingsViewEmailTemplateEditor: View {
     enum Mode {
         case create
-        case edit(CustomEmailTemplate)
+        case edit(EmailTemplate)
         /// Opens a built-in template for customization; saves as a new custom template.
         case fromBuiltIn(EmailTemplate)
     }
@@ -312,7 +312,7 @@ struct SettingsViewEmailTemplateEditor: View {
     private func save() {
         switch mode {
         case .create, .fromBuiltIn:
-            let template = CustomEmailTemplate(
+            let template = EmailTemplate(
                 name: name.trimmingCharacters(in: .whitespaces),
                 subject: subject.trimmingCharacters(in: .whitespaces),
                 body: bodyText.trimmingCharacters(in: .whitespaces),

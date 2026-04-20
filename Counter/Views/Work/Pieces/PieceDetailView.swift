@@ -10,10 +10,10 @@ struct PieceDetailView: View {
     @State private var showingEditPiece = false
     @State private var showingAddSession = false
     @State private var showingStageManager = false
-    @State private var showingTimeLog: ImageGroup?
+    @State private var showingTimeLog: SessionProgress?
     @State private var showingLogPayment = false
     @State private var showingFinancialDetail = false
-    @State private var editingSession: TattooSession?
+    @State private var editingSession: Session?
     @State private var galleryImages: [PieceImage] = []
     @State private var galleryInitialImage: PieceImage?
     @State private var showingImageGallery = false
@@ -376,7 +376,7 @@ struct PieceDetailView: View {
 
     // MARK: - Session Row
 
-    private func sessionRow(_ session: TattooSession) -> some View {
+    private func sessionRow(_ session: Session) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
                 Image(systemName: session.sessionType.systemImage)
@@ -407,9 +407,9 @@ struct PieceDetailView: View {
             }
 
             // Show image groups attached to this session
-            if !session.imageGroups.isEmpty {
+            if !session.sessionProgress.isEmpty {
                 HStack(spacing: 6) {
-                    ForEach(session.sortedImageGroups) { group in
+                    ForEach(session.sortedSessionProgresss) { group in
                         Label("\(group.images.count)", systemImage: group.stage.systemImage)
                             .font(.caption2.weight(.medium))
                             .padding(.horizontal, 6)

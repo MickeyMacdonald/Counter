@@ -219,7 +219,7 @@ struct SendEmailView: View {
             let photo = piece.sessions
                 .sorted { $0.date > $1.date }
                 .first?
-                .imageGroups
+                .sessionProgress
                 .flatMap { $0.images }
                 .first
             if let photo, !selectedImages.contains(where: { $0.filePath == photo.filePath }) {
@@ -234,7 +234,7 @@ struct SendEmailView: View {
         // {{LAST_LINEART_PHOTO}} — most recent lineart stage photo
         if messageBody.contains("{{LAST_LINEART_PHOTO}}") {
             let photo = piece.sessions
-                .flatMap { $0.imageGroups }
+                .flatMap { $0.sessionProgress }
                 .filter { $0.stage == .lineart }
                 .sorted { $0.createdAt > $1.createdAt }
                 .first?
@@ -347,11 +347,11 @@ struct EmailTemplatePickerView: View {
     let piece: Piece?
 
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \CustomEmailTemplate.name) private var customTemplates: [CustomEmailTemplate]
+    @Query(sort: \EmailTemplate.name) private var customTemplates: [EmailTemplate]
 
     @State private var selectedTemplate: EmailTemplate?
     @State private var showingSendView = false
-    @State private var editingCustomTemplate: CustomEmailTemplate?
+    @State private var editingCustomTemplate: EmailTemplate?
 
     var body: some View {
         NavigationStack {

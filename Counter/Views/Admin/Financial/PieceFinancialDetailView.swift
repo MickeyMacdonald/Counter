@@ -16,7 +16,7 @@ struct PieceFinancialDetailView: View {
         piece.payments.sorted { $0.paymentDate > $1.paymentDate }
     }
 
-    private var sortedSessions: [TattooSession] {
+    private var sortedSessions: [Session] {
         piece.sessions.sorted { $0.date > $1.date }
     }
 

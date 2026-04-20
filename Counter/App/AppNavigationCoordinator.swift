@@ -24,7 +24,7 @@ final class AppNavigationCoordinator {
 
     /// When non-nil, `SessionsTabView` should switch to the Sessions group
     /// and highlight this session in the list.
-    var pendingSession: TattooSession?
+    var pendingSession: Session?
 
     // MARK: - Convenience navigators
 
@@ -41,7 +41,7 @@ final class AppNavigationCoordinator {
     }
 
     /// Navigate to a session in the Bookings → Sessions list (switches tab).
-    func navigateToSession(_ session: TattooSession) {
+    func navigateToSession(_ session: Session) {
         selectedTab = .schedule
         // Delay one run-loop so SessionsTabView has appeared before consuming.
         Task { @MainActor in

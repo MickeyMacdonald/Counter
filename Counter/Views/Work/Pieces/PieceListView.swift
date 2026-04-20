@@ -507,7 +507,7 @@ struct QuickAddPieceSheet: View {
         modelContext.insert(piece)
 
         // Auto-create a default consultation session
-        let session = TattooSession(
+        let session = Session(
             date: Date(),
             startTime: Date(),
             sessionType: .consultation,

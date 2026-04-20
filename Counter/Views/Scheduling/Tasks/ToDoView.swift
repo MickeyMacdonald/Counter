@@ -115,7 +115,7 @@ struct ToDoView: View {
             [PieceStatus.completed, .healed, .touchUp].contains($0.status)
         }
         for piece in healCandidates {
-            let hasHealedPhotos = piece.sessions.flatMap { $0.imageGroups }.contains {
+            let hasHealedPhotos = piece.sessions.flatMap { $0.sessionProgress }.contains {
                 ($0.stage == .healed || $0.stage == .finalResult) && !$0.images.isEmpty
             }
             if !hasHealedPhotos {
@@ -165,7 +165,7 @@ struct ToDoView: View {
             [PieceStatus.inProgress, .completed, .touchUp].contains($0.status)
         }
         for piece in inProgressPieces {
-            let hasFreshPhotos = piece.sessions.flatMap { $0.imageGroups }.contains {
+            let hasFreshPhotos = piece.sessions.flatMap { $0.sessionProgress }.contains {
                 $0.stage == .freshlyTattooed && !$0.images.isEmpty
             }
             let hasPastSessions = piece.sessions.contains { $0.date < now }

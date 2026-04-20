@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class ImageGroup {
+final class SessionProgress {
     var stage: ImageStage
     var notes: String
     var timeSpentMinutes: Int
@@ -10,9 +10,9 @@ final class ImageGroup {
 
     // Relationships
     var piece: Piece?       // Kept temporarily during migration
-    var session: TattooSession?  // New: session owns work photo groups
+    var session: Session?  // New: session owns work photo groups
 
-    @Relationship(deleteRule: .cascade, inverse: \PieceImage.imageGroup)
+    @Relationship(deleteRule: .cascade, inverse: \PieceImage.sessionProgress)
     var images: [PieceImage] = []
 
     var timeSpentFormatted: String {

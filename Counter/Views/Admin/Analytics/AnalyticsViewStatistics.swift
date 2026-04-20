@@ -14,7 +14,7 @@ import SwiftData
 struct SettingsStatisticsView: View {
     @Query private var allClients: [Client]
     @Query private var allPieces: [Piece]
-    @Query private var allSessions: [TattooSession]
+    @Query private var allSessions: [Session]
     @Query private var allBookings: [Booking]
     @Query private var allPayments: [Payment]
 

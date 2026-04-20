@@ -25,7 +25,7 @@ final class Booking {
     var updatedAt: Date
 
     // Relationships
-    var client: Client?
+    var client: Client
     var piece: Piece?
 
     var durationFormatted: String {
@@ -69,7 +69,7 @@ final class Booking {
 
     /// Checks whether work-stage image groups exist and have images.
     private func stageChecklist(for piece: Piece, stages: [ImageStage]) -> [PrepTask] {
-        let allGroups = piece.sessions.flatMap(\.imageGroups) + piece.imageGroups
+        let allGroups = piece.sessions.flatMap(\.sessionProgress) + piece.sessionProgress
         return stages.map { stage in
             let group = allGroups.first { $0.stage == stage }
             return PrepTask(
@@ -97,7 +97,7 @@ final class Booking {
         notes: String = "",
         depositPaid: Bool = false,
         reminderSent: Bool = false,
-        client: Client? = nil,
+        client: Client,
         piece: Piece? = nil
     ) {
         self.date = date

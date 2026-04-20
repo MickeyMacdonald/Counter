@@ -24,10 +24,10 @@ struct CounterApp: App {
 
     init() {
         do {
-            // V2 adds `CustomDiscount` to the schema. The V1 → V2 jump
+            // V2 adds `Discount` to the schema. The V1 → V2 jump
             // is a lightweight migration declared in
             // `CounterMigrationPlan`. For users on V1, SwiftData will
-            // create the new `CustomDiscount` table on first launch
+            // create the new `Discount` table on first launch
             // and leave every other row untouched. For fresh
             // installs, V2 is the starting schema.
             let schema = Schema(versionedSchema: CounterSchemaV2.self)

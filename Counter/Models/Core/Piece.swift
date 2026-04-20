@@ -33,11 +33,11 @@ final class Piece {
     // Relationships
     var client: Client?
 
-    @Relationship(deleteRule: .cascade, inverse: \ImageGroup.piece)
-    var imageGroups: [ImageGroup] = []  // Kept temporarily during migration
+    @Relationship(deleteRule: .cascade, inverse: \SessionProgress.piece)
+    var sessionProgress: [SessionProgress] = []  // Kept temporarily during migration
 
-    @Relationship(deleteRule: .cascade, inverse: \TattooSession.piece)
-    var sessions: [TattooSession] = []
+    @Relationship(deleteRule: .cascade, inverse: \Session.piece)
+    var sessions: [Session] = []
 
     @Relationship(deleteRule: .cascade, inverse: \Payment.piece)
     var payments: [Payment] = []
@@ -63,7 +63,7 @@ final class Piece {
     /// All images across both direct ownership and session image groups
     var allImages: [PieceImage] {
         let sessionImages = sessions
-            .flatMap { $0.imageGroups }
+            .flatMap { $0.sessionProgress }
             .flatMap { $0.images }
         return directImages + sessionImages
     }
@@ -122,8 +122,8 @@ final class Piece {
             .reduce(Decimal.zero) { $0 + $1.amount }
     }
 
-    var sortedImageGroups: [ImageGroup] {
-        imageGroups.sorted { $0.stage.sortOrder < $1.stage.sortOrder }
+    var sortedSessionProgresss: [SessionProgress] {
+        sessionProgress.sorted { $0.stage.sortOrder < $1.stage.sortOrder }
     }
 
     init(

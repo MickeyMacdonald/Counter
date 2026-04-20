@@ -18,7 +18,7 @@ final class PieceImage {
     var tags: [String] = []
 
     // Relationships
-    var imageGroup: ImageGroup?  // For session work photos (kept temporarily)
+    var sessionProgress: SessionProgress?  // For session work photos (kept temporarily)
     var piece: Piece?            // For direct piece images (inspiration/reference)
 
     /// Full URL to the image file on disk
@@ -51,7 +51,7 @@ final class PieceImage {
     }
 }
 
-/// Category for images directly owned by a Piece (not via ImageGroup/Session)
+/// Category for images directly owned by a Piece (not via SessionProgress/Session)
 enum PieceImageCategory: String, Codable, CaseIterable {
     case inspiration = "Inspiration"
     case reference = "Reference"

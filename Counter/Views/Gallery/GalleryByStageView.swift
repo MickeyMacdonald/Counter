@@ -18,14 +18,14 @@ struct GalleryByStageView: View {
         for piece in pieces {
             // Work photos from session image groups
             for session in piece.sessions {
-                for group in session.imageGroups {
+                for group in session.sessionProgress {
                     for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
                         grouped[group.stage, default: []].append((image, piece))
                     }
                 }
             }
-            // Legacy: also check piece.imageGroups for backward compat
-            for group in piece.imageGroups {
+            // Legacy: also check piece.sessionProgress for backward compat
+            for group in piece.sessionProgress {
                 for image in group.images.sorted(by: { $0.sortOrder < $1.sortOrder }) {
                     // Avoid duplicates if already added via session
                     if group.session == nil {

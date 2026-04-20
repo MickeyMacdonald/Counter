@@ -324,23 +324,23 @@ actor RecoveryService {
         // Fetch all records
         let clients = try context.fetch(FetchDescriptor<Client>())
         let pieces = try context.fetch(FetchDescriptor<Piece>())
-        let sessions = try context.fetch(FetchDescriptor<TattooSession>())
-        let imageGroups = try context.fetch(FetchDescriptor<ImageGroup>())
+        let sessions = try context.fetch(FetchDescriptor<Session>())
+        let sessionProgress = try context.fetch(FetchDescriptor<SessionProgress>())
         let pieceImages = try context.fetch(FetchDescriptor<PieceImage>())
-        let inspirationImages = try context.fetch(FetchDescriptor<InspirationImage>())
+        let inspirationImages = try context.fetch(FetchDescriptor<PieceImage>())
         let bookings = try context.fetch(FetchDescriptor<Booking>())
         let agreements = try context.fetch(FetchDescriptor<Agreement>())
         let commLogs = try context.fetch(FetchDescriptor<CommunicationLog>())
         let payments = try context.fetch(FetchDescriptor<Payment>())
         let profiles = try context.fetch(FetchDescriptor<UserProfile>())
-        let customSessionTypes = try context.fetch(FetchDescriptor<CustomSessionType>())
-        let customEmailTemplates = try context.fetch(FetchDescriptor<CustomEmailTemplate>())
+        let customSessionTypes = try context.fetch(FetchDescriptor<SessionType>())
+        let customEmailTemplates = try context.fetch(FetchDescriptor<EmailTemplate>())
         let availabilitySlots = try context.fetch(FetchDescriptor<AvailabilitySlot>())
         let availabilityOverrides = try context.fetch(FetchDescriptor<AvailabilityOverride>())
         let sessionRateConfigs = try context.fetch(FetchDescriptor<SessionRateConfig>())
         let flashPriceTiers = try context.fetch(FetchDescriptor<FlashPriceTier>())
-        let customGalleryGroups = try context.fetch(FetchDescriptor<CustomGalleryGroup>())
-        let customDiscounts = try context.fetch(FetchDescriptor<CustomDiscount>())
+        let customGalleryGroups = try context.fetch(FetchDescriptor<GalleryGroup>())
+        let customDiscounts = try context.fetch(FetchDescriptor<Discount>())
 
         // Build ID lookup tables: object identity → UUID
         var clientIDs: [ObjectIdentifier: UUID] = [:]
@@ -351,7 +351,7 @@ actor RecoveryService {
         for c in clients { clientIDs[ObjectIdentifier(c)] = UUID() }
         for p in pieces { pieceIDs[ObjectIdentifier(p)] = UUID() }
         for s in sessions { sessionIDs[ObjectIdentifier(s)] = UUID() }
-        for ig in imageGroups { imageGroupIDs[ObjectIdentifier(ig)] = UUID() }
+        for ig in sessionProgress { imageGroupIDs[ObjectIdentifier(ig)] = UUID() }
 
         // Serialize each model
         let clientBackups = clients.map { c in
@@ -404,11 +404,11 @@ actor RecoveryService {
             )
         }
 
-        let imageGroupBackups = imageGroups.map { ig in
+        let imageGroupBackups = sessionProgress.map { ig in
             let id = imageGroupIDs[ObjectIdentifier(ig)]!
             let pieceID = ig.piece.flatMap { pieceIDs[ObjectIdentifier($0)] }
             let sessionID = ig.session.flatMap { sessionIDs[ObjectIdentifier($0)] }
-            return ImageGroupBackup(
+            return SessionProgressBackup(
                 backupID: id, pieceBackupID: pieceID, sessionBackupID: sessionID,
                 stage: ig.stage.rawValue, notes: ig.notes,
                 timeSpentMinutes: ig.timeSpentMinutes, createdAt: ig.createdAt
@@ -416,7 +416,7 @@ actor RecoveryService {
         }
 
         let pieceImageBackups = pieceImages.map { pi in
-            let igID = pi.imageGroup.flatMap { imageGroupIDs[ObjectIdentifier($0)] }
+            let igID = pi.sessionProgress.flatMap { imageGroupIDs[ObjectIdentifier($0)] }
             let pieceID = pi.piece.flatMap { pieceIDs[ObjectIdentifier($0)] }
             return PieceImageBackup(
                 backupID: UUID(), imageGroupBackupID: igID, pieceBackupID: pieceID,
@@ -428,7 +428,7 @@ actor RecoveryService {
         }
 
         let inspirationBackups = inspirationImages.map { img in
-            InspirationImageBackup(
+            PieceImageBackup(
                 backupID: UUID(),
                 filePath: img.filePath, fileName: img.fileName,
                 tags: img.tags, notes: img.notes, capturedAt: img.capturedAt
@@ -515,7 +515,7 @@ actor RecoveryService {
         }
 
         let cstBackups = customSessionTypes.map { cst in
-            CustomSessionTypeBackup(
+            SessionTypeBackup(
                 backupID: UUID(), uuid: cst.uuid,
                 name: cst.name, isChargeable: cst.isChargeable,
                 sortOrder: cst.sortOrder, createdAt: cst.createdAt
@@ -523,7 +523,7 @@ actor RecoveryService {
         }
 
         let cetBackups = customEmailTemplates.map { cet in
-            CustomEmailTemplateBackup(
+            EmailTemplateBackup(
                 backupID: UUID(), name: cet.name,
                 subject: cet.subject, body: cet.body,
                 categoryRaw: cet.categoryRaw,
@@ -569,7 +569,7 @@ actor RecoveryService {
         }
 
         let cggBackups = customGalleryGroups.map { cgg in
-            CustomGalleryGroupBackup(
+            GalleryGroupBackup(
                 backupID: UUID(), name: cgg.name,
                 tags: cgg.tags, sortIndex: cgg.sortIndex,
                 createdAt: cgg.createdAt
@@ -577,7 +577,7 @@ actor RecoveryService {
         }
 
         let cdBackups = customDiscounts.map { cd in
-            CustomDiscountBackup(
+            DiscountBackup(
                 backupID: UUID(),
                 name: cd.name,
                 percentage: cd.percentage,
@@ -603,7 +603,7 @@ actor RecoveryService {
             createdAt: Date(),
             appVersion: RecoveryService.currentAppVersion,
             clients: clientBackups, pieces: pieceBackups,
-            sessions: sessionBackups, imageGroups: imageGroupBackups,
+            sessions: sessionBackups, sessionProgress: imageGroupBackups,
             pieceImages: pieceImageBackups, inspirationImages: inspirationBackups,
             bookings: bookingBackups, agreements: agreementBackups,
             communicationLogs: commLogBackups, payments: paymentBackups,
@@ -654,24 +654,24 @@ actor RecoveryService {
     @MainActor
     private func wipeAllData(context: ModelContext) throws {
         try context.delete(model: PieceImage.self)
-        try context.delete(model: ImageGroup.self)
-        try context.delete(model: TattooSession.self)
+        try context.delete(model: SessionProgress.self)
+        try context.delete(model: Session.self)
         try context.delete(model: Booking.self)
         try context.delete(model: Payment.self)
         try context.delete(model: Agreement.self)
         try context.delete(model: CommunicationLog.self)
         try context.delete(model: Piece.self)
         try context.delete(model: Client.self)
-        try context.delete(model: InspirationImage.self)
+        try context.delete(model: PieceImage.self)
         try context.delete(model: UserProfile.self)
-        try context.delete(model: CustomSessionType.self)
-        try context.delete(model: CustomEmailTemplate.self)
+        try context.delete(model: SessionType.self)
+        try context.delete(model: EmailTemplate.self)
         try context.delete(model: AvailabilitySlot.self)
         try context.delete(model: AvailabilityOverride.self)
         try context.delete(model: SessionRateConfig.self)
         try context.delete(model: FlashPriceTier.self)
-        try context.delete(model: CustomGalleryGroup.self)
-        try context.delete(model: CustomDiscount.self)
+        try context.delete(model: GalleryGroup.self)
+        try context.delete(model: Discount.self)
     }
 
     // MARK: - Restore: Deserialize & Insert
@@ -718,14 +718,14 @@ actor RecoveryService {
         }
 
         for cst in backup.customSessionTypes {
-            let obj = CustomSessionType(name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
+            let obj = SessionType(name: cst.name, isChargeable: cst.isChargeable, sortOrder: cst.sortOrder)
             obj.uuid = cst.uuid
             obj.createdAt = cst.createdAt
             context.insert(obj)
         }
 
         for cet in backup.customEmailTemplates {
-            let obj = CustomEmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: EmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
+            let obj = EmailTemplate(name: cet.name, subject: cet.subject, body: cet.body, category: EmailTemplate.TemplateCategory(rawValue: cet.categoryRaw) ?? .custom)
             obj.createdAt = cet.createdAt
             obj.updatedAt = cet.updatedAt
             context.insert(obj)
@@ -760,17 +760,17 @@ actor RecoveryService {
         }
 
         for cgg in backup.customGalleryGroups {
-            let obj = CustomGalleryGroup(name: cgg.name, tags: cgg.tags, sortIndex: cgg.sortIndex)
+            let obj = GalleryGroup(name: cgg.name, tags: cgg.tags, sortIndex: cgg.sortIndex)
             obj.createdAt = cgg.createdAt
             context.insert(obj)
         }
 
-        // CustomDiscounts: optional field on the backup struct so that
+        // Discounts: optional field on the backup struct so that
         // pre-V2 backups (which don't carry this array at all) decode
         // cleanly. `nil` here means "the backup file predates V2", not
         // "the user had zero discounts".
         for cd in backup.customDiscounts ?? [] {
-            let obj = CustomDiscount(
+            let obj = Discount(
                 name: cd.name,
                 percentage: cd.percentage,
                 sortOrder: cd.sortOrder
@@ -779,7 +779,7 @@ actor RecoveryService {
         }
 
         for img in backup.inspirationImages {
-            let obj = InspirationImage(filePath: img.filePath, fileName: img.fileName, tags: img.tags, notes: img.notes)
+            let obj = PieceImage(filePath: img.filePath, fileName: img.fileName, tags: img.tags, notes: img.notes)
             obj.capturedAt = img.capturedAt
             context.insert(obj)
         }
@@ -828,9 +828,9 @@ actor RecoveryService {
         }
 
         // Phase 4: Sessions (→ Piece)
-        var sessionMap: [UUID: TattooSession] = [:]
+        var sessionMap: [UUID: Session] = [:]
         for sb in backup.sessions {
-            let session = TattooSession(
+            let session = Session(
                 date: sb.date, startTime: sb.startTime,
                 sessionType: SessionType(rawValue: sb.sessionType) ?? .consultation,
                 hourlyRateAtTime: sb.hourlyRateAtTime
@@ -847,10 +847,10 @@ actor RecoveryService {
             sessionMap[sb.backupID] = session
         }
 
-        // Phase 5: ImageGroups (→ Piece, Session)
-        var imageGroupMap: [UUID: ImageGroup] = [:]
-        for igb in backup.imageGroups {
-            let ig = ImageGroup(
+        // Phase 5: SessionProgresss (→ Piece, Session)
+        var imageGroupMap: [UUID: SessionProgress] = [:]
+        for igb in backup.sessionProgress {
+            let ig = SessionProgress(
                 stage: ImageStage(rawValue: igb.stage) ?? .sketch,
                 notes: igb.notes, timeSpentMinutes: igb.timeSpentMinutes
             )
@@ -861,7 +861,7 @@ actor RecoveryService {
             imageGroupMap[igb.backupID] = ig
         }
 
-        // Phase 6: PieceImages (→ ImageGroup, Piece)
+        // Phase 6: PieceImages (→ SessionProgress, Piece)
         for pib in backup.pieceImages {
             let pi = PieceImage(
                 filePath: pib.filePath, fileName: pib.fileName,
@@ -870,7 +870,7 @@ actor RecoveryService {
                 category: pib.category.flatMap { PieceImageCategory(rawValue: $0) }
             )
             pi.tags = pib.tags
-            pi.imageGroup = pib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
+            pi.sessionProgress = pib.sessionProgressBackupID.flatMap { imageGroupMap[$0] }
             pi.piece = pib.pieceBackupID.flatMap { pieceMap[$0] }
             context.insert(pi)
         }
@@ -1156,7 +1156,7 @@ actor RecoveryService {
 
     private func totalModelCount(_ backup: RecoveryBackup) -> Int {
         backup.clients.count + backup.pieces.count + backup.sessions.count +
-        backup.imageGroups.count + backup.pieceImages.count +
+        backup.sessionProgress.count + backup.pieceImages.count +
         backup.inspirationImages.count + backup.bookings.count +
         backup.agreements.count + backup.communicationLogs.count +
         backup.payments.count + backup.profiles.count +

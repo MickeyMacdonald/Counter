@@ -41,13 +41,13 @@ enum SeedDataService {
 
     static func wipeAll(context: ModelContext) {
         let types: [any PersistentModel.Type] = [
-            PieceImage.self, ImageGroup.self, TattooSession.self,
+            PieceImage.self, SessionProgress.self, Session.self,
             Booking.self, Payment.self, Agreement.self,
-            CommunicationLog.self, InspirationImage.self,
+            CommunicationLog.self, PieceImage.self,
             Piece.self, Client.self, UserProfile.self,
-            CustomSessionType.self, CustomEmailTemplate.self,
+            SessionType.self, EmailTemplate.self,
             AvailabilitySlot.self, AvailabilityOverride.self,
-            SessionRateConfig.self, FlashPriceTier.self, CustomGalleryGroup.self
+            SessionRateConfig.self, FlashPriceTier.self, GalleryGroup.self
         ]
         for type in types {
             try? context.delete(model: type)
@@ -689,13 +689,13 @@ enum SeedDataService {
         piece.primaryImagePath = imgPath
 
         // Sessions
-        var createdSessions: [TattooSession] = []
+        var createdSessions: [Session] = []
         for spec in sessions {
             guard let base = cal.date(byAdding: .day, value: spec.daysFromNow, to: now),
                   let start = cal.date(bySettingHour: spec.startHour, minute: 0, second: 0, of: base)
             else { continue }
             let end = start.addingTimeInterval(spec.hours * 3600)
-            let session = TattooSession(
+            let session = Session(
                 date: base,
                 startTime: start,
                 endTime: end,
@@ -737,7 +737,7 @@ enum SeedDataService {
         piece: Piece,
         client: Client,
         scenario: PaymentScenario,
-        sessions: [TattooSession]
+        sessions: [Session]
     ) {
         let cal = Calendar.current
         let now = Date()

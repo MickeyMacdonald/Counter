@@ -12,22 +12,22 @@ final class PreviewContainer {
         let schema = Schema([
             Client.self,
             Piece.self,
-            ImageGroup.self,
+            SessionProgress.self,
             PieceImage.self,
-            TattooSession.self,
+            Session.self,
             Agreement.self,
             CommunicationLog.self,
             UserProfile.self,
             Booking.self,
             AvailabilitySlot.self,
-            InspirationImage.self,
+            PieceImage.self,
             Payment.self,
-            CustomEmailTemplate.self,
+            EmailTemplate.self,
             AvailabilityOverride.self,
-            CustomSessionType.self,
+            SessionType.self,
             FlashPriceTier.self,
             SessionRateConfig.self,
-            CustomGalleryGroup.self
+            GalleryGroup.self
         ])
         let config = ModelConfiguration(
             schema: schema,
@@ -119,7 +119,7 @@ final class PreviewContainer {
         let startTime = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: sessionDate)!
         let endTime = calendar.date(bySettingHour: 14, minute: 30, second: 0, of: sessionDate)!
 
-        let session1 = TattooSession(
+        let session1 = Session(
             date: sessionDate,
             startTime: startTime,
             endTime: endTime,
@@ -130,7 +130,7 @@ final class PreviewContainer {
         session1.piece = piece1
         context.insert(session1)
 
-        let lineartGroup = ImageGroup(stage: .lineart, notes: "First pass lineart", timeSpentMinutes: 120)
+        let lineartGroup = SessionProgress(stage: .lineart, notes: "First pass lineart", timeSpentMinutes: 120)
         lineartGroup.session = session1
         lineartGroup.piece = piece1  // Backward compat
         context.insert(lineartGroup)

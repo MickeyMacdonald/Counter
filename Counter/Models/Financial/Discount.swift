@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-@Model final class CustomDiscount {
+@Model final class Discount {
     var name: String
     var percentage: Decimal
     var sortOrder: Int

@@ -50,7 +50,7 @@ struct SchedulingView: View {
 
     @State private var group: ScheduleGroup            = .tasks
     @State private var selectedSection: ScheduleSection? = .list
-    @State private var selectedSession: TattooSession?   = nil
+    @State private var selectedSession: Session?   = nil
     @State private var searchText = ""
 
     private var visibleSections: [ScheduleSection] {

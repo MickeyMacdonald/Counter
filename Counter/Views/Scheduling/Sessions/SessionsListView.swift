@@ -23,10 +23,10 @@ enum SessionWorkType: String, CaseIterable {
 // SidebarSearchField at the bottom feeds into this list automatically.
 
 struct SessionsSidebarList: View {
-    @Binding var selectedSession: TattooSession?
+    @Binding var selectedSession: Session?
     @Binding var searchText: String
 
-    @Query(sort: \TattooSession.date, order: .reverse) private var allSessions: [TattooSession]
+    @Query(sort: \Session.date, order: .reverse) private var allSessions: [Session]
     @Query(sort: \Client.lastName) private var allClients: [Client]
 
     // MARK: Filters (managed internally, exposed via toolbar)
@@ -46,7 +46,7 @@ struct SessionsSidebarList: View {
             .sorted(by: >)
     }
 
-    private var filteredSessions: [TattooSession] {
+    private var filteredSessions: [Session] {
         var result = allSessions
 
         if let client = filterClient {
@@ -127,7 +127,7 @@ struct SessionsSidebarList: View {
 
     // MARK: - Sidebar row
 
-    private func sidebarRow(_ session: TattooSession) -> some View {
+    private func sidebarRow(_ session: Session) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             // Type + duration
             HStack(spacing: 6) {

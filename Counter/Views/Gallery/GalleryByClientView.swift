@@ -23,7 +23,7 @@ struct GalleryByClientView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
                     ForEach(clients) { client in
-                        let piecesWithImages = client.pieces.filter { !$0.imageGroups.isEmpty }
+                        let piecesWithImages = client.pieces.filter { !$0.sessionProgress.isEmpty }
                         if !piecesWithImages.isEmpty {
                             clientSection(client: client, pieces: piecesWithImages)
                         }
@@ -87,7 +87,7 @@ struct GalleryByClientView: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 14)
 
-                        let images = piece.sortedImageGroups.flatMap { group in
+                        let images = piece.sortedSessionProgresss.flatMap { group in
                             group.images.sorted { $0.sortOrder < $1.sortOrder }.map { (image: $0, stage: group.stage) }
                         }
 

@@ -7,9 +7,9 @@ struct SessionEditView: View {
 
     enum Mode {
         case add
-        case edit(TattooSession)
+        case edit(Session)
 
-        var existingSession: TattooSession? {
+        var existingSession: Session? {
             if case .edit(let s) = self { return s }
             return nil
         }
@@ -174,7 +174,7 @@ struct SessionEditView: View {
     private func save() {
         switch mode {
         case .add:
-            let session = TattooSession(
+            let session = Session(
                 date: date,
                 startTime: startTime,
                 endTime: isManualOverride ? nil : endTime,
