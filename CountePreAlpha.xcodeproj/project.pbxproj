@@ -106,6 +106,10 @@
 		AA000089 /* RecoveryBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000089 /* RecoveryBackup.swift */; };
 		AA000090 /* SettingsViewRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000090 /* SettingsViewRecovery.swift */; };
 		AA000091 /* CustomDiscount.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000091 /* CustomDiscount.swift */; };
+		AA000093 /* CounterSchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000093 /* CounterSchemaV1.swift */; };
+		AA000094 /* CounterSchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000094 /* CounterSchemaV2.swift */; };
+		AA000095 /* CounterMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000095 /* CounterMigrationPlan.swift */; };
+		AA000096 /* RecoveryModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000096 /* RecoveryModeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -208,6 +212,10 @@
 		AB000089 /* RecoveryBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBackup.swift; sourceTree = "<group>"; };
 		AB000090 /* SettingsViewRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewRecovery.swift; sourceTree = "<group>"; };
 		AB000091 /* CustomDiscount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDiscount.swift; sourceTree = "<group>"; };
+		AB000093 /* CounterSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV1.swift; sourceTree = "<group>"; };
+		AB000094 /* CounterSchemaV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV2.swift; sourceTree = "<group>"; };
+		AB000095 /* CounterMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterMigrationPlan.swift; sourceTree = "<group>"; };
+		AB000096 /* RecoveryModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryModeView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -298,6 +306,7 @@
 				AB000002 /* ContentView.swift */,
 				AB000084 /* AppNavigationCoordinator.swift */,
 				790D133F2F871FAA00C31CE2 /* WelcomeSetupView.swift */,
+				AB000096 /* RecoveryModeView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -383,6 +392,9 @@
 				AB000033 /* ExportService.swift */,
 				79481E2E2F65F2A100349BEA /* SeedDataService.swift */,
 				AB000088 /* RecoveryService.swift */,
+				AB000093 /* CounterSchemaV1.swift */,
+				AB000094 /* CounterSchemaV2.swift */,
+				AB000095 /* CounterMigrationPlan.swift */,
 				AB000061 /* BusinessLockManager.swift */,
 				AB000079 /* DonationStore.swift */,
 				AB000027 /* SignatureCaptureView.swift */,
@@ -647,6 +659,10 @@
 				AA000088 /* RecoveryService.swift in Sources */,
 				AA000089 /* RecoveryBackup.swift in Sources */,
 				AA000090 /* SettingsViewRecovery.swift in Sources */,
+				AA000093 /* CounterSchemaV1.swift in Sources */,
+				AA000094 /* CounterSchemaV2.swift in Sources */,
+				AA000095 /* CounterMigrationPlan.swift in Sources */,
+				AA000096 /* RecoveryModeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
