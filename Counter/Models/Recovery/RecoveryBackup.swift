@@ -218,6 +218,27 @@ struct PieceImageBackup: Codable {
     let tags: [String]
 }
 
+// Custom decoder in extension so the struct retains its synthesized memberwise init
+// (placing init(from:) inside the struct body suppresses it).
+// Legacy backups used a simpler PieceImageBackup without sortOrder/isPrimary/category —
+// decodeIfPresent with defaults keeps those old JSON entries decodable.
+extension PieceImageBackup {
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        backupID           = try c.decode(UUID.self,   forKey: .backupID)
+        imageGroupBackupID = try c.decodeIfPresent(UUID.self,     forKey: .imageGroupBackupID)
+        pieceBackupID      = try c.decodeIfPresent(UUID.self,     forKey: .pieceBackupID)
+        filePath           = try c.decode(String.self, forKey: .filePath)
+        fileName           = try c.decode(String.self, forKey: .fileName)
+        notes              = try c.decode(String.self, forKey: .notes)
+        capturedAt         = try c.decode(Date.self,   forKey: .capturedAt)
+        sortOrder          = try c.decodeIfPresent(Int.self,      forKey: .sortOrder)  ?? 0
+        isPrimary          = try c.decodeIfPresent(Bool.self,     forKey: .isPrimary)  ?? false
+        category           = try c.decodeIfPresent(String.self,   forKey: .category)
+        tags               = try c.decodeIfPresent([String].self, forKey: .tags) ?? []
+    }
+}
+
 struct BookingBackup: Codable {
     let backupID: UUID
     let clientBackupID: UUID?

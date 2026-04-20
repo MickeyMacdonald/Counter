@@ -159,9 +159,6 @@ enum TattooSize: String, Codable, CaseIterable {
     case medium     = "Medium"       // e.g. 2–4 in
     case large      = "Large"        // e.g. 4–6 in
     case extraLarge = "Extra Large"  // e.g. > 6 in
-    case halfSleeve = "Half Sleeve"
-    case sleeve     = "Sleeve"
-    case backpiece  = "Back Piece"
 
     var systemImage: String {
         switch self {
@@ -170,9 +167,6 @@ enum TattooSize: String, Codable, CaseIterable {
         case .medium:     "m.circle.fill"
         case .large:      "l.circle.fill"
         case .extraLarge: "xl.circle.fill"
-        case .halfSleeve: "hand.raised.fill"
-        case .sleeve:     "hand.wave.fill"
-        case .backpiece:  "figure.arms.open"
         }
     }
 }

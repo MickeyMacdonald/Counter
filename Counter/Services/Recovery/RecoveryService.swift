@@ -644,25 +644,31 @@ actor RecoveryService {
 
     @MainActor
     private func wipeAllData(context: ModelContext) throws {
-        try context.delete(model: PieceImage.self)
-        try context.delete(model: SessionProgress.self)
-        try context.delete(model: Session.self)
-        try context.delete(model: Booking.self)
-        try context.delete(model: Payment.self)
-        try context.delete(model: Agreement.self)
-        try context.delete(model: CommunicationLog.self)
-        try context.delete(model: Piece.self)
-        try context.delete(model: Client.self)
-        try context.delete(model: PieceImage.self)
-        try context.delete(model: UserProfile.self)
-        try context.delete(model: SessionCategory.self)
-        try context.delete(model: SavedEmailTemplate.self)
-        try context.delete(model: AvailabilitySlot.self)
-        try context.delete(model: AvailabilityOverride.self)
-        try context.delete(model: SessionRateConfig.self)
-        try context.delete(model: FlashPriceTier.self)
-        try context.delete(model: GalleryGroup.self)
-        try context.delete(model: Discount.self)
+        // Individual deletion respects SwiftData's cascade/nullify relationship rules.
+        // Batch delete (context.delete(model:)) operates at the SQL level and triggers
+        // constraint violations when cascade rules conflict with deletion order.
+        func deleteAll<T: PersistentModel>(_ type: T.Type) throws {
+            try context.fetch(FetchDescriptor<T>()).forEach { context.delete($0) }
+        }
+        // Leaves first so cascades don't fight us
+        try deleteAll(PieceImage.self)
+        try deleteAll(SessionProgress.self)
+        try deleteAll(Session.self)
+        try deleteAll(Booking.self)
+        try deleteAll(Payment.self)
+        try deleteAll(Agreement.self)
+        try deleteAll(CommunicationLog.self)
+        try deleteAll(Piece.self)
+        try deleteAll(Client.self)
+        try deleteAll(UserProfile.self)
+        try deleteAll(SessionCategory.self)
+        try deleteAll(SavedEmailTemplate.self)
+        try deleteAll(AvailabilitySlot.self)
+        try deleteAll(AvailabilityOverride.self)
+        try deleteAll(SessionRateConfig.self)
+        try deleteAll(FlashPriceTier.self)
+        try deleteAll(GalleryGroup.self)
+        try deleteAll(Discount.self)
     }
 
     // MARK: - Restore: Deserialize & Insert

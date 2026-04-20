@@ -19,6 +19,7 @@ struct SettingsViewRecovery: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showWipeConfirm = false
+    @State private var showWipeAlternateConfirm = false
     @State private var isReseeding = false
 
     private var userBackups: [BackupMetadata] {
@@ -228,10 +229,27 @@ struct SettingsViewRecovery: View {
             } message: {
                 Text("This will permanently delete ALL current data and replace it with 20 sample clients across 8 months of history. This cannot be undone.")
             }
+
+            Button(role: .destructive) {
+                showWipeAlternateConfirm = true
+            } label: {
+                Label("Load Dataset B (★ BETA)", systemImage: "b.circle.fill")
+            }
+            .disabled(isReseeding || isBackingUp || isRestoring)
+            .alert("Load Dataset B?", isPresented: $showWipeAlternateConfirm) {
+                Button("Cancel", role: .cancel) { }
+                Button("Wipe & Load B", role: .destructive) {
+                    isReseeding = true
+                    SeedDataService.wipeAndReseedAlternate(context: modelContext)
+                    isReseeding = false
+                }
+            } message: {
+                Text("Wipes all data and loads a small, clearly different dataset (BETA — clients, ★ piece names) so you can verify backup/restore round-trips at a glance.")
+            }
         } header: {
             Text("Developer")
         } footer: {
-            Text("Wipes the store completely and populates it with rich test data spanning multiple months, payment scenarios, and piece statuses.")
+            Text("Dataset A = full rich seed (20 clients). Dataset B = minimal distinct seed (3 BETA clients, ★ piece names) for backup testing.")
         }
     }
 

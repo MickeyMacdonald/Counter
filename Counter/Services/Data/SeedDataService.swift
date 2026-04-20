@@ -40,18 +40,29 @@ enum SeedDataService {
     // MARK: - Wipe
 
     static func wipeAll(context: ModelContext) {
-        let types: [any PersistentModel.Type] = [
-            PieceImage.self, SessionProgress.self, Session.self,
-            Booking.self, Payment.self, Agreement.self,
-            CommunicationLog.self, PieceImage.self,
-            Piece.self, Client.self, UserProfile.self,
-            SessionCategory.self, SavedEmailTemplate.self,
-            AvailabilitySlot.self, AvailabilityOverride.self,
-            SessionRateConfig.self, FlashPriceTier.self, GalleryGroup.self
-        ]
-        for type in types {
-            try? context.delete(model: type)
+        // Individual deletion respects cascade/nullify rules — batch delete causes
+        // constraint violations when the delete order conflicts with relationship rules.
+        func deleteAll<T: PersistentModel>(_ type: T.Type) {
+            (try? context.fetch(FetchDescriptor<T>()))?.forEach { context.delete($0) }
         }
+        deleteAll(PieceImage.self)
+        deleteAll(SessionProgress.self)
+        deleteAll(Session.self)
+        deleteAll(Booking.self)
+        deleteAll(Payment.self)
+        deleteAll(Agreement.self)
+        deleteAll(CommunicationLog.self)
+        deleteAll(Piece.self)
+        deleteAll(Client.self)
+        deleteAll(UserProfile.self)
+        deleteAll(SessionCategory.self)
+        deleteAll(SavedEmailTemplate.self)
+        deleteAll(AvailabilitySlot.self)
+        deleteAll(AvailabilityOverride.self)
+        deleteAll(SessionRateConfig.self)
+        deleteAll(FlashPriceTier.self)
+        deleteAll(GalleryGroup.self)
+        deleteAll(Discount.self)
         try? context.save()
     }
 
@@ -120,7 +131,7 @@ enum SeedDataService {
                 title: "Botanical Sleeve", placement: "Left forearm",
                 desc: "Mixed floral sleeve with fern and peony motifs",
                 status: .inProgress, tags: ["floral", "botanical", "sleeve"],
-                size: .halfSleeve, hourlyRate: rate, depositAmount: dep,
+                size: .small, hourlyRate: rate, depositAmount: dep,
                 sessions: [
                     (daysFromNow: -180, startHour: 10, hours: 3.5, type: .consultation, notes: "Initial consult and design review"),
                     (daysFromNow: -150, startHour: 10, hours: 4.0, type: .linework,    notes: "Outlines — inner forearm"),
@@ -187,7 +198,7 @@ enum SeedDataService {
                 title: "Phoenix Back Piece", placement: "Full back",
                 desc: "Japanese-style phoenix rising from flames",
                 status: .designInProgress, tags: ["japanese", "phoenix", "backpiece"],
-                size: .backpiece, hourlyRate: rate, depositAmount: dep,
+                size: .medium, hourlyRate: rate, depositAmount: dep,
                 sessions: [
                     (daysFromNow: -30, startHour: 10, hours: 2.0, type: .consultation,    notes: "Initial consult"),
                     (daysFromNow: -10, startHour: 10, hours: 3.0, type: .initialDrafting, notes: "Draft sketches review"),
@@ -267,7 +278,7 @@ enum SeedDataService {
                 title: "Sacred Geometry Sleeve", placement: "Right arm",
                 desc: "Full sleeve of interlocking sacred geometry patterns",
                 status: .inProgress, tags: ["geometric", "sleeve", "sacred"],
-                size: .sleeve, hourlyRate: rate, depositAmount: dep,
+                size: .large, hourlyRate: rate, depositAmount: dep,
                 sessions: [
                     (daysFromNow: -120, startHour: 11, hours: 5.0, type: .linework, notes: "Upper arm outlines"),
                     (daysFromNow: -80,  startHour: 11, hours: 5.5, type: .linework, notes: "Forearm outlines"),
@@ -419,7 +430,7 @@ enum SeedDataService {
                 title: "Floral Half Sleeve", placement: "Left upper arm",
                 desc: "Botanical half-sleeve — peonies, dahlias, ferns",
                 status: .inProgress, tags: ["floral", "botanical", "sleeve"],
-                size: .halfSleeve, hourlyRate: rate, depositAmount: dep,
+                size: .large, hourlyRate: rate, depositAmount: dep,
                 sessions: [
                     (daysFromNow: -130, startHour: 12, hours: 5.0, type: .linework, notes: "Outline — upper section"),
                     (daysFromNow: -90,  startHour: 12, hours: 5.5, type: .linework, notes: "Outline — lower section"),
@@ -549,7 +560,7 @@ enum SeedDataService {
                 title: "Dragon Sleeve", placement: "Right arm",
                 desc: "Norse dragon (Níðhöggr) coiled around the full sleeve",
                 status: .inProgress, tags: ["norse", "dragon", "sleeve"],
-                size: .sleeve, hourlyRate: rate, depositAmount: dep,
+                size: .small, hourlyRate: rate, depositAmount: dep,
                 sessions: [
                     (daysFromNow: -35, startHour: 10, hours: 2.0, type: .consultation,    notes: "Reference and sketches"),
                     (daysFromNow: -7,  startHour: 10, hours: 5.5, type: .linework,        notes: "Upper arm outlines — started"),
@@ -829,6 +840,101 @@ enum SeedDataService {
                 notes: "No-show fee charged — \(piece.title)", piece: piece, client: client
             ))
         }
+    }
+
+    // MARK: - Alternate Seed (Dataset B)
+
+    /// Wipes and reseeds with a clearly different dataset so backup/restore differences
+    /// are immediately obvious. Clients named "BETA — …" with teal placeholder images.
+    static func wipeAndReseedAlternate(context: ModelContext) {
+        wipeAll(context: context)
+        resetSeedFlags()
+        seedAlternate(context: context)
+        markAllSeeded()
+    }
+
+    private static func seedAlternate(context: ModelContext) {
+        let cal = Calendar.current
+        let now = Date()
+
+        func date(daysFromNow d: Int, hour h: Int = 10) -> Date {
+            let base = cal.date(byAdding: .day, value: d, to: now)!
+            return cal.date(bySettingHour: h, minute: 0, second: 0, of: base)!
+        }
+
+        let profile = UserProfile(
+            firstName: "BETA", lastName: "Artist",
+            businessName: "★ DATASET B ★",
+            email: "beta@testdata.com", phone: "555-BETA",
+            profession: .tattooer,
+            defaultHourlyRate: 200,
+            depositPercentage: 30
+        )
+        context.insert(profile)
+
+        let rate: Decimal = 200
+        let dep:  Decimal = 200
+
+        // Client B1 — Jordan Cross
+        let c1 = makeClient("BETA — Jordan", "Cross", "jordan@beta.test", "555-B101",
+                            "she/her", "Beta dataset client. Loves geometric and watercolour.",
+                            "", context: context)
+        addPiece(
+            context: context, client: c1,
+            title: "★ Phoenix Rising", placement: "Upper back",
+            desc: "Large phoenix in vibrant watercolour style",
+            status: .inProgress, tags: ["watercolour", "phoenix", "beta"],
+            size: .small, hourlyRate: rate, depositAmount: dep,
+            sessions: [
+                (daysFromNow: -90, startHour: 10, hours: 2.0, type: .consultation, notes: "BETA: Initial consult"),
+                (daysFromNow: -60, startHour: 10, hours: 5.0, type: .linework,    notes: "BETA: Outline session"),
+                (daysFromNow: -30, startHour: 10, hours: 4.5, type: .colour,      notes: "BETA: Colour session 1"),
+            ],
+            bookingDaysFromNow: 10, scenario: .depositAndPartial(pct: 0.5)
+        )
+        addPiece(
+            context: context, client: c1,
+            title: "★ Sacred Geometry", placement: "Left forearm",
+            desc: "Fine-line sacred geometry with dotwork fill",
+            status: .completed, tags: ["fine-line", "geometry", "beta"],
+            size: .medium, hourlyRate: rate, depositAmount: dep,
+            sessions: [
+                (daysFromNow: -120, startHour: 14, hours: 3.5, type: .linework, notes: "BETA: Single session"),
+            ],
+            bookingDaysFromNow: nil, scenario: .fullyPaid
+        )
+
+        // Client B2 — River Stone
+        let c2 = makeClient("BETA — River", "Stone", "river@beta.test", "555-B202",
+                            "they/them", "Beta dataset client. New client, minimalist style.",
+                            "", context: context)
+        addPiece(
+            context: context, client: c2,
+            title: "★ Minimalist Moon", placement: "Inner wrist",
+            desc: "Single-line crescent moon, ultra minimal",
+            status: .scheduled, tags: ["minimalist", "fine-line", "beta"],
+            size: .small, hourlyRate: rate, depositAmount: dep,
+            sessions: [
+                (daysFromNow: -14, startHour: 11, hours: 1.0, type: .consultation, notes: "BETA: Quick consult"),
+            ],
+            bookingDaysFromNow: 7, scenario: .depositOnly
+        )
+
+        // Client B3 — Quinn Atlas (no-show scenario)
+        let c3 = makeClient("BETA — Quinn", "Atlas", "quinn@beta.test", "555-B303",
+                            "he/him", "Beta dataset client. No-show on first booking.",
+                            "", context: context)
+        addPiece(
+            context: context, client: c3,
+            title: "★ Dragon Koi", placement: "Right thigh",
+            desc: "Japanese dragon-koi hybrid, bold traditional",
+            status: .concept, tags: ["japanese", "koi", "beta"],
+            size: .large, hourlyRate: rate, depositAmount: dep,
+            sessions: [
+                (daysFromNow: -7, startHour: 10, hours: 0.0, type: .consultation, notes: "BETA: No-show"),
+            ],
+            bookingDaysFromNow: nil, scenario: .noShow(fee: 100)
+        )
     }
 
     // MARK: - Flash Portfolio Client Seed
