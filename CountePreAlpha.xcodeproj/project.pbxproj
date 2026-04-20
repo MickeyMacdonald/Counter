@@ -343,6 +343,7 @@
 			children = (
 				AB000005 /* SessionProgress.swift */,
 				AB000006 /* PieceImage.swift */,
+				AB000081 /* GalleryGroup.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -374,7 +375,6 @@
 				AB000034 /* UserProfile.swift */,
 				AB000064 /* EmailTemplate.swift */,
 				AB000008 /* Agreement.swift */,
-				AB000081 /* GalleryGroup.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
