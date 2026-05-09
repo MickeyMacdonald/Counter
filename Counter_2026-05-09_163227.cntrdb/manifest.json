@@ -1,0 +1,12 @@
+{
+  "appVersion" : "0.5.0 (1)",
+  "createdAt" : "2026-05-09T22:32:27Z",
+  "databaseChecksum" : "53a864b98af8568bf8b37fdfe97accaf7a0c468e625a05365915a886329aba73",
+  "databaseSizeBytes" : 282624,
+  "formatVersion" : 1,
+  "imageCount" : 31,
+  "imageSizeBytes" : 1053865,
+  "modelCount" : 198,
+  "schemaVersion" : 1,
+  "sourceDevice" : "iPad"
+}
