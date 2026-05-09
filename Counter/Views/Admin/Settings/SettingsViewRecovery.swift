@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 // MARK: - Recovery Backup View (Alpha Safety Net)
 // Temporary backup/restore UI for alpha testers. Will be retired at release.
@@ -22,6 +23,18 @@ struct SettingsViewRecovery: View {
     @State private var showWipeAlternateConfirm = false
     @State private var isReseeding = false
 
+    // .cntrdb export/import state. Mirrors the JSON backup state above so
+    // the two flows look the same to the user even though the underlying
+    // formats differ.
+    @State private var isExportingCntrdb = false
+    @State private var isImportingCntrdb = false
+    @State private var lastCntrdbExportURL: URL?
+    @State private var showCntrdbImportPicker = false
+    @State private var pendingCntrdbImportURL: URL?
+    @State private var showCntrdbImportConfirm = false
+    @State private var showCntrdbImportSuccess = false
+    @State private var lastCntrdbImportSummary: String?
+
     private var userBackups: [BackupMetadata] {
         backups.filter { $0.effectiveKind == .userBackup }
     }
@@ -38,6 +51,7 @@ struct SettingsViewRecovery: View {
             if !snapshotBackups.isEmpty {
                 snapshotsListSection
             }
+            cntrdbSection
             developerSection
         }
         .listStyle(.insetGrouped)
@@ -60,6 +74,37 @@ struct SettingsViewRecovery: View {
             Button("OK") { }
         } message: {
             Text(errorMessage)
+        }
+        // .cntrdb file picker — uses UTType.folder because we have not yet
+        // registered com.counter.cntrdb in Info.plist. Validation in
+        // performCntrdbImport rejects folders that aren't actual packages.
+        .fileImporter(
+            isPresented: $showCntrdbImportPicker,
+            allowedContentTypes: [.folder],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                guard let url = urls.first else { return }
+                pendingCntrdbImportURL = url
+                showCntrdbImportConfirm = true
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+                showError = true
+            }
+        }
+        .alert("Import .cntrdb?", isPresented: $showCntrdbImportConfirm, presenting: pendingCntrdbImportURL) { url in
+            Button("Cancel", role: .cancel) { pendingCntrdbImportURL = nil }
+            Button("Replace All Data", role: .destructive) {
+                Task { await performCntrdbImport(from: url) }
+            }
+        } message: { url in
+            Text("\"\(url.lastPathComponent)\" will replace ALL current data — clients, pieces, sessions, images, and settings. A safety snapshot of the current state will be saved first so you can roll back from the Safety Snapshots section.")
+        }
+        .alert("Import Complete", isPresented: $showCntrdbImportSuccess) {
+            Button("OK") { }
+        } message: {
+            Text(lastCntrdbImportSummary ?? "Import succeeded.")
         }
     }
 
@@ -176,6 +221,53 @@ struct SettingsViewRecovery: View {
         }
     }
 
+    // MARK: - Cntrdb (SQLite Database) Section
+    //
+    // The `.cntrdb` format is a folder bundle containing a public SQLite
+    // schema, image tree, and integrity manifest. Lives next to the JSON
+    // backup pipeline (does not replace it) — the JSON path stays as the
+    // automatic safety net while `.cntrdb` is the user-facing share format.
+
+    private var cntrdbSection: some View {
+        Section {
+            // Export
+            Button {
+                Task { await performCntrdbExport() }
+            } label: {
+                HStack {
+                    Label("Export to .cntrdb…", systemImage: "square.and.arrow.up.on.square")
+                    Spacer()
+                    if isExportingCntrdb { ProgressView() }
+                }
+            }
+            .disabled(isExportingCntrdb || isImportingCntrdb || isBackingUp || isRestoring)
+
+            // Share most recent export — ShareLink only appears once we
+            // have a URL on disk, so it doesn't show until the first export.
+            if let url = lastCntrdbExportURL {
+                ShareLink(item: url) {
+                    Label("Share Last Export", systemImage: "square.and.arrow.up")
+                }
+            }
+
+            // Import
+            Button {
+                showCntrdbImportPicker = true
+            } label: {
+                HStack {
+                    Label("Import from .cntrdb…", systemImage: "square.and.arrow.down.on.square")
+                    Spacer()
+                    if isImportingCntrdb { ProgressView() }
+                }
+            }
+            .disabled(isExportingCntrdb || isImportingCntrdb || isBackingUp || isRestoring)
+        } header: {
+            Text("Database File (.cntrdb)")
+        } footer: {
+            Text(".cntrdb is a portable database file you can share, archive, or move between devices. Importing replaces all current data — a safety snapshot is taken first so you can roll back.")
+        }
+    }
+
     private func backupRow(_ backup: BackupMetadata) -> some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
@@ -275,6 +367,68 @@ struct SettingsViewRecovery: View {
         do {
             try await RecoveryService.shared.restore(from: backup, context: modelContext)
             showRestoreSuccess = true
+            await refresh()
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+
+    // MARK: - Cntrdb actions
+
+    /// Writes a fresh `.cntrdb` package into Documents/Counter Exports/
+    /// and stashes the URL so the ShareLink row can pick it up.
+    /// Files-app-visible because UIFileSharingEnabled is set on the bundle.
+    private func performCntrdbExport() async {
+        isExportingCntrdb = true
+        defer { isExportingCntrdb = false }
+
+        do {
+            let fm = FileManager.default
+            guard let docs = fm.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                throw CntrdbError.exportFailed("Could not locate Documents directory.")
+            }
+            let exportsDir = docs.appendingPathComponent("Counter Exports")
+            try fm.createDirectory(at: exportsDir, withIntermediateDirectories: true)
+
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd_HHmmss"
+            let name = "Counter_\(formatter.string(from: Date())).\(CntrdbPackage.fileExtension)"
+            let url = exportsDir.appendingPathComponent(name)
+
+            _ = try await CntrdbExporter.shared.exportAll(
+                to: url,
+                context: modelContext,
+                sourceDevice: UIDevice.current.name,
+                notes: nil
+            )
+
+            lastCntrdbExportURL = url
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+
+    /// Validates the user-picked folder, asks the importer to do the
+    /// destructive replace, and surfaces a summary to the user. The
+    /// security-scoped resource handshake is required because
+    /// `.fileImporter` URLs come from outside our sandbox.
+    private func performCntrdbImport(from url: URL) async {
+        isImportingCntrdb = true
+        defer {
+            isImportingCntrdb = false
+            pendingCntrdbImportURL = nil
+        }
+
+        let didStart = url.startAccessingSecurityScopedResource()
+        defer { if didStart { url.stopAccessingSecurityScopedResource() } }
+
+        do {
+            try CntrdbPackage.validateLayout(at: url)
+            let manifest = try await CntrdbImporter.shared.importPackage(at: url, context: modelContext)
+            lastCntrdbImportSummary = "Imported \(manifest.modelCount) records and \(manifest.imageCount) images. You may need to relaunch the app for all changes to take effect."
+            showCntrdbImportSuccess = true
             await refresh()
         } catch {
             errorMessage = error.localizedDescription
