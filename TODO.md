@@ -102,7 +102,7 @@ Last updated: 2026-05-09
 - [ ] **Privacy policy + ToS hosted at real public URLs** — remove `noindex` from `docs/privacy.html` and `docs/terms.html`, add to public footer.
 - [ ] **TestFlight listing** in App Store Connect.
 - [x] **Booking notifications (minimum viable)** — `NotificationService` actor schedules two local notifications per upcoming Booking: evening-before (default 6 PM) and morning-of (default 8 AM). Settings → Notifications controls the master toggle, per-reminder toggles, and time pickers. Synced on launch and every time the app returns to foreground. *(2026-05-10)*
-- [ ] **Client search (minimum viable)** — search by name across the client list. Tag/status filtering deferred to 1.1.
+- [x] **Client search (minimum viable)** — `SidebarSearchField` in WorkView searches client name, email, and phone; piece search covers title, body placement, client name, and tags. Fixed: archived/blacklisted clients now excluded from WorksClientsList, star-to-top sorting applied consistently across all sort modes, `ContentUnavailableView.search` shown when a query returns no results. *(2026-05-10)*
 
 ---
 

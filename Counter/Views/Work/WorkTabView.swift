@@ -119,7 +119,9 @@ private struct WorksClientsList: View {
     @State private var showingAddClient = false
 
     private var filteredClients: [Client] {
-        let visible = clients.filter { !$0.isFlashPortfolioClient }
+        let visible = clients.filter {
+            !$0.isFlashPortfolioClient && !$0.isArchived && !$0.isBlacklisted
+        }
         let filtered: [Client]
         if searchText.isEmpty {
             filtered = visible
@@ -132,28 +134,54 @@ private struct WorksClientsList: View {
             }
         }
         switch sortOrder {
-        case .name:   return filtered.sorted { $0.lastName < $1.lastName }
-        case .recent: return filtered.sorted { $0.updatedAt > $1.updatedAt }
-        case .pieces: return filtered.sorted { $0.pieces.count > $1.pieces.count }
+        case .name:
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.lastName.localizedCaseInsensitiveCompare($1.lastName) == .orderedAscending
+            }
+        case .recent:
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.updatedAt > $1.updatedAt
+            }
+        case .pieces:
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.pieces.count > $1.pieces.count
+            }
         }
     }
 
     var body: some View {
         Group {
-            if filteredClients.isEmpty && searchText.isEmpty {
-                ContentUnavailableView {
-                    Label("No Clients Yet", systemImage: "person.2.slash")
-                } description: {
-                    Text("Tap + to add your first client.")
-                } actions: {
-                    Button("Add Client") { showingAddClient = true }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.primary)
+            if filteredClients.isEmpty {
+                if !searchText.isEmpty {
+                    ContentUnavailableView.search(text: searchText)
+                } else {
+                    ContentUnavailableView {
+                        Label("No Clients Yet", systemImage: "person.2.slash")
+                    } description: {
+                        Text("Tap + to add your first client.")
+                    } actions: {
+                        Button("Add Client") { showingAddClient = true }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.primary)
+                    }
                 }
             } else {
                 List(filteredClients, selection: $selectedClient) { client in
                     NavigationLink(value: client) {
                         ClientRowView(client: client)
+                    }
+                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                        Button {
+                            client.isStarred.toggle()
+                            client.updatedAt = Date()
+                        } label: {
+                            Label(client.isStarred ? "Unstar" : "Star",
+                                  systemImage: client.isStarred ? "star.slash.fill" : "star.fill")
+                        }
+                        .tint(.yellow)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
@@ -247,11 +275,15 @@ private struct WorksPiecesList: View {
 
     var body: some View {
         Group {
-            if allPieces.filter({ $0.client?.isFlashPortfolioClient != true }).isEmpty {
-                ContentUnavailableView {
-                    Label("No Pieces Yet", systemImage: "paintbrush.pointed")
-                } description: {
-                    Text("Pieces will appear here as you add them to clients.")
+            if filteredPieces.isEmpty {
+                if !searchText.isEmpty {
+                    ContentUnavailableView.search(text: searchText)
+                } else {
+                    ContentUnavailableView {
+                        Label("No Pieces Yet", systemImage: "paintbrush.pointed")
+                    } description: {
+                        Text("Pieces will appear here as you add them to clients.")
+                    }
                 }
             } else {
                 List(filteredPieces, selection: $selectedPiece) { piece in
