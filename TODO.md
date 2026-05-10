@@ -53,8 +53,8 @@ Last updated: 2026-05-09
 
 - [x] **Default discount not visible** — Fixed in Discounts & Pricing section below.
 - [x] **Not all fields on a piece are editable** — `PieceEditView` now exposes: description text, status (edit mode only), hourly rate, and deposit. Add mode pre-fills rate from the artist's profile default. *(`[v0.9.x]`)*
-- [ ] **Sessions on a piece ≠ sessions in the schedule** — Piece-attached sessions and schedule sessions are out of sync or pulling from different data. Audit the relationship and unify. *(`[v0.9.x]`)*
-- [ ] **No way to edit or see sessions attached to a piece** — Tapping a piece opens the booking but the associated sessions are not surfaced or selectable. Show linked sessions on the piece detail view and pre-select the relevant one. *(`[v0.9.x]`)*
+- [x] **Sessions on a piece ≠ sessions in the schedule** — Root cause: `Session` (work record) and `Booking` (calendar slot) are separate models. `navigateToSession()` was a legacy shim that switched to the Schedule tab but selected nothing useful. Removed. *(`[v0.9.x]`)*
+- [x] **No way to edit or see sessions attached to a piece** — `PieceDetailView` shows `piece.sessions` sorted newest-first. Tapping a row now opens `SessionEditView` directly (was broken: navigated to Schedule tab, found nothing). *(`[v0.9.x]`)*
 
 ### Destructive Action Safety *(`[v0.9.x]`)*
 
