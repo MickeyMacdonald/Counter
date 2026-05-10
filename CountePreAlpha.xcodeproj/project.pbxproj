@@ -121,6 +121,8 @@
 		AA000210 /* SQLiteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000210 /* SQLiteService.swift */; };
 		AA000203 /* CntrdbExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000203 /* CntrdbExporter.swift */; };
 		AA000204 /* CntrdbImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000204 /* CntrdbImporter.swift */; };
+		AA000211 /* CounterSchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000211 /* CounterSchemaV5.swift */; };
+		AA000212 /* AdminClientManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000212 /* AdminClientManagementView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -238,6 +240,8 @@
 		AB000210 /* SQLiteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteService.swift; sourceTree = "<group>"; };
 		AB000203 /* CntrdbExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbExporter.swift; sourceTree = "<group>"; };
 		AB000204 /* CntrdbImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbImporter.swift; sourceTree = "<group>"; };
+		AB000211 /* CounterSchemaV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV5.swift; sourceTree = "<group>"; };
+		AB000212 /* AdminClientManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminClientManagementView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -431,6 +435,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000041 /* AdminView.swift */,
+				AB000212 /* AdminClientManagementView.swift */,
 				790D13422F87201D00C31CE2 /* Analytics */,
 				790D13412F87201100C31CE2 /* Settings */,
 				AE000015 /* Financial */,
@@ -536,6 +541,7 @@
 				AB000095 /* CounterMigrationPlan.swift */,
 				AB000098 /* CounterSchemaV3.swift */,
 				AB000102 /* CounterSchemaV4.swift */,
+				AB000211 /* CounterSchemaV5.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -835,6 +841,8 @@
 				AA000210 /* SQLiteService.swift in Sources */,
 				AA000203 /* CntrdbExporter.swift in Sources */,
 				AA000204 /* CntrdbImporter.swift in Sources */,
+				AA000211 /* CounterSchemaV5.swift in Sources */,
+				AA000212 /* AdminClientManagementView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
