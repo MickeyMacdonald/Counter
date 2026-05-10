@@ -39,6 +39,13 @@ enum SeedDataService {
 
     // MARK: - Wipe
 
+    /// Wipes all data and clears seed flags without reseeding, routing
+    /// ContentView back to WelcomeSetupView on the same launch.
+    static func clearAllData(context: ModelContext) {
+        wipeAll(context: context)
+        resetSeedFlags()
+    }
+
     static func wipeAll(context: ModelContext) {
         // Individual deletion respects cascade/nullify rules — batch delete causes
         // constraint violations when the delete order conflicts with relationship rules.

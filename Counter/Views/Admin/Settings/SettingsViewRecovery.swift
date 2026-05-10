@@ -22,6 +22,9 @@ struct SettingsViewRecovery: View {
     @State private var showWipeConfirm = false
     @State private var showWipeAlternateConfirm = false
     @State private var isReseeding = false
+    @State private var showClearDataConfirm = false
+    @State private var showForceRecoveryConfirm = false
+    @State private var showForceRecoverySuccess = false
 
     // .cntrdb export/import state. Mirrors the JSON backup state above so
     // the two flows look the same to the user even though the underlying
@@ -338,10 +341,53 @@ struct SettingsViewRecovery: View {
             } message: {
                 Text("Wipes all data and loads a small, clearly different dataset (BETA — clients, ★ piece names) so you can verify backup/restore round-trips at a glance.")
             }
+
+            Divider()
+
+            Button(role: .destructive) {
+                showClearDataConfirm = true
+            } label: {
+                Label("Clear All Data", systemImage: "trash.fill")
+            }
+            .disabled(isReseeding || isBackingUp || isRestoring)
+            .alert("Clear All Data?", isPresented: $showClearDataConfirm) {
+                Button("Cancel", role: .cancel) { }
+                Button("Clear Everything", role: .destructive) {
+                    SeedDataService.clearAllData(context: modelContext)
+                }
+            } message: {
+                Text("Permanently deletes all clients, pieces, sessions, and settings. Counter returns to the first-launch setup screen immediately. This cannot be undone.")
+            }
+
+            Button(role: .destructive) {
+                showForceRecoveryConfirm = true
+            } label: {
+                Label("Force Recovery Mode on Next Launch", systemImage: "exclamationmark.triangle.fill")
+            }
+            .disabled(isReseeding || isBackingUp || isRestoring)
+            .alert("Corrupt Store for Testing?", isPresented: $showForceRecoveryConfirm) {
+                Button("Cancel", role: .cancel) { }
+                Button("Corrupt Store", role: .destructive) {
+                    do {
+                        try RecoveryStoreReset.corruptStoreForTesting()
+                        showForceRecoverySuccess = true
+                    } catch {
+                        errorMessage = error.localizedDescription
+                        showError = true
+                    }
+                }
+            } message: {
+                Text("Overwrites the SQLite store header with garbage. Force-close Counter, then reopen it — Recovery Mode should appear instead of the normal app. Your backups are unaffected.")
+            }
+            .alert("Store Corrupted", isPresented: $showForceRecoverySuccess) {
+                Button("OK") { }
+            } message: {
+                Text("Force-close Counter now (swipe up in the app switcher), then reopen it. Recovery Mode should appear. Use Settings → Recovery to restore your data afterward.")
+            }
         } header: {
             Text("Developer")
         } footer: {
-            Text("Dataset A = full rich seed (20 clients). Dataset B = minimal distinct seed (3 BETA clients, ★ piece names) for backup testing.")
+            Text("Dataset A = full rich seed (20 clients). Dataset B = minimal distinct seed (3 BETA clients, ★ piece names) for backup testing.\n\nClear All Data returns the app to first-launch state. Force Recovery corrupts the store so the next cold launch hits RecoveryModeView.")
         }
     }
 

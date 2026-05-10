@@ -314,6 +314,36 @@ enum RecoveryStoreReset {
         }
     }
 
+    /// Overwrites the SQLite magic header of the default store with garbage
+    /// so SwiftData cannot open it on the next cold launch, triggering
+    /// RecoveryModeView. The running instance is unaffected — corruption
+    /// only takes effect after a force-close and reopen.
+    ///
+    /// Use this in the Developer section to exercise the recovery path
+    /// without needing to manually hex-edit the store file.
+    static func corruptStoreForTesting() throws {
+        let fileManager = FileManager.default
+        guard let appSupport = try? fileManager.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        ) else {
+            throw ResetError.applicationSupportUnavailable
+        }
+
+        let storeURL = appSupport.appendingPathComponent("default.store")
+        guard fileManager.fileExists(atPath: storeURL.path) else {
+            throw ResetError.noStoreFound
+        }
+
+        // 128 bytes of 0xFF clobbers the "SQLite format 3\0" magic header.
+        // sqlite3_open will fail to recognise the file, causing ModelContainer
+        // init to throw on next launch and route to LaunchState.recoveryMode.
+        let garbage = Data(repeating: 0xFF, count: 128)
+        try garbage.write(to: storeURL)
+    }
+
     static func deleteSwiftDataStore() throws {
         let fileManager = FileManager.default
         guard let appSupport = try? fileManager.url(
