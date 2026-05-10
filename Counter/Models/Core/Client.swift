@@ -28,6 +28,12 @@ final class Client {
     // Flash Portfolio: this client is the artist's hidden flash inventory holder
     var isFlashPortfolioClient: Bool = false
 
+    // Client status flags
+    var isStarred: Bool = false
+    var isArchived: Bool = false
+    var isBlacklisted: Bool = false
+    var blacklistNote: String = ""
+
     var createdAt: Date
     var updatedAt: Date
 

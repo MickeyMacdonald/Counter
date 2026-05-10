@@ -18,6 +18,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case recovery       = "Recovery"
     case support        = "Support Counter"
 
+    case clientRecords  = "Client Records"
     case clientMode     = "Client Mode"
     case pieces         = "Pieces"
     case taskTemplates  = "Task Templates"
@@ -41,6 +42,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
                 .about,
                 .recovery,
                 .support,
+                .clientRecords,
                 .clientMode,
                 .pieces,
                 .rates,
@@ -64,6 +66,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .emailTemplates: "envelope.open.fill"
         case .about:          "info.circle"
         case .support:        "heart.fill"
+        case .clientRecords:  "person.text.rectangle.fill"
         case .statistics:     "chart.bar.fill"
         case .trends:         "chart.line.uptrend.xyaxis"
         case .financial:      "dollarsign.circle.fill"
@@ -92,6 +95,7 @@ struct SettingsView: View {
 
     // Sub-categories Order
     private static let settingsItems:  [SettingsCategory] = [.profile,
+                                                             .clientRecords,
                                                              .pieces,
                                                              .clientMode,
                                                              .emailTemplates,
@@ -194,6 +198,8 @@ struct SettingsView: View {
             SettingsViewReports()
         case .paymentHistory:
             PaymentHistoryView()
+        case .clientRecords:
+            AdminClientManagementView()
         case .clientMode:
             SettingsClientModeView()
         case .pieces:

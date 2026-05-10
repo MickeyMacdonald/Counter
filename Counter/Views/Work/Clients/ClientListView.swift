@@ -9,10 +9,12 @@ struct ClientListView: View {
     @State private var showingAddClient = false
     @State private var selectedClient: Client?
     @State private var sortOrder: ClientSortOrder = .name
+    @State private var clientPendingDelete: Client?
 
     private var filteredClients: [Client] {
-        // Exclude the hidden flash portfolio client from the standard client list
-        let visible = clients.filter { !$0.isFlashPortfolioClient }
+        let visible = clients.filter {
+            !$0.isFlashPortfolioClient && !$0.isArchived && !$0.isBlacklisted
+        }
         let filtered: [Client]
         if searchText.isEmpty {
             filtered = visible
@@ -26,11 +28,20 @@ struct ClientListView: View {
         }
         switch sortOrder {
         case .name:
-            return filtered.sorted { $0.lastName < $1.lastName }
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.lastName.lowercased() < $1.lastName.lowercased()
+            }
         case .recent:
-            return filtered.sorted { $0.updatedAt > $1.updatedAt }
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.updatedAt > $1.updatedAt
+            }
         case .pieces:
-            return filtered.sorted { $0.pieces.count > $1.pieces.count }
+            return filtered.sorted {
+                if $0.isStarred != $1.isStarred { return $0.isStarred }
+                return $0.pieces.count > $1.pieces.count
+            }
         }
     }
 
@@ -59,7 +70,29 @@ struct ClientListView: View {
                 }
             }
             .sheet(isPresented: $showingAddClient) {
-                ClientEditView(mode: .add)
+                ClientEditView(mode: .add, onSave: { client in
+                    selectedClient = client
+                })
+            }
+            .confirmationDialog(
+                "Permanently delete \(clientPendingDelete?.fullName ?? "this client")?",
+                isPresented: Binding(
+                    get: { clientPendingDelete != nil },
+                    set: { if !$0 { clientPendingDelete = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Delete Permanently", role: .destructive) {
+                    if let client = clientPendingDelete {
+                        hardDeleteClient(client)
+                    }
+                    clientPendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    clientPendingDelete = nil
+                }
+            } message: {
+                Text("All pieces, payments, agreements, and history for this client will be deleted. This cannot be undone.")
             }
         } detail: {
             if let selectedClient {
@@ -82,12 +115,27 @@ struct ClientListView: View {
             NavigationLink(value: client) {
                 ClientRowView(client: client)
             }
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                Button {
+                    client.isStarred.toggle()
+                    client.updatedAt = Date()
+                } label: {
+                    Label(client.isStarred ? "Unstar" : "Star", systemImage: client.isStarred ? "star.slash.fill" : "star.fill")
+                }
+                .tint(.yellow)
+            }
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 Button(role: .destructive) {
-                    deleteClient(client)
+                    clientPendingDelete = client
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }
+                Button {
+                    archiveClient(client)
+                } label: {
+                    Label("Archive", systemImage: "archivebox")
+                }
+                .tint(.orange)
             }
         }
         .listStyle(.sidebar)
@@ -120,7 +168,15 @@ struct ClientListView: View {
         }
     }
 
-    private func deleteClient(_ client: Client) {
+    private func archiveClient(_ client: Client) {
+        if selectedClient == client {
+            selectedClient = nil
+        }
+        client.isArchived = true
+        client.updatedAt = Date()
+    }
+
+    private func hardDeleteClient(_ client: Client) {
         if selectedClient == client {
             selectedClient = nil
         }

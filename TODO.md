@@ -1,6 +1,6 @@
 # Counter — Project TODO
 
-Last updated: 2026-04-14
+Last updated: 2026-05-09
 
 > **Reading order:** This file is the granular task list. The version-grained roadmap lives in [`docs/internal/VERSION_HISTORY.md`](docs/internal/VERSION_HISTORY.md). The rules that govern channel transitions live in [`docs/internal/VERSIONING.md`](docs/internal/VERSIONING.md). Items below are tagged with their target version using `[v0.8.x]` / `[v0.9.0]` / `[v1.0]` markers.
 
@@ -42,6 +42,45 @@ Last updated: 2026-04-14
 - [ ] **Migration tests** — V1 → V2 backup loaded by V2 code, V2 backup loaded by V2 code.
 - [ ] **Failure tests** — corrupted JSON, truncated files, missing checksum, wrong version, missing images.
 - [ ] **Recovery mode path tests** — deliberately break the store, verify the launch routes to recovery.
+
+---
+
+## Beta Tester Feedback — Round 1 (2026-05-09)
+
+> Raw feedback from first tester session. Items are grouped by theme and tagged for target version. Bugs and broken flows take priority over new features.
+
+### Bugs & Broken Flows ← fix before next tester session
+
+- [ ] **Default discount not visible** — "Family & Friend" custom discount is saved but doesn't appear in the UI when selecting discounts on a session/piece. *(`[v0.9.x]`)*
+- [ ] **Not all fields on a piece are editable** — Identify which piece fields are read-only and make them editable inline. *(`[v0.9.x]`)*
+- [ ] **Sessions on a piece ≠ sessions in the schedule** — Piece-attached sessions and schedule sessions are out of sync or pulling from different data. Audit the relationship and unify. *(`[v0.9.x]`)*
+- [ ] **No way to edit or see sessions attached to a piece** — Tapping a piece opens the booking but the associated sessions are not surfaced or selectable. Show linked sessions on the piece detail view and pre-select the relevant one. *(`[v0.9.x]`)*
+
+### Destructive Action Safety *(`[v0.9.x]`)*
+
+- [ ] **Delete confirmation dialog** — Every delete button must present a confirmation sheet ("Are you sure? This cannot be undone.") before any destructive action fires.
+- [ ] **Archive instead of delete (clients & pieces)** — Replace hard-delete with a soft-archive flow. Archived records are hidden from normal lists but recoverable from Admin.
+- [ ] **Can't delete a piece** — Delete action is missing entirely from the piece detail view. Add it (with confirmation + archive-first approach).
+
+### Client Management *(`[v0.9.x]`)*
+
+- [x] **Auto-select new client after save** — `ClientEditView` now takes an `onSave: ((Client) -> Void)?` callback; `ClientListView` passes `{ selectedClient = $0 }`.
+- [x] **Starred / active client flag** — `isStarred` added to `Client` (V5 migration). Star/unstar via leading swipe in list or `...` menu in detail. Starred clients sort to the top within every sort mode. Star icon shown in `ClientRowView`.
+- [x] **Blacklist clients** — `isBlacklisted` + `blacklistNote` added to `Client`. Blacklist action in `ClientDetailView` `...` menu sets both `isBlacklisted` and `isArchived = true`. *(`[v1.0]` → shipped in v0.9.x)*
+- [x] **Admin: view & manage blacklist and archive** — New `AdminClientManagementView` at Admin → Client Records. Shows Archived (with Restore + Delete) and Blacklist (with Remove + Delete + Export via ShareLink). *(`[v1.0]` → shipped in v0.9.x)*
+
+### Pieces & Sessions *(`[v0.9.x]`)*
+
+- [ ] **Session event types are multi-select** — A session can represent multiple contexts simultaneously (e.g. convention + guest spot). Change the event-type field from a single-select to a multi-select / tag picker.
+- [ ] **Body position is an editable list** — Replace the hardcoded body-position picker with a user-managed list that artists can add to, rename, and reorder in Settings.
+
+### Discounts & Pricing *(`[v0.9.x]`)*
+
+- [ ] **Discount button next to session total** — Add a discount button/control directly adjacent to the total line on a session so artists can apply or adjust discounts inline without navigating away.
+
+### Navigation & Search *(`[v0.9.x]`)*
+
+- [ ] **Search bar next to the menu** — Move the client/piece search input to sit beside the main navigation menu rather than buried inside a list view.
 
 ---
 

@@ -8,6 +8,7 @@ struct ClientEditView: View {
     }
 
     let mode: Mode
+    var onSave: ((Client) -> Void)? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -148,6 +149,7 @@ struct ClientEditView: View {
             )
             client.emailOptIn = emailOptIn
             modelContext.insert(client)
+            onSave?(client)
 
         case .edit(let client):
             client.firstName = firstName.trimmed

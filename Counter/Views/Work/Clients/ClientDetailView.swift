@@ -14,6 +14,9 @@ struct ClientDetailView: View {
     @State private var showingReportExport = false
     @State private var showingAddBooking = false
     @State private var showingClientGallery = false
+    @State private var showingBlacklistAlert = false
+    @State private var showingArchiveConfirm = false
+    @State private var pendingBlacklistNote = ""
 
     private var chargeableTypes: [String] {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
@@ -44,6 +47,22 @@ struct ClientDetailView: View {
                         Text(client.pronouns)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                    }
+
+                    if client.isBlacklisted {
+                        Label("Blacklisted", systemImage: "nosign")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .background(.red, in: Capsule())
+                    } else if client.isArchived {
+                        Label("Archived", systemImage: "archivebox")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .background(.orange, in: Capsule())
                     }
 
                     // Action buttons
@@ -282,6 +301,47 @@ struct ClientDetailView: View {
                     Image(systemName: "pencil.circle")
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button {
+                        client.isStarred.toggle()
+                        client.updatedAt = Date()
+                    } label: {
+                        Label(
+                            client.isStarred ? "Remove Star" : "Star Client",
+                            systemImage: client.isStarred ? "star.slash" : "star.fill"
+                        )
+                    }
+
+                    Divider()
+
+                    Button {
+                        showingArchiveConfirm = true
+                    } label: {
+                        Label(
+                            client.isArchived ? "Unarchive" : "Archive Client",
+                            systemImage: client.isArchived ? "tray.and.arrow.up" : "archivebox"
+                        )
+                    }
+
+                    Button(role: client.isBlacklisted ? .none : .destructive) {
+                        if client.isBlacklisted {
+                            client.isBlacklisted = false
+                            client.blacklistNote = ""
+                            client.updatedAt = Date()
+                        } else {
+                            showingBlacklistAlert = true
+                        }
+                    } label: {
+                        Label(
+                            client.isBlacklisted ? "Remove from Blacklist" : "Blacklist Client",
+                            systemImage: client.isBlacklisted ? "person.badge.plus" : "nosign"
+                        )
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
         }
         .sheet(isPresented: $showingEditClient) {
             ClientEditView(mode: .edit(client))
@@ -303,6 +363,41 @@ struct ClientDetailView: View {
         }
         .navigationDestination(isPresented: $showingClientGallery) {
             ClientGalleryView(client: client)
+        }
+        .confirmationDialog(
+            client.isArchived
+                ? "Unarchive \(client.firstName.isEmpty ? "Client" : client.firstName)?"
+                : "Archive \(client.firstName.isEmpty ? "Client" : client.firstName)?",
+            isPresented: $showingArchiveConfirm,
+            titleVisibility: .visible
+        ) {
+            Button(client.isArchived ? "Unarchive" : "Archive", role: client.isArchived ? .none : .destructive) {
+                client.isArchived.toggle()
+                client.updatedAt = Date()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(client.isArchived
+                ? "This client will be restored to your active client list."
+                : "This client will be hidden from your client list. You can restore them from Admin → Client Records.")
+        }
+        .alert(
+            "Blacklist \(client.firstName.isEmpty ? "Client" : client.firstName)?",
+            isPresented: $showingBlacklistAlert
+        ) {
+            TextField("Reason (optional)", text: $pendingBlacklistNote)
+            Button("Blacklist", role: .destructive) {
+                client.isBlacklisted = true
+                client.isArchived = true
+                client.blacklistNote = pendingBlacklistNote.trimmed
+                client.updatedAt = Date()
+                pendingBlacklistNote = ""
+            }
+            Button("Cancel", role: .cancel) {
+                pendingBlacklistNote = ""
+            }
+        } message: {
+            Text("This client will be hidden from your client list and added to the blacklist. You can manage the blacklist in Admin → Client Records.")
         }
     }
 

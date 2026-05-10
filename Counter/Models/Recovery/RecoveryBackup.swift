@@ -158,6 +158,37 @@ struct ClientBackup: Codable {
     let isFlashPortfolioClient: Bool
     let createdAt: Date
     let updatedAt: Date
+    // V5 fields — decoded with defaults so pre-V5 backup files still load
+    let isStarred: Bool
+    let isArchived: Bool
+    let isBlacklisted: Bool
+    let blacklistNote: String
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        backupID              = try c.decode(UUID.self,    forKey: .backupID)
+        firstName             = try c.decode(String.self,  forKey: .firstName)
+        lastName              = try c.decode(String.self,  forKey: .lastName)
+        email                 = try c.decode(String.self,  forKey: .email)
+        phone                 = try c.decode(String.self,  forKey: .phone)
+        notes                 = try c.decode(String.self,  forKey: .notes)
+        pronouns              = try c.decode(String.self,  forKey: .pronouns)
+        birthdate             = try c.decodeIfPresent(Date.self,   forKey: .birthdate)
+        allergyNotes          = try c.decode(String.self,  forKey: .allergyNotes)
+        streetAddress         = try c.decode(String.self,  forKey: .streetAddress)
+        city                  = try c.decode(String.self,  forKey: .city)
+        state                 = try c.decode(String.self,  forKey: .state)
+        zipCode               = try c.decode(String.self,  forKey: .zipCode)
+        profilePhotoPath      = try c.decodeIfPresent(String.self, forKey: .profilePhotoPath)
+        emailOptIn            = try c.decode(Bool.self,    forKey: .emailOptIn)
+        isFlashPortfolioClient = try c.decode(Bool.self,   forKey: .isFlashPortfolioClient)
+        createdAt             = try c.decode(Date.self,    forKey: .createdAt)
+        updatedAt             = try c.decode(Date.self,    forKey: .updatedAt)
+        isStarred             = try c.decodeIfPresent(Bool.self,   forKey: .isStarred)    ?? false
+        isArchived            = try c.decodeIfPresent(Bool.self,   forKey: .isArchived)   ?? false
+        isBlacklisted         = try c.decodeIfPresent(Bool.self,   forKey: .isBlacklisted) ?? false
+        blacklistNote         = try c.decodeIfPresent(String.self, forKey: .blacklistNote) ?? ""
+    }
 }
 
 struct PieceBackup: Codable {

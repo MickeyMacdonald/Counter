@@ -61,7 +61,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             CounterSchemaV1.self,
             CounterSchemaV2.self,
             CounterSchemaV3.self,
-            CounterSchemaV4.self
+            CounterSchemaV4.self,
+            CounterSchemaV5.self
         ]
     }
 
@@ -144,6 +145,13 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV3.self,
                 toVersion: CounterSchemaV4.self
+            ),
+
+            // V4 → V5: additive. Adds isStarred, isArchived, isBlacklisted, blacklistNote
+            // to Client. Lightweight is correct: new columns with defaults, no row transforms.
+            .lightweight(
+                fromVersion: CounterSchemaV4.self,
+                toVersion: CounterSchemaV5.self
             )
         ]
     }

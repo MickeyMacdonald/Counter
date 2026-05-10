@@ -366,7 +366,11 @@ actor RecoveryService {
                 profilePhotoPath: c.profilePhotoPath,
                 emailOptIn: c.emailOptIn,
                 isFlashPortfolioClient: c.isFlashPortfolioClient,
-                createdAt: c.createdAt, updatedAt: c.updatedAt
+                createdAt: c.createdAt, updatedAt: c.updatedAt,
+                isStarred: c.isStarred,
+                isArchived: c.isArchived,
+                isBlacklisted: c.isBlacklisted,
+                blacklistNote: c.blacklistNote
             )
         }
 
@@ -810,6 +814,10 @@ actor RecoveryService {
             client.profilePhotoPath = cb.profilePhotoPath
             client.emailOptIn = cb.emailOptIn
             client.isFlashPortfolioClient = cb.isFlashPortfolioClient
+            client.isStarred = cb.isStarred
+            client.isArchived = cb.isArchived
+            client.isBlacklisted = cb.isBlacklisted
+            client.blacklistNote = cb.blacklistNote
             client.createdAt = cb.createdAt
             client.updatedAt = cb.updatedAt
             context.insert(client)

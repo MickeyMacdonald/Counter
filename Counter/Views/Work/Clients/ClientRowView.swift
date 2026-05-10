@@ -8,8 +8,15 @@ struct ClientRowView: View {
             initialsCircle
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(client.fullName)
-                    .font(.body.weight(.medium))
+                HStack(spacing: 4) {
+                    Text(client.fullName)
+                        .font(.body.weight(.medium))
+                    if client.isStarred {
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.yellow)
+                    }
+                }
 
                 if !client.email.isEmpty {
                     Text(client.email)
