@@ -72,16 +72,16 @@ Last updated: 2026-05-09
 ### Pieces & Sessions *(`[v0.9.x]`)*
 
 - [ ] **Session event types are multi-select** — A session can represent multiple contexts simultaneously (e.g. convention + guest spot). Change the event-type field from a single-select to a multi-select / tag picker.
-- [ ] **Body position is an editable list** — Replace the hardcoded body-position picker with a user-managed list that artists can add to, rename, and reorder in Settings.
+- [x] **Body position is an editable list** — `SettingsViewPieces` now has an editable, reorderable Body Positions list (stored in UserDefaults). `PieceDetailView` and `PieceEditView` both use a `Picker` backed by that list; custom values not in the list are appended so existing data is never lost.
 
 ### Discounts & Pricing *(`[v0.9.x]`)*
 
 - [x] **Default discount not visible (Friends & Family)** — `PieceDetailView` discount picker now includes profile-level discounts (`friendsFamilyDiscount`, `preferredClientDiscount`, `holidayDiscount`, `conventionDiscount` from `UserProfile`) alongside custom `Discount` objects. Uses a local `DiscountOption` value type — no schema change needed.
-- [ ] **Discount button next to session total** — Add a discount button/control directly adjacent to the total line on a session so artists can apply or adjust discounts inline without navigating away.
+- [x] **Discount button next to session total** — Replaced the separate Discount section in `PieceDetailView` with an inline `%` menu button on the Total Charge row. Tapping it shows all available discounts (profile-level + custom); orange highlight indicates an active discount.
 
 ### Navigation & Search *(`[v0.9.x]`)*
 
-- [ ] **Search bar next to the menu** — Move the client/piece search input to sit beside the main navigation menu rather than buried inside a list view.
+- [x] **Search bar next to the menu** — `WorkTabView` sidebar now shows the search field immediately below the tab switcher, above the Clients/Pieces segment picker, so it's always visible.
 
 ---
 
