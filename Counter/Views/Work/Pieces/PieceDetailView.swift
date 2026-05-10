@@ -288,7 +288,7 @@ struct PieceDetailView: View {
                 } else {
                     ForEach(piece.sessions.sorted(by: { $0.date > $1.date })) { session in
                         Button {
-                            coordinator.navigateToSession(session)
+                            editingSession = session
                         } label: {
                             HStack {
                                 sessionRow(session)
@@ -298,18 +298,6 @@ struct PieceDetailView: View {
                             }
                         }
                         .buttonStyle(.plain)
-                        .contextMenu {
-                            Button {
-                                editingSession = session
-                            } label: {
-                                Label("Edit Session", systemImage: "pencil")
-                            }
-                            Button {
-                                coordinator.navigateToSession(session)
-                            } label: {
-                                Label("View in Bookings", systemImage: "book")
-                            }
-                        }
                     }
                 }
             } header: {
