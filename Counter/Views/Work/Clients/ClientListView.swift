@@ -181,6 +181,7 @@ struct ClientListView: View {
             selectedClient = nil
         }
         modelContext.delete(client)
+        try? modelContext.save()
     }
 }
 

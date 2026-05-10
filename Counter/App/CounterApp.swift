@@ -27,7 +27,7 @@ struct CounterApp: App {
             // V6 is the current schema. CounterMigrationPlan walks any
             // existing store forward through V1 → V2 → V3 → V4 → V5 → V6
             // automatically on first launch after an update.
-            let schema = Schema(versionedSchema: CounterSchemaV6.self)
+            let schema = Schema(versionedSchema: CounterSchemaV7.self)
             let config = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false

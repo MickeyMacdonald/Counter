@@ -63,7 +63,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             CounterSchemaV3.self,
             CounterSchemaV4.self,
             CounterSchemaV5.self,
-            CounterSchemaV6.self
+            CounterSchemaV6.self,
+            CounterSchemaV7.self
         ]
     }
 
@@ -160,6 +161,17 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV5.self,
                 toVersion: CounterSchemaV6.self
+            ),
+
+            // V6 → V7: additive. Adds an explicit cascade relationship from
+            // Client.bookings → Booking so SwiftData deletes a client's bookings
+            // when the client is deleted. Previously Booking.client had the default
+            // nullify rule, leaving orphaned booking rows that could fault-crash the
+            // Sessions sidebar before the context saved. Lightweight is correct:
+            // no new columns — this is a relationship behaviour change only.
+            .lightweight(
+                fromVersion: CounterSchemaV6.self,
+                toVersion: CounterSchemaV7.self
             )
         ]
     }

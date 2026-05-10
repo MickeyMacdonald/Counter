@@ -53,6 +53,9 @@ final class Client {
     @Relationship(deleteRule: .cascade, inverse: \Payment.client)
     var payments: [Payment] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \Booking.client)
+    var bookings: [Booking] = []
+
     var fullName: String {
         "\(firstName) \(lastName)".trimmingCharacters(in: .whitespaces)
     }

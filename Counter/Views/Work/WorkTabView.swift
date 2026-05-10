@@ -187,6 +187,7 @@ private struct WorksClientsList: View {
                         Button(role: .destructive) {
                             if selectedClient == client { selectedClient = nil }
                             modelContext.delete(client)
+                            try? modelContext.save()
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
