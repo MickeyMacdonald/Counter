@@ -19,6 +19,7 @@ struct PieceEditView: View {
     // MARK: - Piece fields
     @State private var rating: Int = 3
     @State private var title = ""
+    @State private var bodyPlacement = ""
     @State private var tagInput = ""
     @State private var tags: [String] = []
     @State private var pieceType: PieceType = .custom
@@ -38,6 +39,22 @@ struct PieceEditView: View {
     @State private var showSessionTypePicker = false
     @State private var showSessionSheet = false
     
+    private var bodyPositions: [String] {
+        UserDefaults.standard.stringArray(forKey: "bodyPositions") ?? [
+            "Forearm", "Upper Arm", "Shoulder", "Back", "Chest",
+            "Ribcage", "Thigh", "Calf", "Ankle", "Wrist",
+            "Neck", "Hand", "Foot", "Hip", "Stomach"
+        ]
+    }
+
+    private var bodyPositionsForPicker: [String] {
+        let positions = bodyPositions
+        if !bodyPlacement.isEmpty && !positions.contains(bodyPlacement) {
+            return positions + [bodyPlacement]
+        }
+        return positions
+    }
+
     private var isEditing: Bool {
         if case .edit = mode { return true }
         return false
@@ -175,7 +192,15 @@ struct PieceEditView: View {
     private var infoSection: some View {
         Section("Piece Info") {
             TextField("Title", text: $title)
-            
+
+            Picker("Body Location", selection: $bodyPlacement) {
+                Text("Not Set").tag("")
+                ForEach(bodyPositionsForPicker, id: \.self) { pos in
+                    Text(pos).tag(pos)
+                }
+            }
+            .pickerStyle(.menu)
+
             // Tag chips
             if !tags.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -343,6 +368,7 @@ struct PieceEditView: View {
     private func loadExistingData() {
         guard case .edit(let piece) = mode else { return }
         title = piece.title
+        bodyPlacement = piece.bodyPlacement
         tags = piece.tags
         pieceType = piece.pieceType
         rating = piece.rating ?? 3
@@ -393,6 +419,7 @@ struct PieceEditView: View {
                 hourlyRate: hourlyRate
             )
             piece.client = client
+            piece.bodyPlacement = bodyPlacement
             applySize(to: piece)
             modelContext.insert(piece)
 
@@ -452,6 +479,7 @@ struct PieceEditView: View {
 
         case .edit(let piece):
             piece.title = title.trimmed
+            piece.bodyPlacement = bodyPlacement
             piece.tags = tags
             piece.pieceType = pieceType
             piece.rating = rating

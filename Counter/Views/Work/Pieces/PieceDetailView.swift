@@ -21,7 +21,6 @@ struct PieceDetailView: View {
     @State private var showingImageGallery = false
     @State private var showingEmailPicker = false
     @State private var showingEditPiece = false
-    @State private var showDiscount = false
     @State private var selectedDiscountOption: DiscountOption?
     @State private var showingArchiveConfirm = false
     @State private var showingDeleteConfirm = false
@@ -64,7 +63,7 @@ struct PieceDetailView: View {
 
     private var effectiveCost: Decimal {
         let base = piece.totalCost
-        if showDiscount, let pct = selectedDiscountOption?.percentage {
+        if let pct = selectedDiscountOption?.percentage {
             return base * (1 - pct / 100)
         }
         return base
@@ -72,6 +71,23 @@ struct PieceDetailView: View {
 
     private var adjustedOutstanding: Decimal {
         effectiveCost - piece.totalPaymentsReceived
+    }
+
+    private var bodyPositions: [String] {
+        UserDefaults.standard.stringArray(forKey: "bodyPositions") ?? [
+            "Forearm", "Upper Arm", "Shoulder", "Back", "Chest",
+            "Ribcage", "Thigh", "Calf", "Ankle", "Wrist",
+            "Neck", "Hand", "Foot", "Hip", "Stomach"
+        ]
+    }
+
+    private var bodyPositionsForPicker: [String] {
+        let positions = bodyPositions
+        let current = piece.bodyPlacement
+        if !current.isEmpty && !positions.contains(current) {
+            return positions + [current]
+        }
+        return positions
     }
 
     private var clientID: String {
@@ -311,10 +327,13 @@ struct PieceDetailView: View {
 
             // MARK: - Summary (Details + Financials)
             Section {
-                LabeledContent("Body Location") {
-                    TextField("Location", text: $piece.bodyPlacement)
-                        .multilineTextAlignment(.trailing)
+                Picker("Body Location", selection: $piece.bodyPlacement) {
+                    Text("Not Set").tag("")
+                    ForEach(bodyPositionsForPicker, id: \.self) { pos in
+                        Text(pos).tag(pos)
+                    }
                 }
+                .pickerStyle(.menu)
 
                 Picker("Type", selection: $piece.pieceType) {
                     ForEach(PieceType.allCases, id: \.self) { type in
@@ -365,9 +384,44 @@ struct PieceDetailView: View {
                 LabeledContent("Session Hours") {
                     Text(String(format: "%.1f hrs", piece.totalHours))
                 }
-                LabeledContent("Total Charge") {
+                HStack {
+                    Text("Total Charge")
+                    Spacer()
                     Text(effectiveCost.currencyFormatted)
-                        .foregroundStyle(showDiscount ? Color.orange : Color.primary)
+                        .foregroundStyle(selectedDiscountOption != nil ? Color.orange : Color.primary)
+                    if !discountOptions.isEmpty {
+                        Menu {
+                            if selectedDiscountOption != nil {
+                                Button {
+                                    selectedDiscountOption = nil
+                                } label: {
+                                    Label("Remove Discount", systemImage: "xmark.circle")
+                                }
+                                Divider()
+                            }
+                            ForEach(discountOptions, id: \.self) { option in
+                                Button {
+                                    selectedDiscountOption = option
+                                } label: {
+                                    if selectedDiscountOption == option {
+                                        Label("\(option.name) (\(option.percentage.formatted())%)", systemImage: "checkmark")
+                                    } else {
+                                        Text("\(option.name) (\(option.percentage.formatted())%)")
+                                    }
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "percent")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(selectedDiscountOption != nil ? Color.orange : Color.secondary)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 4)
+                                .background(
+                                    selectedDiscountOption != nil ? Color.orange.opacity(0.12) : Color.primary.opacity(0.06),
+                                    in: RoundedRectangle(cornerRadius: 6)
+                                )
+                        }
+                    }
                 }
                 HStack {
                     Text("Outstanding")
@@ -379,29 +433,6 @@ struct PieceDetailView: View {
                 }
             } header: {
                 Text("Summary")
-            }
-
-            // MARK: - Discount
-            if !discountOptions.isEmpty {
-                Section {
-                    Toggle(isOn: $showDiscount.animation()) {
-                        Text("Apply Discount")
-                    }
-                    .onChange(of: showDiscount) { _, on in
-                        if on && selectedDiscountOption == nil { selectedDiscountOption = discountOptions.first }
-                        if !on { selectedDiscountOption = nil }
-                    }
-                    if showDiscount {
-                        Picker("Discount", selection: $selectedDiscountOption) {
-                            ForEach(discountOptions, id: \.self) { option in
-                                Text("\(option.name) (\(option.percentage.formatted())%)")
-                                    .tag(Optional(option))
-                            }
-                        }
-                    }
-                } header: {
-                    Text("Discount")
-                }
             }
 
             // MARK: - Payments

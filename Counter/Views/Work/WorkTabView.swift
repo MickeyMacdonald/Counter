@@ -22,6 +22,11 @@ struct WorkView: View {
             VStack(spacing: 0) {
                 AppTabSwitcher()
                 Divider()
+                SidebarSearchField(
+                    text: $searchText,
+                    prompt: section == .clients ? "Search clients..." : "Search pieces..."
+                )
+                Divider()
                 Picker("Section", selection: $section) {
                     ForEach(WorkSection.allCases, id: \.self) { s in
                         Text(s.rawValue).tag(s)
@@ -37,11 +42,6 @@ struct WorkView: View {
                 case .pieces:
                     WorksPiecesList(selectedPiece: $selectedPiece, searchText: $searchText)
                 }
-                Divider()
-                SidebarSearchField(
-                    text: $searchText,
-                    prompt: section == .clients ? "Search clients..." : "Search pieces..."
-                )
             }
             .toolbarBackground(AppTab.work.sidebarTint.opacity(0.55), for: .navigationBar)
             .navigationTitle("Work")

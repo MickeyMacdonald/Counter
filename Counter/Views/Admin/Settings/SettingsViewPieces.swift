@@ -1,11 +1,54 @@
 import SwiftUI
 
+private let defaultBodyPositions = [
+    "Forearm", "Upper Arm", "Shoulder", "Back", "Chest",
+    "Ribcage", "Thigh", "Calf", "Ankle", "Wrist",
+    "Neck", "Hand", "Foot", "Hip", "Stomach"
+]
+
 struct SettingsViewPieces: View {
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
     @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
+    @State private var positions: [String] = UserDefaults.standard.stringArray(forKey: "bodyPositions") ?? defaultBodyPositions
+    @State private var newPosition = ""
 
     var body: some View {
         List {
+            // MARK: Body Positions
+            Section {
+                ForEach(positions, id: \.self) { position in
+                    Text(position)
+                }
+                .onDelete { indexSet in
+                    positions.remove(atOffsets: indexSet)
+                    save()
+                }
+                .onMove { from, to in
+                    positions.move(fromOffsets: from, toOffset: to)
+                    save()
+                }
+
+                HStack {
+                    TextField("Add position…", text: $newPosition)
+                        .onSubmit { addPosition() }
+                    if !newPosition.trimmingCharacters(in: .whitespaces).isEmpty {
+                        Button(action: addPosition) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Body Positions")
+                    Spacer()
+                    EditButton()
+                }
+            } footer: {
+                Text("These positions appear in the body placement picker when creating or editing pieces.")
+            }
+
             // MARK: Size Mode
             Section {
                 Picker("Size Mode", selection: $sizeMode) {
@@ -43,6 +86,21 @@ struct SettingsViewPieces: View {
         .listStyle(.insetGrouped)
         .navigationTitle("Pieces")
         .animation(.easeInOut(duration: 0.2), value: sizeMode)
+    }
+
+    private func addPosition() {
+        let trimmed = newPosition.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !positions.contains(trimmed) else {
+            newPosition = ""
+            return
+        }
+        positions.append(trimmed)
+        newPosition = ""
+        save()
+    }
+
+    private func save() {
+        UserDefaults.standard.set(positions, forKey: "bodyPositions")
     }
 }
 
