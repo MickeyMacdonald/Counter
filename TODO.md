@@ -71,14 +71,7 @@ Last updated: 2026-05-09
 
 ### Pieces & Sessions *(`[v0.9.x]`)*
 
-- [ ] **Session event context tags (multi-select)** — A session can represent multiple contexts simultaneously (e.g. convention + guest spot). The tester described this as "event-type multi-select," but the existing `sessionType` field (linework, shading, colour, flash, etc.) is used directly in cost and chargeable-hours calculations — changing it to `[SessionType]` would require a V6 custom migration, a `RecoveryBackup` format change, and updates to ~10 files. The right split is:
-  - **Keep** `session.sessionType: SessionType` as-is (work type, drives billing).
-  - **Add** `session.eventTags: [String] = []` (V6 lightweight migration, default empty). These are venue/context tags: "Convention", "Guest Spot", "Walk-In Day", "Private Event", etc.
-  - **UI:** multi-select chip picker in `SessionEditView` and `SessionDraftView` — similar to piece tags but drawn from a predefined artist-editable list (stored in `UserDefaults` under `"sessionEventTags"`, managed in Settings → Sessions alongside the chargeable-type toggles).
-  - **Display:** show active tags as small capsules in `SessionDetailView` and the session rows in `PieceDetailView`.
-  - **Backup:** `SessionBackup.eventTags: [String]` with `decodeIfPresent` default `[]`.
-  - No change to `AddSessionView` (booking-side) — event tags are a work-record concept, not a calendar concept.
-  - Requires: V6 schema + migration stage, `RecoveryBackup` update, `RecoveryService` save/restore, Settings UI, `SessionEditView` + `SessionDraftView` UI.
+- [x] **Session event context tags (multi-select)** — `session.eventTags: [String]` added via V6 lightweight migration. Toggle chips appear in the Session Type section of `SessionEditView` and `SessionDraftView`. Active tags shown as purple capsules in `SessionDetailView` header and `PieceDetailView` session rows. Artist-editable list managed in Settings → Financial → "Session Event Tags" (UserDefaults `"sessionEventTags"`). Backup round-trips with `decodeIfPresent` backward compat.
 - [x] **Body position is an editable list** — `SettingsViewPieces` now has an editable, reorderable Body Positions list (stored in UserDefaults). `PieceDetailView` and `PieceEditView` both use a `Picker` backed by that list; custom values not in the list are appended so existing data is never lost.
 
 ### Discounts & Pricing *(`[v0.9.x]`)*
