@@ -24,11 +24,10 @@ struct CounterApp: App {
 
     init() {
         do {
-            // V3 replaces PieceImage with WorkImage. The full migration
-            // chain V1 → V2 → V3 is declared in CounterMigrationPlan.
-            // Fresh installs land directly at V3; existing stores migrate
-            // forward automatically on first launch.
-            let schema = Schema(versionedSchema: CounterSchemaV4.self)
+            // V6 is the current schema. CounterMigrationPlan walks any
+            // existing store forward through V1 → V2 → V3 → V4 → V5 → V6
+            // automatically on first launch after an update.
+            let schema = Schema(versionedSchema: CounterSchemaV6.self)
             let config = ModelConfiguration(
                 schema: schema,
                 isStoredInMemoryOnly: false

@@ -18,15 +18,16 @@ Last updated: 2026-05-09
 - [x] **`CounterMigrationPlan`** — a `SchemaMigrationPlan` with `V1` as the only stage, ready to accept `V2` later. *(`Counter/Services/CounterMigrationPlan.swift`)*
 - [x] **Recovery Mode launch path** — `CounterApp.swift` no longer calls `fatalError` when the `ModelContainer` can't open. Route the user to a minimal screen that can read the recovery folder, view backup metadata, and trigger a reset. *(`Counter/App/RecoveryModeView.swift`; `LaunchState` enum in `CounterApp.swift`)*
 - [ ] **Force-trigger test** — deliberately break the store on a test build, verify the launch routes to recovery mode and the user can restore from a backup without losing data.
-- [ ] **Add new files to Xcode target** — `Counter/Services/CounterSchemaV1.swift`, `Counter/Services/CounterSchemaV2.swift`, `Counter/Services/CounterMigrationPlan.swift`, `Counter/App/RecoveryModeView.swift` need to be added to the `Counter` app target in Xcode (Windows-side edits don't update `project.pbxproj`).
+- [x] **Add new files to Xcode target** — All schema files V1–V6, `CounterMigrationPlan.swift`, and `RecoveryModeView.swift` confirmed registered in `project.pbxproj`. *(Verified 2026-05-10)*
 - [x] **Register `CustomDiscount` model** — landed as the first `V1 → V2` migration. `Counter/Services/CounterSchemaV2.swift` adds it; `Counter/Services/CounterMigrationPlan.swift` declares the lightweight stage; `RecoveryBackup.swift` learned a new `CustomDiscountBackup` and an optional `customDiscounts` field for backwards compat with pre-V2 backup files.
+- [x] **`CounterApp.swift` references correct schema version** — was initializing with `CounterSchemaV4`; updated to `CounterSchemaV6`. *(Fixed 2026-05-10)*
 
 ### `[v0.9.0]` Pillar 1 — Migration Safety
 
-- [ ] **Convert `Drafting → initialDrafting` shim** to a formal `MigrationStage.custom` from `CounterSchemaV1` → `CounterSchemaV2`. The hand-rolled `Codable` adapter in `TattooSession.swift` gets retired.
-- [ ] **Convert `piece.imageGroups` shim** to a formal migration that consolidates into session-based storage and removes the dual relationship.
-- [ ] **Pre-migration auto-backup** — every `MigrationStage` runs only after a backup of the current state has been written.
-- [ ] **Forward migration of backups** — `RecoveryService.versionMismatch` becomes a real forward-migration path. V1 backups can be loaded by V2 code.
+- [ ] **Convert `Drafting → initialDrafting` shim** to a formal `MigrationStage.custom`. The hand-rolled `Codable` adapter in `Session.swift` works safely but leaves "Drafting" raw strings in existing stores. Low urgency — shim handles all reads; revisit before 1.0.
+- [x] **Convert `piece.imageGroups` shim** — `imageGroupBackupID` only exists in `RecoveryBackup.swift` as `decodeIfPresent`; no live model property remains. No formal migration needed. *(Closed 2026-05-10)*
+- [x] **Pre-migration auto-backup** — V2→V3 custom stage has `willMigrate` backup. Lightweight stages (V3→V4, V4→V5, V5→V6) are additive-only and don't require pre-backup. Done.
+- [x] **Forward migration of backups** — `ClientBackup` and `SessionBackup` use `decodeIfPresent` with defaults for all new fields. Pre-V5 and pre-V6 JSON backups load cleanly. Done.
 
 ### `[v0.9.0]` Pillar 2 — Backup Hardening
 
