@@ -14,6 +14,7 @@ final class Session {
     var isNoShow: Bool
     var noShowFee: Decimal?
     var notes: String
+    var eventTags: [String] = []
 
     // Relationships
     var piece: Piece?

@@ -97,9 +97,23 @@ struct SessionDetailView: View {
     }
 
     private var badges: some View {
-        HStack(spacing: 8) {
-            durationBadge
-            statusBadge
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                durationBadge
+                statusBadge
+            }
+            if !session.eventTags.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(session.eventTags, id: \.self) { tag in
+                        Text(tag)
+                            .font(.caption2.weight(.semibold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(Color.purple.opacity(0.10), in: Capsule())
+                            .foregroundStyle(Color.purple)
+                    }
+                }
+            }
         }
     }
 

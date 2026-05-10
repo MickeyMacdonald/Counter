@@ -29,6 +29,10 @@ private struct FinancialContent: View {
     @State private var newWidth: Double = 2.0
     @State private var newHeight: Double = 2.0
     @State private var newDimensionPrice: Decimal = 0
+    @State private var eventTags: [String] = UserDefaults.standard.stringArray(forKey: "sessionEventTags") ?? [
+        "Convention", "Guest Spot", "Walk-In Day", "Private Event", "Pop-Up Shop", "Flash Day"
+    ]
+    @State private var newEventTag = ""
 
     /// Persisted increment used by the size-based +/- steppers.
     @AppStorage("flash.sizeIncrement") private var incrementRaw: Double = 5.0
@@ -228,6 +232,41 @@ private struct FinancialContent: View {
                 Label("Flash — Dimension Based", systemImage: "ruler")
             }
         }
+            // MARK: Event Context Tags
+            Section {
+                ForEach(eventTags, id: \.self) { tag in
+                    Text(tag)
+                }
+                .onDelete { indexSet in
+                    eventTags.remove(atOffsets: indexSet)
+                    saveEventTags()
+                }
+                .onMove { from, to in
+                    eventTags.move(fromOffsets: from, toOffset: to)
+                    saveEventTags()
+                }
+
+                HStack {
+                    TextField("Add tag…", text: $newEventTag)
+                        .onSubmit { addEventTag() }
+                    if !newEventTag.trimmingCharacters(in: .whitespaces).isEmpty {
+                        Button(action: addEventTag) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Session Event Tags")
+                    Spacer()
+                    EditButton()
+                }
+            } footer: {
+                Text("These tags appear in the Session Type section when logging or editing a session. Use them to mark the venue or event context (e.g. Convention, Guest Spot).")
+            }
+        }
         .listStyle(.insetGrouped)
         .navigationTitle("Financial")
         .onAppear {
@@ -237,6 +276,21 @@ private struct FinancialContent: View {
     }
 
     // MARK: - Helpers
+
+    private func addEventTag() {
+        let trimmed = newEventTag.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !eventTags.contains(trimmed) else {
+            newEventTag = ""
+            return
+        }
+        eventTags.append(trimmed)
+        newEventTag = ""
+        saveEventTags()
+    }
+
+    private func saveEventTags() {
+        UserDefaults.standard.set(eventTags, forKey: "sessionEventTags")
+    }
 
     /// Fixes tiers created by the old session-rates view that have W×H labels
     /// but were never flagged as dimension-based.

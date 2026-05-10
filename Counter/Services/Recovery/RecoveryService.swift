@@ -403,7 +403,8 @@ actor RecoveryService {
                 hourlyRateAtTime: s.hourlyRateAtTime, flashRate: s.flashRate,
                 manualHoursOverride: s.manualHoursOverride,
                 isNoShow: s.isNoShow, noShowFee: s.noShowFee,
-                notes: s.notes
+                notes: s.notes,
+                eventTags: s.eventTags
             )
         }
 
@@ -862,6 +863,7 @@ actor RecoveryService {
             session.isNoShow = sb.isNoShow
             session.noShowFee = sb.noShowFee
             session.notes = sb.notes
+            session.eventTags = sb.eventTags
             session.piece = sb.pieceBackupID.flatMap { pieceMap[$0] }
             context.insert(session)
             sessionMap[sb.backupID] = session

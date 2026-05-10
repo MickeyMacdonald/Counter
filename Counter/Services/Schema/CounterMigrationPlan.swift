@@ -62,7 +62,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             CounterSchemaV2.self,
             CounterSchemaV3.self,
             CounterSchemaV4.self,
-            CounterSchemaV5.self
+            CounterSchemaV5.self,
+            CounterSchemaV6.self
         ]
     }
 
@@ -152,6 +153,13 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV4.self,
                 toVersion: CounterSchemaV5.self
+            ),
+
+            // V5 → V6: additive. Adds eventTags: [String] to Session.
+            // Lightweight is correct: new column with default [], no row transforms.
+            .lightweight(
+                fromVersion: CounterSchemaV5.self,
+                toVersion: CounterSchemaV6.self
             )
         ]
     }

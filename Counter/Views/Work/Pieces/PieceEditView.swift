@@ -532,6 +532,7 @@ struct PieceEditView: View {
                     noShowFee: (draft.isNoShow && draft.chargeNoShowFee) ? draft.noShowFee : nil,
                     notes: draft.notes
                 )
+                session.eventTags = draft.eventTags
                 session.piece = piece
                 modelContext.insert(session)
             }

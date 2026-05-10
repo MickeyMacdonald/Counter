@@ -11,6 +11,7 @@ struct DraftPhoto: Identifiable {
 struct DraftSession: Identifiable {
     var id = UUID()
     var sessionType: SessionType = .consultation
+    var eventTags: [String] = []
     var date: Date = Date()
     var startTime: Date = Date()
     var endTime: Date = Date().addingTimeInterval(3600)
@@ -68,6 +69,12 @@ struct SessionDraftView: View {
         }
     }
 
+    private var availableEventTags: [String] {
+        UserDefaults.standard.stringArray(forKey: "sessionEventTags") ?? [
+            "Convention", "Guest Spot", "Walk-In Day", "Private Event", "Pop-Up Shop", "Flash Day"
+        ]
+    }
+
     private var sessionTypeSection: some View {
         Section("Session Type") {
             Picker("Type", selection: $session.sessionType) {
@@ -76,6 +83,32 @@ struct SessionDraftView: View {
                 }
             }
             .pickerStyle(.menu)
+
+            if !availableEventTags.isEmpty {
+                FlowLayout(spacing: 8) {
+                    ForEach(availableEventTags, id: \.self) { tag in
+                        let selected = session.eventTags.contains(tag)
+                        Button {
+                            if selected { session.eventTags.removeAll { $0 == tag } }
+                            else        { session.eventTags.append(tag) }
+                        } label: {
+                            Text(tag)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    selected ? Color.accentColor.opacity(0.15) : Color.primary.opacity(0.06),
+                                    in: Capsule()
+                                )
+                                .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+                                .overlay(Capsule().stroke(selected ? Color.accentColor : Color.clear, lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            }
         }
     }
 

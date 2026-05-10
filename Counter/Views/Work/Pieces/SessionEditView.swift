@@ -53,6 +53,7 @@ struct SessionEditView: View {
     // MARK: - Booking State
 
     @State private var sessionType: SessionType = .consultation
+    @State private var eventTags: [String] = []
     @State private var date        = Date()
     @State private var startTime   = Date()
     @State private var endTime     = Date().addingTimeInterval(3600)
@@ -132,6 +133,12 @@ struct SessionEditView: View {
         }
     }
 
+    private var availableEventTags: [String] {
+        UserDefaults.standard.stringArray(forKey: "sessionEventTags") ?? [
+            "Convention", "Guest Spot", "Walk-In Day", "Private Event", "Pop-Up Shop", "Flash Day"
+        ]
+    }
+
     // MARK: - Session Type
 
     private var sessionTypeSection: some View {
@@ -145,6 +152,32 @@ struct SessionEditView: View {
             .onChange(of: sessionType) { _, type in
                 if type.isFlash && chargeMode != .flash  { chargeMode = .flash }
                 if !type.isFlash && chargeMode == .flash { chargeMode = .shopDefault }
+            }
+
+            if !availableEventTags.isEmpty {
+                FlowLayout(spacing: 8) {
+                    ForEach(availableEventTags, id: \.self) { tag in
+                        let selected = eventTags.contains(tag)
+                        Button {
+                            if selected { eventTags.removeAll { $0 == tag } }
+                            else        { eventTags.append(tag) }
+                        } label: {
+                            Text(tag)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    selected ? Color.accentColor.opacity(0.15) : Color.primary.opacity(0.06),
+                                    in: Capsule()
+                                )
+                                .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+                                .overlay(Capsule().stroke(selected ? Color.accentColor : Color.clear, lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
         }
     }
@@ -385,6 +418,7 @@ struct SessionEditView: View {
         guard let s = mode.existingSession else { return }
 
         sessionType      = s.sessionType
+        eventTags        = s.eventTags
         date             = s.date
         startTime        = s.startTime
         endTime          = s.endTime ?? s.startTime.addingTimeInterval(3600)
@@ -441,6 +475,7 @@ struct SessionEditView: View {
                 noShowFee:           (isNoShow && chargeNoShowFee) ? noShowFee : nil,
                 notes:               notes.trimmed
             )
+            session.eventTags = eventTags
             session.piece = piece
             modelContext.insert(session)
             if depositMode != .none {
@@ -458,6 +493,7 @@ struct SessionEditView: View {
             session.hourlyRateAtTime    = rateToSave
             session.flashRate           = flashToSave
             session.notes               = notes.trimmed
+            session.eventTags           = eventTags
         }
 
         piece.updatedAt = Date()

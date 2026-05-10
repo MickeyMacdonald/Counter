@@ -716,25 +716,39 @@ struct PieceDetailView: View {
     // MARK: - Session Row
 
     private func sessionRow(_ session: Session) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: session.sessionType.systemImage)
-                .font(.caption)
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 16)
-            Text(session.sessionType.rawValue)
-                .font(.subheadline.weight(.medium))
-            Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(session.durationFormatted)
-                    .font(.subheadline.weight(.semibold))
-                    .monospacedDigit()
-                Text(session.date.formatted(date: .abbreviated, time: .omitted))
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 10) {
+                Image(systemName: session.sessionType.systemImage)
                     .font(.caption)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 16)
+                Text(session.sessionType.rawValue)
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(session.durationFormatted)
+                        .font(.subheadline.weight(.semibold))
+                        .monospacedDigit()
+                    Text(session.date.formatted(date: .abbreviated, time: .omitted))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Text(session.cost.currencyFormatted)
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
             }
-            Text(session.cost.currencyFormatted)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
+            if !session.eventTags.isEmpty {
+                HStack(spacing: 6) {
+                    ForEach(session.eventTags, id: \.self) { tag in
+                        Text(tag)
+                            .font(.caption2.weight(.semibold))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(Color.purple.opacity(0.10), in: Capsule())
+                            .foregroundStyle(Color.purple)
+                    }
+                }
+            }
         }
         .padding(.vertical, 2)
     }

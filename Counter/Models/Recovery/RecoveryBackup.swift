@@ -226,6 +226,27 @@ struct SessionBackup: Codable {
     let isNoShow: Bool
     let noShowFee: Decimal?
     let notes: String
+    let eventTags: [String]
+}
+
+extension SessionBackup {
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        backupID            = try c.decode(UUID.self,     forKey: .backupID)
+        pieceBackupID       = try c.decodeIfPresent(UUID.self,     forKey: .pieceBackupID)
+        date                = try c.decode(Date.self,     forKey: .date)
+        startTime           = try c.decode(Date.self,     forKey: .startTime)
+        endTime             = try c.decodeIfPresent(Date.self,     forKey: .endTime)
+        breakMinutes        = try c.decode(Int.self,      forKey: .breakMinutes)
+        sessionType         = try c.decode(String.self,   forKey: .sessionType)
+        hourlyRateAtTime    = try c.decode(Decimal.self,  forKey: .hourlyRateAtTime)
+        flashRate           = try c.decode(Decimal.self,  forKey: .flashRate)
+        manualHoursOverride = try c.decodeIfPresent(Double.self,   forKey: .manualHoursOverride)
+        isNoShow            = try c.decode(Bool.self,     forKey: .isNoShow)
+        noShowFee           = try c.decodeIfPresent(Decimal.self,  forKey: .noShowFee)
+        notes               = try c.decode(String.self,   forKey: .notes)
+        eventTags           = try c.decodeIfPresent([String].self, forKey: .eventTags) ?? []
+    }
 }
 
 struct SessionProgressBackup: Codable {
