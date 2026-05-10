@@ -53,6 +53,9 @@ struct ContentView: View {
                 if lockManager.isEnabled && lockManager.isLocked {
                     Task { await lockManager.unlockWithBiometrics() }
                 }
+                // Resync notifications in case the OS purged pending requests
+                let ctx = modelContext
+                Task { await NotificationService.shared.syncAll(context: ctx) }
             @unknown default:
                 break
             }

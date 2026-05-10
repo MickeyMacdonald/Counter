@@ -51,6 +51,8 @@ struct CounterApp: App {
                     .environment(lockManager)
                     .onAppear {
                         SeedDataService.seedIfNeeded(context: container.mainContext)
+                        let ctx = container.mainContext
+                        Task { await NotificationService.shared.syncAll(context: ctx) }
                     }
                     .modelContainer(container)
             case .recoveryMode(let error):

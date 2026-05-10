@@ -101,7 +101,7 @@ Last updated: 2026-05-09
 
 - [ ] **Privacy policy + ToS hosted at real public URLs** — remove `noindex` from `docs/privacy.html` and `docs/terms.html`, add to public footer.
 - [ ] **TestFlight listing** in App Store Connect.
-- [ ] **Booking notifications (minimum viable)** — local notifications for upcoming bookings and prep checklists. May be descoped further if data work needs the room.
+- [x] **Booking notifications (minimum viable)** — `NotificationService` actor schedules two local notifications per upcoming Booking: evening-before (default 6 PM) and morning-of (default 8 AM). Settings → Notifications controls the master toggle, per-reminder toggles, and time pickers. Synced on launch and every time the app returns to foreground. *(2026-05-10)*
 - [ ] **Client search (minimum viable)** — search by name across the client list. Tag/status filtering deferred to 1.1.
 
 ---
