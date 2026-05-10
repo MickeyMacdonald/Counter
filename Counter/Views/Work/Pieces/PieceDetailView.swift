@@ -3,6 +3,7 @@ import SwiftData
 
 struct PieceDetailView: View {
     @Bindable var piece: Piece
+    var onDelete: (() -> Void)? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(AppNavigationCoordinator.self) private var coordinator
@@ -19,10 +20,18 @@ struct PieceDetailView: View {
     @State private var galleryInitialImage: WorkImage?
     @State private var showingImageGallery = false
     @State private var showingEmailPicker = false
+    @State private var showingEditPiece = false
     @State private var showDiscount = false
-    @State private var selectedDiscount: Discount?
+    @State private var selectedDiscountOption: DiscountOption?
+    @State private var showingArchiveConfirm = false
+    @State private var showingDeleteConfirm = false
     @State private var newTagInput = ""
     @Query(sort: \Discount.sortOrder) private var discounts: [Discount]
+
+    private struct DiscountOption: Hashable {
+        let name: String
+        let percentage: Decimal
+    }
 
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
     @AppStorage("dimensionUnit")  private var dimensionUnit: DimensionUnit  = .inches
@@ -31,9 +40,31 @@ struct PieceDetailView: View {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
     }
 
+    private var discountOptions: [DiscountOption] {
+        var options: [DiscountOption] = []
+        if let profile = profiles.first {
+            if profile.friendsFamilyDiscount > 0 {
+                options.append(DiscountOption(name: "Friends & Family", percentage: profile.friendsFamilyDiscount))
+            }
+            if profile.preferredClientDiscount > 0 {
+                options.append(DiscountOption(name: "Preferred Client", percentage: profile.preferredClientDiscount))
+            }
+            if profile.holidayDiscount > 0 {
+                options.append(DiscountOption(name: "Holiday", percentage: profile.holidayDiscount))
+            }
+            if profile.conventionDiscount > 0 {
+                options.append(DiscountOption(name: "Convention", percentage: profile.conventionDiscount))
+            }
+        }
+        for d in discounts {
+            options.append(DiscountOption(name: d.name, percentage: d.percentage))
+        }
+        return options
+    }
+
     private var effectiveCost: Decimal {
         let base = piece.totalCost
-        if showDiscount, let pct = selectedDiscount?.percentage {
+        if showDiscount, let pct = selectedDiscountOption?.percentage {
             return base * (1 - pct / 100)
         }
         return base
@@ -351,20 +382,20 @@ struct PieceDetailView: View {
             }
 
             // MARK: - Discount
-            if !discounts.isEmpty {
+            if !discountOptions.isEmpty {
                 Section {
                     Toggle(isOn: $showDiscount.animation()) {
                         Text("Apply Discount")
                     }
                     .onChange(of: showDiscount) { _, on in
-                        if on && selectedDiscount == nil { selectedDiscount = discounts.first }
-                        if !on { selectedDiscount = nil }
+                        if on && selectedDiscountOption == nil { selectedDiscountOption = discountOptions.first }
+                        if !on { selectedDiscountOption = nil }
                     }
                     if showDiscount {
-                        Picker("Discount", selection: $selectedDiscount) {
-                            ForEach(discounts) { discount in
-                                Text("\(discount.name) (\(discount.percentage.formatted())%)")
-                                    .tag(Optional(discount))
+                        Picker("Discount", selection: $selectedDiscountOption) {
+                            ForEach(discountOptions, id: \.self) { option in
+                                Text("\(option.name) (\(option.percentage.formatted())%)")
+                                    .tag(Optional(option))
                             }
                         }
                     }
@@ -428,6 +459,35 @@ struct PieceDetailView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showingEditPiece = true } label: {
+                    Image(systemName: "pencil.circle")
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button {
+                        showingArchiveConfirm = true
+                    } label: {
+                        Label(
+                            piece.status == .archived ? "Unarchive" : "Archive Piece",
+                            systemImage: piece.status == .archived ? "tray.and.arrow.up" : "archivebox"
+                        )
+                    }
+                    Button(role: .destructive) {
+                        showingDeleteConfirm = true
+                    } label: {
+                        Label("Delete Piece", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+        }
+        .sheet(isPresented: $showingEditPiece) {
+            PieceEditView(mode: .edit(piece))
+        }
         .sheet(isPresented: $showingAddSession) {
             SessionEditView(piece: piece)
         }
@@ -458,6 +518,34 @@ struct PieceDetailView: View {
             PhotoImportPicker(isPresented: $showingPhotoImporter) { images, category in
                 Task { await importPhotos(images, category: category) }
             }
+        }
+        .confirmationDialog(
+            piece.status == .archived ? "Unarchive \"\(piece.title)\"?" : "Archive \"\(piece.title)\"?",
+            isPresented: $showingArchiveConfirm,
+            titleVisibility: .visible
+        ) {
+            Button(piece.status == .archived ? "Unarchive" : "Archive", role: piece.status == .archived ? .none : .destructive) {
+                piece.status = piece.status == .archived ? .concept : .archived
+                piece.updatedAt = Date()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(piece.status == .archived
+                ? "This piece will be restored. You can update its status from the edit screen."
+                : "This piece will be moved to the Archive. You can restore it from the Pieces list.")
+        }
+        .confirmationDialog(
+            "Permanently delete \"\(piece.title)\"?",
+            isPresented: $showingDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Permanently", role: .destructive) {
+                modelContext.delete(piece)
+                onDelete?()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("All sessions, payments, and images for this piece will be deleted. This cannot be undone.")
         }
     }
 

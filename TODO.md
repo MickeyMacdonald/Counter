@@ -58,9 +58,9 @@ Last updated: 2026-05-09
 
 ### Destructive Action Safety *(`[v0.9.x]`)*
 
-- [ ] **Delete confirmation dialog** — Every delete button must present a confirmation sheet ("Are you sure? This cannot be undone.") before any destructive action fires.
-- [ ] **Archive instead of delete (clients & pieces)** — Replace hard-delete with a soft-archive flow. Archived records are hidden from normal lists but recoverable from Admin.
-- [ ] **Can't delete a piece** — Delete action is missing entirely from the piece detail view. Add it (with confirmation + archive-first approach).
+- [x] **Delete confirmation dialog** — `PieceListView` swipe-delete and `PieceDetailView` `...` menu delete both show a `confirmationDialog` before any destructive action.
+- [x] **Archive instead of delete (clients & pieces)** — `PieceListView` trailing swipe offers Archive (orange, sets `status = .archived`) before Delete. `PieceDetailView` `...` menu offers Archive/Unarchive. Archived pieces surface in the existing Archived filter tab.
+- [x] **Can't delete a piece** — Delete available via trailing swipe in `PieceListView` (with confirmation) and via `...` menu in `PieceDetailView` (with confirmation). `onDelete` callback clears `selectedPiece` in the parent.
 
 ### Client Management *(`[v0.9.x]`)*
 
@@ -76,6 +76,7 @@ Last updated: 2026-05-09
 
 ### Discounts & Pricing *(`[v0.9.x]`)*
 
+- [x] **Default discount not visible (Friends & Family)** — `PieceDetailView` discount picker now includes profile-level discounts (`friendsFamilyDiscount`, `preferredClientDiscount`, `holidayDiscount`, `conventionDiscount` from `UserProfile`) alongside custom `Discount` objects. Uses a local `DiscountOption` value type — no schema change needed.
 - [ ] **Discount button next to session total** — Add a discount button/control directly adjacent to the total line on a session so artists can apply or adjust discounts inline without navigating away.
 
 ### Navigation & Search *(`[v0.9.x]`)*

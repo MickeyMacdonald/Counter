@@ -11,6 +11,7 @@ struct PieceListView: View {
     @State private var filterStatus: PieceStatusFilter = .all
     @State private var selectedPiece: Piece?
     @State private var showAddPieceWizard = false
+    @State private var piecePendingDelete: Piece?
 
     private var filteredPieces: [Piece] {
         // Exclude flash portfolio pieces — those live in the Flash Portfolio tab
@@ -94,7 +95,7 @@ struct PieceListView: View {
         } detail: {
             if let selectedPiece {
                 NavigationStack {
-                    PieceDetailView(piece: selectedPiece)
+                    PieceDetailView(piece: selectedPiece, onDelete: { self.selectedPiece = nil })
                 }
                 .id(selectedPiece.persistentModelID)
             } else {
@@ -114,8 +115,37 @@ struct PieceListView: View {
             NavigationLink(value: piece) {
                 PieceListRowView(piece: piece)
             }
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button(role: .destructive) {
+                    piecePendingDelete = piece
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+                Button {
+                    archivePiece(piece)
+                } label: {
+                    Label("Archive", systemImage: "archivebox")
+                }
+                .tint(.orange)
+            }
         }
         .listStyle(.sidebar)
+        .confirmationDialog(
+            "Permanently delete \"\(piecePendingDelete?.title ?? "this piece")\"?",
+            isPresented: Binding(
+                get: { piecePendingDelete != nil },
+                set: { if !$0 { piecePendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete Permanently", role: .destructive) {
+                if let piece = piecePendingDelete { hardDeletePiece(piece) }
+                piecePendingDelete = nil
+            }
+            Button("Cancel", role: .cancel) { piecePendingDelete = nil }
+        } message: {
+            Text("All sessions, payments, and images for this piece will be deleted. This cannot be undone.")
+        }
     }
 
     // MARK: - Empty State
@@ -519,6 +549,20 @@ struct QuickAddPieceSheet: View {
         modelContext.insert(session)
         piece.updatedAt = Date()
         dismiss()
+    }
+}
+
+    // MARK: - Actions
+
+    private func archivePiece(_ piece: Piece) {
+        if selectedPiece == piece { selectedPiece = nil }
+        piece.status = .archived
+        piece.updatedAt = Date()
+    }
+
+    private func hardDeletePiece(_ piece: Piece) {
+        if selectedPiece == piece { selectedPiece = nil }
+        modelContext.delete(piece)
     }
 }
 
