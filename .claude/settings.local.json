@@ -57,7 +57,16 @@
       "Bash(sed -i '' 's/EmailTemplate\\\\.TemplateCategory/SavedEmailTemplate.TemplateCategory/g' Counter/Services/Recovery/RecoveryService.swift)",
       "Bash(git commit -m 'Resolve naming conflicts from model renames *)",
       "Bash(xcodebuild -scheme Counter -destination 'platform=iOS Simulator,name=iPhone 16' build)",
-      "Bash(DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -scheme Counter -destination 'platform=iOS Simulator,name=iPhone 16' build)"
+      "Bash(DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -scheme Counter -destination 'platform=iOS Simulator,name=iPhone 16' build)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter log --oneline -6)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter status)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter checkout claude/tender-jang-ee579d)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter diff HEAD Counter/Views/Work/Pieces/PieceListView.swift)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter add Counter/Views/Work/Pieces/PieceEditView.swift)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter commit -m ' *)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter add Counter/Views/Work/Pieces/PieceDetailView.swift TODO.md)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter add TODO.md)",
+      "Bash(git -C /Users/mickeymacdonald/Documents/Code/Counter add Counter/Models/Core/Session.swift Counter/Services/Schema/CounterSchemaV6.swift Counter/Services/Schema/CounterMigrationPlan.swift Counter/Models/Recovery/RecoveryBackup.swift Counter/Services/Recovery/RecoveryService.swift Counter/Views/Work/Pieces/SessionEditView.swift Counter/Views/Work/Pieces/SessionDraftView.swift Counter/Views/Work/Pieces/PieceEditView.swift Counter/Views/Scheduling/Sessions/SessionDetailView.swift Counter/Views/Work/Pieces/PieceDetailView.swift Counter/Views/Admin/Settings/SettingsViewFinancial.swift CountePreAlpha.xcodeproj/project.pbxproj)"
     ]
   }
 }

@@ -124,6 +124,12 @@
 		AA000211 /* CounterSchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000211 /* CounterSchemaV5.swift */; };
 		AA000212 /* AdminClientManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000212 /* AdminClientManagementView.swift */; };
 		AA000213 /* CounterSchemaV6.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000213 /* CounterSchemaV6.swift */; };
+		AA000214 /* ArchiveViewPieces.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000214 /* ArchiveViewPieces.swift */; };
+		AA000215 /* ArchiveViewBookings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000215 /* ArchiveViewBookings.swift */; };
+		AA000216 /* CounterSchemaV7.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000216 /* CounterSchemaV7.swift */; };
+		AA000217 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000217 /* NotificationService.swift */; };
+		AA000218 /* SettingsViewNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000218 /* SettingsViewNotifications.swift */; };
+		AA000219 /* CounterSchemaV8.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000219 /* CounterSchemaV8.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -244,6 +250,12 @@
 		AB000211 /* CounterSchemaV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV5.swift; sourceTree = "<group>"; };
 		AB000212 /* AdminClientManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminClientManagementView.swift; sourceTree = "<group>"; };
 		AB000213 /* CounterSchemaV6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV6.swift; sourceTree = "<group>"; };
+		AB000214 /* ArchiveViewPieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewPieces.swift; sourceTree = "<group>"; };
+		AB000215 /* ArchiveViewBookings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewBookings.swift; sourceTree = "<group>"; };
+		AB000216 /* CounterSchemaV7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV7.swift; sourceTree = "<group>"; };
+		AB000217 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		AB000218 /* SettingsViewNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewNotifications.swift; sourceTree = "<group>"; };
+		AB000219 /* CounterSchemaV8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV8.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -275,6 +287,7 @@
 				AB000080 /* SettingsViewDonation.swift */,
 				AB000090 /* SettingsViewRecovery.swift */,
 				AB000103 /* SettingsViewTaskTemplates.swift */,
+				AB000218 /* SettingsViewNotifications.swift */,
 				AB000062 /* BusinessLockView.swift */,
 			);
 			path = Settings;
@@ -413,6 +426,7 @@
 				AE000051 /* SQLite */,
 				AE000027 /* Preview */,
 				AB000099 /* PermissionService.swift */,
+				AB000217 /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -441,8 +455,18 @@
 				790D13422F87201D00C31CE2 /* Analytics */,
 				790D13412F87201100C31CE2 /* Settings */,
 				AE000015 /* Financial */,
+				AE000052 /* Archive */,
 			);
 			path = Admin;
+			sourceTree = "<group>";
+		};
+		AE000052 /* Archive */ = {
+			isa = PBXGroup;
+			children = (
+				AB000214 /* ArchiveViewPieces.swift */,
+				AB000215 /* ArchiveViewBookings.swift */,
+			);
+			path = Archive;
 			sourceTree = "<group>";
 		};
 		AE000014 /* Scheduling */ = {
@@ -545,6 +569,8 @@
 				AB000102 /* CounterSchemaV4.swift */,
 				AB000211 /* CounterSchemaV5.swift */,
 				AB000213 /* CounterSchemaV6.swift */,
+				AB000216 /* CounterSchemaV7.swift */,
+				AB000219 /* CounterSchemaV8.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -847,6 +873,12 @@
 				AA000211 /* CounterSchemaV5.swift in Sources */,
 				AA000212 /* AdminClientManagementView.swift in Sources */,
 				AA000213 /* CounterSchemaV6.swift in Sources */,
+				AA000214 /* ArchiveViewPieces.swift in Sources */,
+				AA000215 /* ArchiveViewBookings.swift in Sources */,
+				AA000216 /* CounterSchemaV7.swift in Sources */,
+				AA000217 /* NotificationService.swift in Sources */,
+				AA000218 /* SettingsViewNotifications.swift in Sources */,
+				AA000219 /* CounterSchemaV8.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -45,9 +45,9 @@ actor NotificationService {
 
     func schedule(for booking: Booking) async {
         guard UserDefaults.standard.bool(forKey: Self.enabledKey) else { return }
-        await cancel(for: booking)
+        cancel(for: booking)
 
-        let clientName = booking.client?.name ?? "Client"
+        let clientName = booking.client?.fullName ?? "Client"
         let pieceTitle = booking.piece?.title ?? "Session"
         let timeStr    = booking.startTime.formatted(date: .omitted, time: .shortened)
         let day        = Calendar.current.dateComponents([.year, .month, .day], from: booking.startTime)
@@ -63,7 +63,7 @@ actor NotificationService {
 
             if let fireDate = Calendar.current.date(from: eveTrigger), fireDate > .now {
                 await addNotification(
-                    id:      "\(booking.id.uuidString)_eve",
+                    id:      "\(booking.notificationID.uuidString)_eve",
                     title:   "Tomorrow — \(clientName)",
                     body:    "\(timeStr) · \(pieceTitle)",
                     trigger: eveTrigger
@@ -81,7 +81,7 @@ actor NotificationService {
 
             if let fireDate = Calendar.current.date(from: morningTrigger), fireDate > .now {
                 await addNotification(
-                    id:      "\(booking.id.uuidString)_morning",
+                    id:      "\(booking.notificationID.uuidString)_morning",
                     title:   "Today — \(clientName)",
                     body:    "\(timeStr) · \(pieceTitle)",
                     trigger: morningTrigger
@@ -92,8 +92,8 @@ actor NotificationService {
 
     func cancel(for booking: Booking) {
         center.removePendingNotificationRequests(withIdentifiers: [
-            "\(booking.id.uuidString)_eve",
-            "\(booking.id.uuidString)_morning"
+            "\(booking.notificationID.uuidString)_eve",
+            "\(booking.notificationID.uuidString)_morning"
         ])
     }
 

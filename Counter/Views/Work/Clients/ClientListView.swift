@@ -9,7 +9,6 @@ struct ClientListView: View {
     @State private var showingAddClient = false
     @State private var selectedClient: Client?
     @State private var sortOrder: ClientSortOrder = .name
-    @State private var clientPendingDelete: Client?
 
     private var filteredClients: [Client] {
         let visible = clients.filter {
@@ -74,26 +73,6 @@ struct ClientListView: View {
                     selectedClient = client
                 })
             }
-            .confirmationDialog(
-                "Permanently delete \(clientPendingDelete?.fullName ?? "this client")?",
-                isPresented: Binding(
-                    get: { clientPendingDelete != nil },
-                    set: { if !$0 { clientPendingDelete = nil } }
-                ),
-                titleVisibility: .visible
-            ) {
-                Button("Delete Permanently", role: .destructive) {
-                    if let client = clientPendingDelete {
-                        hardDeleteClient(client)
-                    }
-                    clientPendingDelete = nil
-                }
-                Button("Cancel", role: .cancel) {
-                    clientPendingDelete = nil
-                }
-            } message: {
-                Text("All pieces, payments, agreements, and history for this client will be deleted. This cannot be undone.")
-            }
         } detail: {
             if let selectedClient {
                 NavigationStack {
@@ -124,12 +103,7 @@ struct ClientListView: View {
                 }
                 .tint(.yellow)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                Button(role: .destructive) {
-                    clientPendingDelete = client
-                } label: {
-                    Label("Delete", systemImage: "trash")
-                }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button {
                     archiveClient(client)
                 } label: {
@@ -174,14 +148,6 @@ struct ClientListView: View {
         }
         client.isArchived = true
         client.updatedAt = Date()
-    }
-
-    private func hardDeleteClient(_ client: Client) {
-        if selectedClient == client {
-            selectedClient = nil
-        }
-        modelContext.delete(client)
-        try? modelContext.save()
     }
 }
 

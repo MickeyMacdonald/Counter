@@ -183,14 +183,15 @@ private struct WorksClientsList: View {
                         }
                         .tint(.yellow)
                     }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button {
                             if selectedClient == client { selectedClient = nil }
-                            modelContext.delete(client)
-                            try? modelContext.save()
+                            client.isArchived = true
+                            client.updatedAt = Date()
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label("Archive", systemImage: "archivebox")
                         }
+                        .tint(.orange)
                     }
                 }
                 .listStyle(.sidebar)
@@ -290,6 +291,16 @@ private struct WorksPiecesList: View {
                 List(filteredPieces, selection: $selectedPiece) { piece in
                     NavigationLink(value: piece) {
                         PieceListRowView(piece: piece)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button {
+                            if selectedPiece == piece { selectedPiece = nil }
+                            piece.status = .archived
+                            piece.updatedAt = Date()
+                        } label: {
+                            Label("Archive", systemImage: "archivebox")
+                        }
+                        .tint(.orange)
                     }
                 }
                 .listStyle(.sidebar)

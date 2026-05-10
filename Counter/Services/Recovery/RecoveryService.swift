@@ -1,5 +1,5 @@
 import Foundation
-import SwiftData
+@preconcurrency import SwiftData
 import CryptoKit
 
 // MARK: - Recovery Service (Alpha Safety Net)

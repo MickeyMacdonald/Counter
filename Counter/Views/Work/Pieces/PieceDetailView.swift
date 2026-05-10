@@ -3,7 +3,6 @@ import SwiftData
 
 struct PieceDetailView: View {
     @Bindable var piece: Piece
-    var onDelete: (() -> Void)? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(BusinessLockManager.self) private var lockManager
     @Environment(AppNavigationCoordinator.self) private var coordinator
@@ -23,7 +22,6 @@ struct PieceDetailView: View {
     @State private var showingEditPiece = false
     @State private var selectedDiscountOption: DiscountOption?
     @State private var showingArchiveConfirm = false
-    @State private var showingDeleteConfirm = false
     @State private var newTagInput = ""
     @Query(sort: \Discount.sortOrder) private var discounts: [Discount]
 
@@ -494,11 +492,6 @@ struct PieceDetailView: View {
                             systemImage: piece.status == .archived ? "tray.and.arrow.up" : "archivebox"
                         )
                     }
-                    Button(role: .destructive) {
-                        showingDeleteConfirm = true
-                    } label: {
-                        Label("Delete Piece", systemImage: "trash")
-                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -552,19 +545,6 @@ struct PieceDetailView: View {
             Text(piece.status == .archived
                 ? "This piece will be restored. You can update its status from the edit screen."
                 : "This piece will be moved to the Archive. You can restore it from the Pieces list.")
-        }
-        .confirmationDialog(
-            "Permanently delete \"\(piece.title)\"?",
-            isPresented: $showingDeleteConfirm,
-            titleVisibility: .visible
-        ) {
-            Button("Delete Permanently", role: .destructive) {
-                modelContext.delete(piece)
-                onDelete?()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("All sessions, payments, and images for this piece will be deleted. This cannot be undone.")
         }
     }
 

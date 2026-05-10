@@ -64,7 +64,8 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             CounterSchemaV4.self,
             CounterSchemaV5.self,
             CounterSchemaV6.self,
-            CounterSchemaV7.self
+            CounterSchemaV7.self,
+            CounterSchemaV8.self
         ]
     }
 
@@ -172,6 +173,15 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV6.self,
                 toVersion: CounterSchemaV7.self
+            ),
+
+            // V7 → V8: additive. Adds `notificationID: UUID` to Booking so that
+            // NotificationService can address UNNotificationRequests with a stable
+            // string ID independent of SwiftData's PersistentIdentifier type.
+            // Lightweight is correct: new column with a default UUID(), no row transforms.
+            .lightweight(
+                fromVersion: CounterSchemaV7.self,
+                toVersion: CounterSchemaV8.self
             )
         ]
     }

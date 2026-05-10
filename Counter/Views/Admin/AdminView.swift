@@ -5,82 +5,94 @@ import UniformTypeIdentifiers
 enum AdminFilter: String, CaseIterable {
     case settings  = "Settings"
     case analytics = "Analytics"
-    case financial = "Financials"
+    case archive   = "Archive"
 }
 
 enum SettingsCategory: String, CaseIterable, Identifiable {
     // Settings
-    case profile        = "Profile"
-    case emailTemplates = "Email Templates"
-    case schedule       = "Schedule"
-    case rates          = "Rates"
-    case about          = "About"
-    case recovery       = "Recovery"
-    case support        = "Support Counter"
-
-    case clientRecords  = "Client Records"
-    case clientMode     = "Client Mode"
-    case pieces         = "Pieces"
-    case taskTemplates    = "Task Templates"
-    case notifications    = "Notifications"
+    case profile        = "profile"
+    case emailTemplates = "emailTemplates"
+    case schedule       = "schedule"
+    case rates          = "rates"
+    case about          = "about"
+    case recovery       = "recovery"
+    case support        = "support"
+    case clientMode     = "clientMode"
+    case pieces         = "pieces"
+    case taskTemplates  = "taskTemplates"
+    case notifications  = "notifications"
 
     // Analytics
-    case statistics     = "Statistics"
-    case trends         = "Trends"
-    
-    // Financials
-    case financial      = "Financials"
-    case reports        = "Reports"
-    case paymentHistory = "Payment History"
-    
-    // Settings/Analysis Filter
+    case statistics     = "statistics"
+    case trends         = "trends"
+    case financial      = "financial"
+    case reports        = "reports"
+    case paymentHistory = "paymentHistory"
+
+    // Archive
+    case clientRecords    = "clientRecords"
+    case archivedPieces   = "archivedPieces"
+    case archivedBookings = "archivedBookings"
+
     var id: String { rawValue }
 
-    var adminFilter: AdminFilter {
+    var label: String {
         switch self {
-        case .profile,
-                .emailTemplates,
-                .about,
-                .recovery,
-                .support,
-                .clientRecords,
-                .clientMode,
-                .pieces,
-                .rates,
-                .schedule,
-                .taskTemplates,
-                .notifications:
-            return .settings
-        case .statistics,
-                .trends:
-            return .analytics
-        case .financial,
-                .reports,
-                .paymentHistory:
-            return .financial
+        case .profile:          "Profile"
+        case .emailTemplates:   "Email Templates"
+        case .schedule:         "Schedule"
+        case .rates:            "Rates"
+        case .about:            "About"
+        case .recovery:         "Recovery"
+        case .support:          "Support Counter"
+        case .clientMode:       "Client Mode"
+        case .pieces:           "Pieces"
+        case .taskTemplates:    "Task Templates"
+        case .notifications:    "Notifications"
+        case .statistics:       "Statistics"
+        case .trends:           "Trends"
+        case .financial:        "Financials"
+        case .reports:          "Reports"
+        case .paymentHistory:   "Payment History"
+        case .clientRecords:    "Client Records"
+        case .archivedPieces:   "Pieces"
+        case .archivedBookings: "Bookings"
         }
     }
 
-    // Icons
+    var adminFilter: AdminFilter {
+        switch self {
+        case .profile, .emailTemplates, .about, .recovery, .support,
+             .clientMode, .pieces, .rates, .schedule, .taskTemplates, .notifications:
+            return .settings
+        case .statistics, .trends, .financial, .reports, .paymentHistory:
+            return .analytics
+        case .clientRecords, .archivedPieces, .archivedBookings:
+            return .archive
+        }
+    }
+
     var systemImage: String {
         switch self {
-        case .profile:        "person.crop.circle"
-        case .emailTemplates: "envelope.open.fill"
-        case .about:          "info.circle"
-        case .support:        "heart.fill"
-        case .clientRecords:  "person.text.rectangle.fill"
-        case .statistics:     "chart.bar.fill"
-        case .trends:         "chart.line.uptrend.xyaxis"
-        case .financial:      "dollarsign.circle.fill"
-        case .reports:        "doc.text.magnifyingglass"
-        case .paymentHistory: "banknote"
-        case .clientMode:     "lock.shield"
-        case .pieces:         "paintbrush.pointed.fill"
-        case .recovery:       "arrow.clockwise.icloud"
-        case .schedule:       "book.badge.plus"
-        case .rates:          "plus.forwardslash.minus"
-        case .taskTemplates:  "checklist"
-        case .notifications:  "bell.fill"
+        case .profile:          "person.crop.circle"
+        case .emailTemplates:   "envelope.open.fill"
+        case .about:            "info.circle"
+        case .support:          "heart.fill"
+        case .clientRecords:    "person.text.rectangle.fill"
+        case .statistics:       "chart.bar.fill"
+        case .trends:           "chart.line.uptrend.xyaxis"
+        case .financial:        "dollarsign.circle.fill"
+        case .reports:          "doc.text.magnifyingglass"
+        case .paymentHistory:   "banknote"
+        case .clientMode:       "lock.shield"
+        case .pieces:           "paintbrush.pointed.fill"
+        case .recovery:         "arrow.clockwise.icloud"
+        case .schedule:         "book.badge.plus"
+        case .rates:            "plus.forwardslash.minus"
+        case .taskTemplates:    "checklist"
+        case .notifications:    "bell.fill"
+        case .archivedPieces:   "paintbrush.pointed"
+        case .archivedBookings: "calendar.badge.minus"
         }
     }
 }
@@ -97,22 +109,17 @@ struct SettingsView: View {
     private var profile: UserProfile? { profiles.first }
 
     // Sub-categories Order
-    private static let settingsItems:  [SettingsCategory] = [.profile,
-                                                             .clientRecords,
-                                                             .pieces,
-                                                             .clientMode,
-                                                             .emailTemplates,
-                                                             .schedule,
-                                                             .taskTemplates,
-                                                             .notifications,
-                                                             .rates,
-                                                             .about,
-                                                             .recovery,
-                                                             .support,]
-    private static let analyticsItems: [SettingsCategory] = [.statistics, .trends]
-    private static let financialItems: [SettingsCategory] = [.financial,
-                                                             .reports,
-                                                            .paymentHistory]
+    private static let settingsItems:  [SettingsCategory] = [
+        .profile, .pieces, .clientMode, .emailTemplates,
+        .schedule, .taskTemplates, .notifications, .rates,
+        .about, .recovery, .support,
+    ]
+    private static let analyticsItems: [SettingsCategory] = [
+        .statistics, .trends, .financial, .reports, .paymentHistory,
+    ]
+    private static let archiveItems:   [SettingsCategory] = [
+        .clientRecords, .archivedPieces, .archivedBookings,
+    ]
 
     
     private var visibleCategories: [SettingsCategory] {
@@ -124,12 +131,12 @@ struct SettingsView: View {
             base = Self.settingsItems
         case .analytics:
             base = Self.analyticsItems
-        case .financial:
-            base = Self.financialItems
+        case .archive:
+            base = Self.archiveItems
         }
         
         guard !searchText.isEmpty else { return base }
-        return base.filter { $0.rawValue.localizedCaseInsensitiveContains(searchText) }
+        return base.filter { $0.label.localizedCaseInsensitiveContains(searchText) }
     }
 
     var body: some View {
@@ -148,7 +155,7 @@ struct SettingsView: View {
                 Divider()
                 List(visibleCategories, selection: $selectedCategory) { category in
                     NavigationLink(value: category) {
-                        Label(category.rawValue, systemImage: category.systemImage)
+                        Label(category.label, systemImage: category.systemImage)
                             .foregroundStyle(category == .support ? Color.pink : Color.primary)
                     }
                 }
@@ -202,8 +209,6 @@ struct SettingsView: View {
             SettingsViewReports()
         case .paymentHistory:
             PaymentHistoryView()
-        case .clientRecords:
-            AdminClientManagementView()
         case .clientMode:
             SettingsClientModeView()
         case .pieces:
@@ -218,6 +223,12 @@ struct SettingsView: View {
             SettingsViewNotifications()
         case .rates:
             SettingsViewFinancial()
+        case .clientRecords:
+            AdminClientManagementView()
+        case .archivedPieces:
+            ArchiveViewPieces()
+        case .archivedBookings:
+            ArchiveViewBookings()
         }
     }
 }

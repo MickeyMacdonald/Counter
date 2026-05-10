@@ -21,6 +21,7 @@ final class Booking {
     /// User-defined to-do items appended to the checklist.
     var customChecklistItems: [BookingCustomTask] = []
 
+    var notificationID: UUID = UUID()
     var createdAt: Date
     var updatedAt: Date
 
