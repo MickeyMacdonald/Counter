@@ -11,6 +11,7 @@ struct PieceEditView: View {
     let mode: Mode
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query private var profiles: [UserProfile]
     
     // MARK: - Photos
     @State private var draftPhotos: [DraftPhoto] = []
@@ -19,12 +20,16 @@ struct PieceEditView: View {
     // MARK: - Piece fields
     @State private var rating: Int = 3
     @State private var title = ""
+    @State private var descriptionText = ""
     @State private var bodyPlacement = ""
     @State private var tagInput = ""
     @State private var tags: [String] = []
     @State private var pieceType: PieceType = .custom
+    @State private var status: PieceStatus = .concept
     @State private var hourlyRate: Decimal = 150
     @State private var depositAmount: Decimal = 0
+    @State private var hourlyRateInput = ""
+    @State private var depositInput = ""
     
     // MARK: - Size fields
     @AppStorage("pieceSizeMode")  private var sizeMode:      PieceSizeMode = .categorical
@@ -70,6 +75,7 @@ struct PieceEditView: View {
                 photosSection
                 ratingSection
                 infoSection
+                pricingSection
                 sessionsSection
             }
             .navigationTitle(isEditing ? "Edit Piece" : "New Piece")
@@ -193,6 +199,9 @@ struct PieceEditView: View {
         Section("Piece Info") {
             TextField("Title", text: $title)
 
+            TextField("Description", text: $descriptionText, axis: .vertical)
+                .lineLimit(3...6)
+
             Picker("Body Location", selection: $bodyPlacement) {
                 Text("Not Set").tag("")
                 ForEach(bodyPositionsForPicker, id: \.self) { pos in
@@ -200,6 +209,22 @@ struct PieceEditView: View {
                 }
             }
             .pickerStyle(.menu)
+
+            Picker("Type", selection: $pieceType) {
+                ForEach(PieceType.allCases, id: \.self) { t in
+                    Label(t.rawValue, systemImage: t.systemImage).tag(t)
+                }
+            }
+            .pickerStyle(.menu)
+
+            if isEditing {
+                Picker("Status", selection: $status) {
+                    ForEach(PieceStatus.allCases, id: \.self) { s in
+                        Label(s.rawValue, systemImage: s.systemImage).tag(s)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
 
             // Tag chips
             if !tags.isEmpty {
@@ -236,14 +261,37 @@ struct PieceEditView: View {
                 }
             }
             
-            Picker("Type", selection: $pieceType) {
-                ForEach(PieceType.allCases, id: \.self) { t in
-                    Label(t.rawValue, systemImage: t.systemImage).tag(t)
-                }
-            }
-            .pickerStyle(.menu)
-            
             sizeField
+        }
+    }
+
+    // MARK: - Pricing
+
+    private var pricingSection: some View {
+        Section("Pricing") {
+            HStack {
+                Text("Hourly Rate")
+                Spacer()
+                TextField("0.00", text: $hourlyRateInput)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 80)
+                    .onChange(of: hourlyRateInput) { _, v in
+                        if let d = Decimal(string: v.replacingOccurrences(of: ",", with: ".")) { hourlyRate = d }
+                    }
+                Text("/hr").foregroundStyle(.secondary).font(.subheadline)
+            }
+            HStack {
+                Text("Deposit")
+                Spacer()
+                TextField("0.00", text: $depositInput)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 80)
+                    .onChange(of: depositInput) { _, v in
+                        if let d = Decimal(string: v.replacingOccurrences(of: ",", with: ".")) { depositAmount = d }
+                    }
+            }
         }
     }
     
@@ -366,14 +414,24 @@ struct PieceEditView: View {
     }
 
     private func loadExistingData() {
+        if case .add = mode {
+            let rate = profiles.first?.defaultHourlyRate ?? 150
+            hourlyRate = rate
+            hourlyRateInput = (rate as NSDecimalNumber).stringValue
+            return
+        }
         guard case .edit(let piece) = mode else { return }
         title = piece.title
+        descriptionText = piece.descriptionText
         bodyPlacement = piece.bodyPlacement
         tags = piece.tags
         pieceType = piece.pieceType
+        status = piece.status
         rating = piece.rating ?? 3
         hourlyRate = piece.hourlyRate
         depositAmount = piece.depositAmount
+        hourlyRateInput = (piece.hourlyRate as NSDecimalNumber).stringValue
+        depositInput = piece.depositAmount > 0 ? (piece.depositAmount as NSDecimalNumber).stringValue : ""
         // Size
         sizeCategory = piece.size
         if let dims = piece.sizeDimensions {
@@ -413,13 +471,16 @@ struct PieceEditView: View {
         case .add(let client):
             let piece = Piece(
                 title: title.trimmed,
+                bodyPlacement: bodyPlacement,
+                descriptionText: descriptionText,
+                status: .concept,
                 pieceType: pieceType,
                 tags: tags,
                 rating: rating,
-                hourlyRate: hourlyRate
+                hourlyRate: hourlyRate,
+                depositAmount: depositAmount
             )
             piece.client = client
-            piece.bodyPlacement = bodyPlacement
             applySize(to: piece)
             modelContext.insert(piece)
 
@@ -479,9 +540,11 @@ struct PieceEditView: View {
 
         case .edit(let piece):
             piece.title = title.trimmed
+            piece.descriptionText = descriptionText
             piece.bodyPlacement = bodyPlacement
             piece.tags = tags
             piece.pieceType = pieceType
+            piece.status = status
             piece.rating = rating
             piece.hourlyRate = hourlyRate
             piece.depositAmount = depositAmount
