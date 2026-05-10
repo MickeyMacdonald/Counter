@@ -163,7 +163,9 @@ struct ClientBackup: Codable {
     let isArchived: Bool
     let isBlacklisted: Bool
     let blacklistNote: String
+}
 
+extension ClientBackup {
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         backupID              = try c.decode(UUID.self,    forKey: .backupID)

@@ -231,7 +231,7 @@ private struct FinancialContent: View {
             } header: {
                 Label("Flash — Dimension Based", systemImage: "ruler")
             }
-        }
+
             // MARK: Event Context Tags
             Section {
                 ForEach(eventTags, id: \.self) { tag in
