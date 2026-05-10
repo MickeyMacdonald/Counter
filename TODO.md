@@ -51,8 +51,8 @@ Last updated: 2026-05-09
 
 ### Bugs & Broken Flows ← fix before next tester session
 
-- [ ] **Default discount not visible** — "Family & Friend" custom discount is saved but doesn't appear in the UI when selecting discounts on a session/piece. *(`[v0.9.x]`)*
-- [ ] **Not all fields on a piece are editable** — Identify which piece fields are read-only and make them editable inline. *(`[v0.9.x]`)*
+- [x] **Default discount not visible** — Fixed in Discounts & Pricing section below.
+- [ ] **Not all fields on a piece are editable** — Edit button now exists in `PieceDetailView` toolbar (was missing entirely). Remaining work: audit `PieceEditView` for fields that are still read-only or absent. *(`[v0.9.x]`)*
 - [ ] **Sessions on a piece ≠ sessions in the schedule** — Piece-attached sessions and schedule sessions are out of sync or pulling from different data. Audit the relationship and unify. *(`[v0.9.x]`)*
 - [ ] **No way to edit or see sessions attached to a piece** — Tapping a piece opens the booking but the associated sessions are not surfaced or selectable. Show linked sessions on the piece detail view and pre-select the relevant one. *(`[v0.9.x]`)*
 
