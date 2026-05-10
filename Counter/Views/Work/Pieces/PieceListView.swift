@@ -195,6 +195,19 @@ struct PieceListView: View {
             Image(systemName: "line.3.horizontal.decrease.circle")
         }
     }
+
+    // MARK: - Actions
+
+    private func archivePiece(_ piece: Piece) {
+        if selectedPiece == piece { selectedPiece = nil }
+        piece.status = .archived
+        piece.updatedAt = Date()
+    }
+
+    private func hardDeletePiece(_ piece: Piece) {
+        if selectedPiece == piece { selectedPiece = nil }
+        modelContext.delete(piece)
+    }
 }
 
 // MARK: - Piece List Row
@@ -549,20 +562,6 @@ struct QuickAddPieceSheet: View {
         modelContext.insert(session)
         piece.updatedAt = Date()
         dismiss()
-    }
-}
-
-    // MARK: - Actions
-
-    private func archivePiece(_ piece: Piece) {
-        if selectedPiece == piece { selectedPiece = nil }
-        piece.status = .archived
-        piece.updatedAt = Date()
-    }
-
-    private func hardDeletePiece(_ piece: Piece) {
-        if selectedPiece == piece { selectedPiece = nil }
-        modelContext.delete(piece)
     }
 }
 
