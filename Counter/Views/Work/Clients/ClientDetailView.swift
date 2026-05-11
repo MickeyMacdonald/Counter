@@ -17,6 +17,7 @@ struct ClientDetailView: View {
     @State private var showingBlacklistAlert = false
     @State private var showingArchiveConfirm = false
     @State private var pendingBlacklistNote = ""
+    @State private var newLogEntry = ""
 
     private var chargeableTypes: [String] {
         profiles.first?.effectiveChargeableSessionTypes ?? SessionType.defaultChargeableRawValues
@@ -64,6 +65,55 @@ struct ClientDetailView: View {
                             .padding(.vertical, 4)
                             .background(.orange, in: Capsule())
                     }
+
+                    // Inline contact fields
+                    VStack(spacing: 6) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "envelope")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 14)
+                            TextField("Email", text: $client.email)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .keyboardType(.emailAddress)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.primary.opacity(0.06), in: Capsule())
+
+                        HStack(spacing: 8) {
+                            Image(systemName: "phone")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 14)
+                            TextField("Phone", text: $client.phone)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .keyboardType(.phonePad)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.primary.opacity(0.06), in: Capsule())
+
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "note.text")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 14)
+                                .padding(.top, 2)
+                            TextField("Notes", text: $client.notes, axis: .vertical)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1...4)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    .containerRelativeFrame(.horizontal) { w, _ in w * 0.6 }
 
                     // Action buttons
                     HStack(spacing: 20) {
@@ -125,25 +175,9 @@ struct ClientDetailView: View {
                 .padding(.vertical, 4)
             }
 
-            // Contact info
-            Section("Contact") {
-                if !client.email.isEmpty {
-                    LabeledContent {
-                        Text(client.email)
-                            .foregroundStyle(.secondary)
-                    } label: {
-                        Label("Email", systemImage: "envelope")
-                    }
-                }
-                if !client.phone.isEmpty {
-                    LabeledContent {
-                        Text(client.phone)
-                            .foregroundStyle(.secondary)
-                    } label: {
-                        Label("Phone", systemImage: "phone")
-                    }
-                }
-                if !client.streetAddress.isEmpty {
+            // Contact info — address only (email/phone are editable in the header)
+            if !client.streetAddress.isEmpty {
+                Section("Contact") {
                     LabeledContent {
                         VStack(alignment: .trailing) {
                             Text(client.streetAddress)
@@ -277,13 +311,45 @@ struct ClientDetailView: View {
                 }
             }
 
-            // Notes
-            if !client.notes.isEmpty {
-                Section("Notes") {
-                    Text(client.notes)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+            // Interaction Log
+            Section {
+                let logEntries = client.communicationLogs
+                    .filter { $0.commType == .note }
+                    .sorted { $0.sentAt > $1.sentAt }
+
+                ForEach(logEntries) { entry in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(entry.bodyText)
+                            .font(.subheadline)
+                        Text(entry.sentAt.formatted(date: .abbreviated, time: .shortened))
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(.vertical, 2)
                 }
+
+                HStack(alignment: .bottom, spacing: 8) {
+                    TextField("Log an interaction…", text: $newLogEntry, axis: .vertical)
+                        .font(.subheadline)
+                        .lineLimit(1...5)
+                    Button {
+                        let text = newLogEntry.trimmingCharacters(in: .whitespaces)
+                        guard !text.isEmpty else { return }
+                        let entry = CommunicationLog(commType: .note, bodyText: text)
+                        entry.client = client
+                        modelContext.insert(entry)
+                        newLogEntry = ""
+                    } label: {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(newLogEntry.trimmingCharacters(in: .whitespaces).isEmpty
+                                             ? AnyShapeStyle(.secondary)
+                                             : AnyShapeStyle(.tint))
+                    }
+                    .disabled(newLogEntry.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            } header: {
+                Text("Interaction Log")
             }
 
             // Meta

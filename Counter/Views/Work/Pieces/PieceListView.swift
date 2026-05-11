@@ -65,6 +65,9 @@ struct PieceListView: View {
         return result
     }
 
+    private var pinnedPieces: [Piece]   { filteredPieces.filter {  $0.isPinned } }
+    private var unpinnedPieces: [Piece] { filteredPieces.filter { !$0.isPinned } }
+
     var body: some View {
         NavigationSplitView {
             Group {
@@ -110,20 +113,56 @@ struct PieceListView: View {
     // MARK: - Piece List
 
     private var pieceList: some View {
-        List(filteredPieces, selection: $selectedPiece) { piece in
-            NavigationLink(value: piece) {
-                PieceListRowView(piece: piece)
-            }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button {
-                    archivePiece(piece)
-                } label: {
-                    Label("Archive", systemImage: "archivebox")
+        List(selection: $selectedPiece) {
+            Section {
+                if pinnedPieces.isEmpty {
+                    Text("Swipe right on a piece to pin it here.")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .listRowBackground(Color.clear)
+                } else {
+                    ForEach(pinnedPieces) { piece in
+                        pieceRow(piece)
+                    }
                 }
-                .tint(.orange)
+            } header: {
+                Label("Pinned", systemImage: "pin.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("All Pieces") {
+                ForEach(unpinnedPieces) { piece in
+                    pieceRow(piece)
+                }
             }
         }
         .listStyle(.sidebar)
+    }
+
+    @ViewBuilder
+    private func pieceRow(_ piece: Piece) -> some View {
+        NavigationLink(value: piece) {
+            PieceListRowView(piece: piece)
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button {
+                piece.isPinned.toggle()
+                piece.updatedAt = Date()
+            } label: {
+                Label(piece.isPinned ? "Unpin" : "Pin",
+                      systemImage: piece.isPinned ? "pin.slash.fill" : "pin.fill")
+            }
+            .tint(.accentColor)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                archivePiece(piece)
+            } label: {
+                Label("Archive", systemImage: "archivebox")
+            }
+            .tint(.orange)
+        }
     }
 
     // MARK: - Empty State

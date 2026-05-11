@@ -26,6 +26,8 @@ final class Piece {
     var flatRate: Decimal?
     var depositAmount: Decimal
 
+    var isPinned: Bool = false
+
     var createdAt: Date
     var updatedAt: Date
     var completedAt: Date?

@@ -15,6 +15,8 @@ final class Session {
     var noShowFee: Decimal?
     var notes: String
     var eventTags: [String] = []
+    var isCancelled: Bool = false
+    var isPinned: Bool = false
 
     // Relationships
     var piece: Piece?

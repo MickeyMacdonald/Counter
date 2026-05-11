@@ -27,22 +27,16 @@ struct ClientListView: View {
         }
         switch sortOrder {
         case .name:
-            return filtered.sorted {
-                if $0.isStarred != $1.isStarred { return $0.isStarred }
-                return $0.lastName.lowercased() < $1.lastName.lowercased()
-            }
+            return filtered.sorted { $0.lastName.lowercased() < $1.lastName.lowercased() }
         case .recent:
-            return filtered.sorted {
-                if $0.isStarred != $1.isStarred { return $0.isStarred }
-                return $0.updatedAt > $1.updatedAt
-            }
+            return filtered.sorted { $0.updatedAt > $1.updatedAt }
         case .pieces:
-            return filtered.sorted {
-                if $0.isStarred != $1.isStarred { return $0.isStarred }
-                return $0.pieces.count > $1.pieces.count
-            }
+            return filtered.sorted { $0.pieces.count > $1.pieces.count }
         }
     }
+
+    private var pinnedClients: [Client]   { filteredClients.filter {  $0.isStarred } }
+    private var unpinnedClients: [Client] { filteredClients.filter { !$0.isStarred } }
 
     var body: some View {
         NavigationSplitView {
@@ -90,29 +84,56 @@ struct ClientListView: View {
     }
 
     private var clientList: some View {
-        List(filteredClients, selection: $selectedClient) { client in
-            NavigationLink(value: client) {
-                ClientRowView(client: client)
-            }
-            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                Button {
-                    client.isStarred.toggle()
-                    client.updatedAt = Date()
-                } label: {
-                    Label(client.isStarred ? "Unstar" : "Star", systemImage: client.isStarred ? "star.slash.fill" : "star.fill")
+        List(selection: $selectedClient) {
+            Section {
+                if pinnedClients.isEmpty {
+                    Text("Swipe right on a client to pin them here.")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .listRowBackground(Color.clear)
+                } else {
+                    ForEach(pinnedClients) { client in
+                        clientRow(client)
+                    }
                 }
-                .tint(.yellow)
+            } header: {
+                Label("Pinned", systemImage: "pin.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button {
-                    archiveClient(client)
-                } label: {
-                    Label("Archive", systemImage: "archivebox")
+
+            Section("All Clients") {
+                ForEach(unpinnedClients) { client in
+                    clientRow(client)
                 }
-                .tint(.orange)
             }
         }
         .listStyle(.sidebar)
+    }
+
+    @ViewBuilder
+    private func clientRow(_ client: Client) -> some View {
+        NavigationLink(value: client) {
+            ClientRowView(client: client)
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button {
+                client.isStarred.toggle()
+                client.updatedAt = Date()
+            } label: {
+                Label(client.isStarred ? "Unpin" : "Pin",
+                      systemImage: client.isStarred ? "pin.slash.fill" : "pin.fill")
+            }
+            .tint(.accentColor)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button {
+                archiveClient(client)
+            } label: {
+                Label("Archive", systemImage: "archivebox")
+            }
+            .tint(.orange)
+        }
     }
 
     private var emptyState: some View {

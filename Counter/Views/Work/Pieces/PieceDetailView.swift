@@ -126,72 +126,91 @@ struct PieceDetailView: View {
                     // Status + Type badges
                     HStack(spacing: 8) {
                         let statusClr = piece.status.color(from: profiles.first)
-                        Label(piece.status.rawValue, systemImage: piece.status.systemImage)
-                            .font(.caption.weight(.semibold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(statusClr.opacity(0.12), in: Capsule())
-                            .foregroundStyle(statusClr)
+                        Menu {
+                            ForEach(PieceStatus.allCases, id: \.self) { s in
+                                Button {
+                                    piece.status = s
+                                } label: {
+                                    Label(s.rawValue, systemImage: s.systemImage)
+                                }
+                            }
+                        } label: {
+                            Label(piece.status.rawValue, systemImage: piece.status.systemImage)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(statusClr.opacity(0.12), in: Capsule())
+                                .foregroundStyle(statusClr)
+                        }
+                        .buttonStyle(.plain)
 
-                        Label(piece.pieceType.rawValue, systemImage: piece.pieceType.systemImage)
-                            .font(.caption.weight(.semibold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(Color.accentColor.opacity(0.12), in: Capsule())
-                            .foregroundStyle(Color.accentColor)
+                        Menu {
+                            ForEach(PieceType.allCases, id: \.self) { t in
+                                Button {
+                                    piece.pieceType = t
+                                } label: {
+                                    Label(t.rawValue, systemImage: t.systemImage)
+                                }
+                            }
+                        } label: {
+                            Label(piece.pieceType.rawValue, systemImage: piece.pieceType.systemImage)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.accentColor.opacity(0.12), in: Capsule())
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        .buttonStyle(.plain)
                     }
 
                     // Rating
                     ratingView
 
                     if !piece.bodyPlacement.isEmpty {
-                        Label(piece.bodyPlacement, systemImage: "figure.arms.open")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        Menu {
+                            ForEach(bodyPositionsForPicker, id: \.self) { position in
+                                Button {
+                                    piece.bodyPlacement = position
+                                } label: {
+                                    Text(position)
+                                }
+                            }
+                        } label: {
+                            Label(piece.bodyPlacement, systemImage: "figure.arms.open")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
                     }
 
                     if let sizeLabel = pieceSizeLabel {
-                        Label(sizeLabel, systemImage: "arrow.up.left.and.arrow.down.right")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    if !piece.descriptionText.isEmpty {
-                        Text(piece.descriptionText)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-
-                    // MARK: Client Button
-                    if let client = piece.client {
-                        Button {
-                            coordinator.navigateToClient(client)
-                        } label: {
-                            HStack(spacing: 12) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.accentColor.opacity(0.12))
-                                        .frame(width: 35, height: 35)
-                                    Text(client.initialsDisplay)
-                                        .font(.system(.caption, design: .monospaced, weight: .bold))
-                                        .foregroundStyle(Color.accentColor)
+                        if sizeMode == .categorical {
+                            Menu {
+                                ForEach(TattooSize.allCases, id: \.self) { s in
+                                    Button {
+                                        piece.size = s
+                                    } label: {
+                                        Label(s.rawValue, systemImage: s.systemImage)
+                                    }
                                 }
-                                Text(client.fullName)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.semibold))
+                            } label: {
+                                Label(sizeLabel, systemImage: "arrow.up.left.and.arrow.down.right")
+                                    .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                            .buttonStyle(.plain)
+                        } else {
+                            Label(sizeLabel, systemImage: "arrow.up.left.and.arrow.down.right")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         }
-                        .buttonStyle(.plain)
-                        .containerRelativeFrame(.horizontal) { width, _ in width / 3 }
                     }
+
+                    TextField("Description", text: $piece.descriptionText, axis: .vertical)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(1...6)
 
                     // MARK: Quick Actions
                     HStack(spacing: 20) {
@@ -223,6 +242,36 @@ struct PieceDetailView: View {
                         }
                     }
                     .padding(.top, 4)
+
+                    // MARK: Client Button
+                    if let client = piece.client {
+                        Button {
+                            coordinator.navigateToClient(client)
+                        } label: {
+                            HStack(spacing: 12) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.accentColor.opacity(0.12))
+                                        .frame(width: 35, height: 35)
+                                    Text(client.initialsDisplay)
+                                        .font(.system(.caption, design: .monospaced, weight: .bold))
+                                        .foregroundStyle(Color.accentColor)
+                                }
+                                Text(client.fullName)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .containerRelativeFrame(.horizontal) { width, _ in width / 3 }
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
@@ -284,18 +333,41 @@ struct PieceDetailView: View {
                         Text("Log sessions to track time and costs.")
                     }
                 } else {
-                    ForEach(piece.sessions.sorted(by: { $0.date > $1.date })) { session in
+                    let sorted = piece.sessions.sorted {
+                        if $0.isPinned != $1.isPinned { return $0.isPinned }
+                        return $0.date > $1.date
+                    }
+                    ForEach(sorted) { session in
                         Button {
                             editingSession = session
                         } label: {
                             HStack {
                                 sessionRow(session)
+                                    .opacity(session.isCancelled ? 0.45 : 1)
                                 Image(systemName: "chevron.right")
                                     .font(.caption2.weight(.semibold))
                                     .foregroundStyle(.tertiary)
                             }
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                            Button {
+                                session.isPinned.toggle()
+                            } label: {
+                                Label(session.isPinned ? "Unpin" : "Pin",
+                                      systemImage: session.isPinned ? "pin.slash.fill" : "pin.fill")
+                            }
+                            .tint(.accentColor)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button {
+                                session.isCancelled.toggle()
+                            } label: {
+                                Label(session.isCancelled ? "Restore" : "Cancel",
+                                      systemImage: session.isCancelled ? "arrow.uturn.left" : "xmark.circle")
+                            }
+                            .tint(session.isCancelled ? .green : .red)
+                        }
                     }
                 }
             } header: {

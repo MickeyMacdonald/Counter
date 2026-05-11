@@ -17,8 +17,7 @@ struct ClientEditView: View {
     @State private var email = ""
     @State private var phone = ""
     @State private var pronouns = ""
-    @State private var birthdate: Date?
-    @State private var hasBirthdate = false
+    @State private var birthdate: Date = Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
     @State private var allergyNotes = ""
     @State private var notes = ""
     @State private var emailOptIn = true
@@ -64,17 +63,16 @@ struct ClientEditView: View {
                 }
 
                 Section("Details") {
-                    Toggle("Birthday", isOn: $hasBirthdate)
-                    if hasBirthdate {
-                        DatePicker(
-                            "Date",
-                            selection: Binding(
-                                get: { birthdate ?? Date() },
-                                set: { birthdate = $0 }
-                            ),
-                            displayedComponents: .date
-                        )
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Birthday")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        DatePicker("Birthday", selection: $birthdate, displayedComponents: .date)
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: .infinity)
                     }
+                    .padding(.vertical, 4)
                     TextField("Allergy / Sensitivity Notes", text: $allergyNotes, axis: .vertical)
                         .lineLimit(2...4)
                 }
@@ -119,8 +117,7 @@ struct ClientEditView: View {
         email = client.email
         phone = client.phone
         pronouns = client.pronouns
-        birthdate = client.birthdate
-        hasBirthdate = client.birthdate != nil
+        birthdate = client.birthdate ?? Calendar.current.date(byAdding: .year, value: -18, to: .now) ?? .now
         allergyNotes = client.allergyNotes
         emailOptIn = client.emailOptIn
         notes = client.notes
@@ -140,7 +137,7 @@ struct ClientEditView: View {
                 phone: phone.trimmed,
                 notes: notes.trimmed,
                 pronouns: pronouns.trimmed,
-                birthdate: hasBirthdate ? birthdate : nil,
+                birthdate: birthdate,
                 allergyNotes: allergyNotes.trimmed,
                 streetAddress: streetAddress.trimmed,
                 city: city.trimmed,
@@ -157,7 +154,7 @@ struct ClientEditView: View {
             client.email = email.trimmed
             client.phone = phone.trimmed
             client.pronouns = pronouns.trimmed
-            client.birthdate = hasBirthdate ? birthdate : nil
+            client.birthdate = birthdate
             client.allergyNotes = allergyNotes.trimmed
             client.notes = notes.trimmed
             client.emailOptIn = emailOptIn

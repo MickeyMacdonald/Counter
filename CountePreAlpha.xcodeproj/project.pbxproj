@@ -118,9 +118,9 @@
 		AA000104 /* GalleryByPieceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000104 /* GalleryByPieceView.swift */; };
 		AA000200 /* CntrdbSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000200 /* CntrdbSchema.swift */; };
 		AA000201 /* CntrdbPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000201 /* CntrdbPackage.swift */; };
-		AA000210 /* SQLiteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000210 /* SQLiteService.swift */; };
 		AA000203 /* CntrdbExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000203 /* CntrdbExporter.swift */; };
 		AA000204 /* CntrdbImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000204 /* CntrdbImporter.swift */; };
+		AA000210 /* SQLiteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000210 /* SQLiteService.swift */; };
 		AA000211 /* CounterSchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000211 /* CounterSchemaV5.swift */; };
 		AA000212 /* AdminClientManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000212 /* AdminClientManagementView.swift */; };
 		AA000213 /* CounterSchemaV6.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000213 /* CounterSchemaV6.swift */; };
@@ -244,9 +244,9 @@
 		AB000104 /* GalleryByPieceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryByPieceView.swift; sourceTree = "<group>"; };
 		AB000200 /* CntrdbSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbSchema.swift; sourceTree = "<group>"; };
 		AB000201 /* CntrdbPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbPackage.swift; sourceTree = "<group>"; };
-		AB000210 /* SQLiteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteService.swift; sourceTree = "<group>"; };
 		AB000203 /* CntrdbExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbExporter.swift; sourceTree = "<group>"; };
 		AB000204 /* CntrdbImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbImporter.swift; sourceTree = "<group>"; };
+		AB000210 /* SQLiteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteService.swift; sourceTree = "<group>"; };
 		AB000211 /* CounterSchemaV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV5.swift; sourceTree = "<group>"; };
 		AB000212 /* AdminClientManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminClientManagementView.swift; sourceTree = "<group>"; };
 		AB000213 /* CounterSchemaV6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV6.swift; sourceTree = "<group>"; };
@@ -256,7 +256,7 @@
 		AB000217 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AB000218 /* SettingsViewNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewNotifications.swift; sourceTree = "<group>"; };
 		AB000219 /* CounterSchemaV8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV8.swift; sourceTree = "<group>"; };
-		AC000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC000001 /* Counter..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter..app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -434,7 +434,7 @@
 		AE000010 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AC000001 /* Counter.app */,
+				AC000001 /* Counter..app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -458,15 +458,6 @@
 				AE000052 /* Archive */,
 			);
 			path = Admin;
-			sourceTree = "<group>";
-		};
-		AE000052 /* Archive */ = {
-			isa = PBXGroup;
-			children = (
-				AB000214 /* ArchiveViewPieces.swift */,
-				AB000215 /* ArchiveViewBookings.swift */,
-			);
-			path = Archive;
 			sourceTree = "<group>";
 		};
 		AE000014 /* Scheduling */ = {
@@ -591,25 +582,6 @@
 			path = Recovery;
 			sourceTree = "<group>";
 		};
-		AE000050 /* Cntrdb */ = {
-			isa = PBXGroup;
-			children = (
-				AB000200 /* CntrdbSchema.swift */,
-				AB000201 /* CntrdbPackage.swift */,
-				AB000203 /* CntrdbExporter.swift */,
-				AB000204 /* CntrdbImporter.swift */,
-			);
-			path = Cntrdb;
-			sourceTree = "<group>";
-		};
-		AE000051 /* SQLite */ = {
-			isa = PBXGroup;
-			children = (
-				AB000210 /* SQLiteService.swift */,
-			);
-			path = SQLite;
-			sourceTree = "<group>";
-		};
 		AE000027 /* Preview */ = {
 			isa = PBXGroup;
 			children = (
@@ -688,6 +660,34 @@
 			path = Recovery;
 			sourceTree = "<group>";
 		};
+		AE000050 /* Cntrdb */ = {
+			isa = PBXGroup;
+			children = (
+				AB000200 /* CntrdbSchema.swift */,
+				AB000201 /* CntrdbPackage.swift */,
+				AB000203 /* CntrdbExporter.swift */,
+				AB000204 /* CntrdbImporter.swift */,
+			);
+			path = Cntrdb;
+			sourceTree = "<group>";
+		};
+		AE000051 /* SQLite */ = {
+			isa = PBXGroup;
+			children = (
+				AB000210 /* SQLiteService.swift */,
+			);
+			path = SQLite;
+			sourceTree = "<group>";
+		};
+		AE000052 /* Archive */ = {
+			isa = PBXGroup;
+			children = (
+				AB000214 /* ArchiveViewPieces.swift */,
+				AB000215 /* ArchiveViewBookings.swift */,
+			);
+			path = Archive;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -705,7 +705,7 @@
 			);
 			name = Counter;
 			productName = Counter;
-			productReference = AC000001 /* Counter.app */;
+			productReference = AC000001 /* Counter..app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1017,7 +1017,7 @@
 				);
 				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Counter.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1053,7 +1053,7 @@
 				);
 				MARKETING_VERSION = 0.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Counter.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
