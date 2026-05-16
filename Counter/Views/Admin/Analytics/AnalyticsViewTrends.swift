@@ -5,31 +5,15 @@
 //  Created by Mickey Macdonald on 2026-04-08.
 //
 
-// MARK: - Imports
-import SwiftData
 import SwiftUI
 
-// MARK: - About
-
 struct AnalyticsViewTrends: View {
-
-    private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
-    }
-
-    private var buildNumber: String {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
-    }
-
     var body: some View {
-        List {
-            Section {
-                LabeledContent("Version", value: appVersion)
-                LabeledContent("Build", value: buildNumber)
-                LabeledContent("Channel", value: "Beta")
-            }
-        }
-        .listStyle(.insetGrouped)
-        .navigationTitle("About")
+        ContentUnavailableView(
+            "Trends Coming Soon",
+            systemImage: "chart.line.uptrend.xyaxis",
+            description: Text("Earnings over time, monthly breakdown, and top clients by revenue.")
+        )
+        .navigationTitle("Trends")
     }
 }

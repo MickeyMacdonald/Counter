@@ -2,8 +2,7 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-// MARK: - Recovery Backup View (Alpha Safety Net)
-// Temporary backup/restore UI for alpha testers. Will be retired at release.
+// MARK: - Recovery View
 
 struct SettingsViewRecovery: View {
     @Environment(\.modelContext) private var modelContext

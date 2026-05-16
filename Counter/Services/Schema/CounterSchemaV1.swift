@@ -10,7 +10,7 @@
 //  by SwiftData (or, in the worst case, crashing the app on launch).
 //
 //  V1 is intentionally a no-op wrapper around what already shipped in
-//  Alpha 0.8 — it does not change the on-disk schema. Its purpose is to
+//  0.8.0 — it does not change the on-disk schema. Its purpose is to
 //  give every later version a known-good baseline to migrate from.
 //
 //  See `docs/internal/VERSIONING.md` for the Migration Safety Rule that

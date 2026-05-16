@@ -27,11 +27,6 @@ final class AppNavigationCoordinator {
     /// and select this booking.
     var pendingBooking: Booking?
 
-    /// Legacy: navigating from PieceDetailView sessions list. Switches to
-    /// the schedule tab; the Sessions group now shows Bookings so this is
-    /// not consumed by SchedulingView — use `navigateToBooking` instead.
-    var pendingSession: Session?
-
     // MARK: - Gallery deep-link
 
     /// When non-nil, GalleryTabView should switch to Library → Client view
@@ -68,11 +63,4 @@ final class AppNavigationCoordinator {
         }
     }
 
-    /// Navigate to a session in the Scheduling tab (legacy — switches tab only).
-    func navigateToSession(_ session: Session) {
-        selectedTab = .schedule
-        Task { @MainActor in
-            self.pendingSession = session
-        }
-    }
 }

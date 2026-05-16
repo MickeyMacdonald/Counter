@@ -1,7 +1,6 @@
 import Foundation
 
-// MARK: - Recovery Backup (Alpha Safety Net)
-// Temporary backup format for alpha testers. Will be retired at release.
+// MARK: - Recovery Backup
 
 struct RecoveryBackup: Codable {
     let version: Int  // Schema version, start at 1

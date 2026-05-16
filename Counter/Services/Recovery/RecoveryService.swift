@@ -2,8 +2,7 @@ import Foundation
 @preconcurrency import SwiftData
 import CryptoKit
 
-// MARK: - Recovery Service (Alpha Safety Net)
-// Temporary auto-backup service for alpha testers. Will be retired at release.
+// MARK: - Recovery Service
 
 actor RecoveryService {
     static let shared = RecoveryService()

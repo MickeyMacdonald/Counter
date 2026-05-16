@@ -18,7 +18,7 @@ final class PieceImage {
     var tags: [String] = []
 
     // Relationships
-    var sessionProgress: SessionProgress?  // For session work photos (kept temporarily)
+    var sessionProgress: SessionProgress?  // Legacy: retained so V1/V2 migration stages compile
     var piece: Piece?            // For direct piece images (inspiration/reference)
 
     /// Full URL to the image file on disk

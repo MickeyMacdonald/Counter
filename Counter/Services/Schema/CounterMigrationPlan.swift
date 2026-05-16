@@ -8,8 +8,8 @@
 //
 //  ## Current state
 //
-//  - V1: the Alpha 0.8 baseline. 18 models.
-//  - V2: V1 + `Discount`. Additive-only. Lands in 0.8.x.
+//  - V1: the 0.8.0 baseline. 18 models.
+//  - V2: V1 + `Discount`. Additive-only. Shipped in 0.8.x.
 //
 //  ## V1 → V2 is `.lightweight` — and that is a load-bearing decision
 //
@@ -26,8 +26,8 @@
 //       silently. This is the expected path.
 //    2. SwiftData rejects the V2 schema for some unrelated reason and
 //       the `ModelContainer` init throws. `CounterApp.swift` catches
-//       this and routes to `RecoveryModeView` per the 0.8.x foundation
-//       slice. No data has been touched at this point.
+//       this and routes to `RecoveryModeView`. No data has been touched
+//       at this point.
 //
 //  There is no third path where the migration runs partially and
 //  corrupts existing data, so the willMigrate auto-backup hook is NOT
