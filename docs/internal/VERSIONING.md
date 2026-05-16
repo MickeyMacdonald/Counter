@@ -1,7 +1,7 @@
 ---
 title: Counter Versioning Strategy
 status: ACTIVE
-last_updated: 2026-04-14
+last_updated: 2026-05-16
 ---
 
 # Counter Versioning Strategy
@@ -65,11 +65,10 @@ This is where Counter is right now and where it's going:
 Pre-Alpha (historical)
        │
        ▼
-Alpha 0.8.x ← we are here (2026-04-13)
+Alpha 0.8.x (completed 2026-05-16)
        │
-       │ feature work + the 5 beta-gate TODOs
        ▼
-Beta 0.9.0  → first TestFlight
+Beta 0.9.0  ← we are here (2026-05-16) → first TestFlight
        │
        │ feedback, stabilization, no new features
        ▼
@@ -112,16 +111,16 @@ The counter at the end is per-patch-version. This keeps build numbers strictly i
 
 `[DECIDE: alternative is just "monotonic build number, ignored by humans" — much simpler, but loses the ability to read the version out of the build number at a glance.]`
 
-## What "Alpha 0.8" means today
+## What "Beta 0.9.0" means today
 
-As of 2026-04-13 the version is **`0.8.0-alpha`** (`CFBundleShortVersionString: 0.8.0`, `CFBundleVersion: 8000` if/when we adopt this scheme).
+As of 2026-05-16 the version is **`0.9.0-beta`** (`CFBundleShortVersionString: 0.9.0`, `CFBundleVersion: 9000`).
 
 Implications:
 
-- The schema is allowed to change between 0.8 and 0.9, but **must** ship a migration.
-- The schema is **not** allowed to change between 0.8.0 and 0.8.1 — patch releases are bug-fix and polish only.
-- Users on 0.8.x are treated as real users, not throwaways. Their data must survive every release from here on out.
-- New features intended for 1.0 should land before 0.9.0-beta. Anything that lands after 0.9.0 ships needs to be labeled "experimental" and protected by a feature flag, or deferred to 1.1.
+- The schema **must not** change without a formal `MigrationStage`. The Migration Safety Rule is fully in force.
+- Patch releases (`0.9.x`) are bug-fix and polish only — no schema changes.
+- The app is on TestFlight. Every build that reaches a tester's device is a real-data build from this point forward.
+- New features intended for 1.0 must be deferred to `1.0.0-rc.N` or later — `0.9.x` is stabilization only.
 
 ## In-app surfaces
 

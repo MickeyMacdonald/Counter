@@ -12,11 +12,21 @@ import SwiftUI
 // MARK: - About
 
 struct AnalyticsViewTrends: View {
+
+    private var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+    }
+
+    private var buildNumber: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+    }
+
     var body: some View {
         List {
             Section {
-                LabeledContent("Version", value: "Pre-Alpha 0.8")
-                LabeledContent("Build", value: "CounterPreAlpha")
+                LabeledContent("Version", value: appVersion)
+                LabeledContent("Build", value: buildNumber)
+                LabeledContent("Channel", value: "Beta")
             }
         }
         .listStyle(.insetGrouped)

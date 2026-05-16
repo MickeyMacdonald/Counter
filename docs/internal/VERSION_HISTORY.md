@@ -1,7 +1,7 @@
 ---
 title: Counter Version History & Roadmap
 status: INTERNAL — reconstructed from git history
-last_updated: 2026-04-14
+last_updated: 2026-05-16
 companion_doc: VERSIONING.md
 ---
 
@@ -115,8 +115,29 @@ companion_doc: VERSIONING.md
 
 The forward map is intentionally **version-grained**, not ticket-grained. Each version below has a single coherent theme. Detailed work items live in [`TODO.md`](../../TODO.md); the rules that govern channel transitions live in [`VERSIONING.md`](./VERSIONING.md).
 
-### `0.8.x` · Foundation: VersionedSchema + Recovery Mode
-> Patch line on the current Alpha. Lays the data-safety foundation that everything after depends on. Schema *structure* doesn't change; the *infrastructure around* the schema does.
+### `0.9.0-beta` · Data Continuity & Restore ← current version (2026-05-16)
+> Channel jump: Alpha → Beta. First TestFlight build. `CFBundleShortVersionString: 0.9.0`, `CFBundleVersion: 9000`.
+
+**Landed (Pillars 1 & 2 complete):**
+- Schema versioning V1–V8 with `CounterSchemaV8` + `CounterMigrationPlan`
+- Recovery Mode launch path — no more `fatalError` on container failure
+- Pre-migration auto-backup (V2→V3 custom stage)
+- Backup hardening: SHA-256 checksums, pre-restore snapshots, empty-restore guard, image-count verification
+- Booking notifications (evening-before + morning-of)
+- Client search (name, email, phone; excludes archived/blacklisted)
+- All Round 1 beta tester feedback items addressed (piece editing, sessions, discounts, navigation)
+- **Pillar 3 test coverage** (2026-05-16): round-trip, integrity, recovery-mode, backwards-compat tests
+- Version surfaces unified: `MARKETING_VERSION 0.9.0`, `CFBundleVersion 9000`, About screen reads from bundle
+
+**Still open for 0.9.x patch line:**
+- `Drafting → initialDrafting` shim → formal `MigrationStage` (low urgency)
+- Privacy policy + ToS at public URLs
+- App Store screenshots, description, keywords
+
+---
+
+### `0.8.x` · Foundation: VersionedSchema + Recovery Mode (completed 2026-05-16)
+> Patch line on Alpha 0.8. Laid the data-safety foundation. All items completed.
 
 **The work:**
 
