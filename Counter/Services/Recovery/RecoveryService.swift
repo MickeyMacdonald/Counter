@@ -23,6 +23,10 @@ actor RecoveryService {
     // Debounce: skip backup if one happened recently
     private let minimumBackupInterval: TimeInterval = 60
 
+    // Redirects backupContainerURL() during unit tests so tests never touch
+    // the real iCloud or local-Documents backup location. Nil in production.
+    var testContainerOverride: URL? = nil
+
     // MARK: - Version & Integrity Helpers
 
     /// Marketing version string sourced from the bundle so backups never lie
@@ -299,6 +303,11 @@ actor RecoveryService {
     // MARK: - Backup Container
 
     private func backupContainerURL() throws -> URL {
+        if let override = testContainerOverride {
+            try fileManager.createDirectory(at: override, withIntermediateDirectories: true)
+            return override
+        }
+
         // Try iCloud Documents first
         if let iCloudURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
             let documentsURL = iCloudURL
