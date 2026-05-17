@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AF000001"
-               BuildableName = "Counter.app"
+               BuildableName = "Counter..app"
                BlueprintName = "Counter"
                ReferencedContainer = "container:CountePreAlpha.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AF000001"
-            BuildableName = "Counter.app"
+            BuildableName = "Counter..app"
             BlueprintName = "Counter"
             ReferencedContainer = "container:CountePreAlpha.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AF000001"
-            BuildableName = "Counter.app"
+            BuildableName = "Counter..app"
             BlueprintName = "Counter"
             ReferencedContainer = "container:CountePreAlpha.xcodeproj">
          </BuildableReference>
