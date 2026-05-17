@@ -28,14 +28,12 @@ enum CounterSchemaV1: VersionedSchema {
             Client.self,
             Piece.self,
             SessionProgress.self,
-            PieceImage.self,
             Session.self,
             Agreement.self,
             CommunicationLog.self,
             UserProfile.self,
             Booking.self,
             AvailabilitySlot.self,
-            PieceImage.self,
             Payment.self,
             SavedEmailTemplate.self,
             AvailabilityOverride.self,
@@ -43,9 +41,6 @@ enum CounterSchemaV1: VersionedSchema {
             FlashPriceTier.self,
             SessionRateConfig.self,
             GalleryGroup.self
-            // NOTE: `Discount` exists as a model file under Counter/Models/
-            // but was never registered in the original schema. Adding it here
-            // would itself constitute a schema change. Tracked separately.
         ]
     }
 }

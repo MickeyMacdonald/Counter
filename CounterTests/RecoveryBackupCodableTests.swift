@@ -214,50 +214,6 @@ final class RecoveryBackupCodableTests: XCTestCase {
                      "pre-V2 backups without customDiscounts must decode with nil, not an error")
     }
 
-    // MARK: - RecoveryBackup: V3 optional workImages / legacy pieceImages
-
-    func testRecoveryBackup_preV3_pieceImagesFieldDecodesCleanly() throws {
-        let backup = BackupFixtures.minimalBackup()
-        var dict = try JSONSerialization.jsonObject(with: try encoder.encode(backup)) as! [String: Any]
-        // Remove workImages and inject a legacy pieceImages array
-        dict.removeValue(forKey: "workImages")
-        dict["pieceImages"] = [[
-            "backupID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
-            "filePath": "CounterImages/foo.jpg",
-            "fileName": "foo.jpg",
-            "notes": "",
-            "capturedAt": "2024-10-09T00:00:00Z"
-        ]]
-        let jsonData = try JSONSerialization.data(withJSONObject: dict)
-
-        let decoded = try decoder.decode(RecoveryBackup.self, from: jsonData)
-        XCTAssertNil(decoded.workImages, "workImages should be nil for a pre-V3 backup")
-        XCTAssertEqual(decoded.pieceImages?.count, 1, "legacy pieceImages should decode")
-        XCTAssertEqual(decoded.pieceImages?.first?.fileName, "foo.jpg")
-    }
-
-    // MARK: - PieceImageBackup legacy field defaults
-
-    func testPieceImageBackup_legacyFormat_missingFieldsUseDefaults() throws {
-        // Very old PieceImageBackup JSON: missing sortOrder, isPrimary, category, tags
-        let json = """
-        {
-          "backupID": "dddddddd-dddd-dddd-dddd-dddddddddddd",
-          "filePath": "CounterImages/old.jpg",
-          "fileName": "old.jpg",
-          "notes": "old note",
-          "capturedAt": "2024-10-09T00:00:00Z"
-        }
-        """.data(using: .utf8)!
-
-        let backup = try decoder.decode(PieceImageBackup.self, from: json)
-        XCTAssertEqual(backup.sortOrder, 0,     "sortOrder must default to 0")
-        XCTAssertFalse(backup.isPrimary,        "isPrimary must default to false")
-        XCTAssertNil(backup.category,           "category must default to nil")
-        XCTAssertEqual(backup.tags, [],         "tags must default to []")
-        XCTAssertEqual(backup.notes, "old note")
-    }
-
     // MARK: - RecoveryError descriptions
 
     func testRecoveryErrors_allHaveNonEmptyDescriptions() {

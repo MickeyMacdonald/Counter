@@ -26,7 +26,6 @@
 		AA000003 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000003 /* Client.swift */; };
 		AA000004 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000004 /* Piece.swift */; };
 		AA000005 /* SessionProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000005 /* SessionProgress.swift */; };
-		AA000006 /* PieceImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006 /* PieceImage.swift */; };
 		AA000007 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007 /* Session.swift */; };
 		AA000008 /* Agreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008 /* Agreement.swift */; };
 		AA000009 /* CommunicationLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009 /* CommunicationLog.swift */; };
@@ -172,7 +171,6 @@
 		AB000003 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		AB000004 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
 		AB000005 /* SessionProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionProgress.swift; sourceTree = "<group>"; };
-		AB000006 /* PieceImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceImage.swift; sourceTree = "<group>"; };
 		AB000007 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		AB000008 /* Agreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agreement.swift; sourceTree = "<group>"; };
 		AB000009 /* CommunicationLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicationLog.swift; sourceTree = "<group>"; };
@@ -676,7 +674,6 @@
 			isa = PBXGroup;
 			children = (
 				AB000005 /* SessionProgress.swift */,
-				AB000006 /* PieceImage.swift */,
 				AB000081 /* GalleryGroup.swift */,
 				AB000097 /* WorkImage.swift */,
 			);
@@ -881,7 +878,6 @@
 				AA000003 /* Client.swift in Sources */,
 				AA000004 /* Piece.swift in Sources */,
 				AA000005 /* SessionProgress.swift in Sources */,
-				AA000006 /* PieceImage.swift in Sources */,
 				AA000007 /* Session.swift in Sources */,
 				AA000008 /* Agreement.swift in Sources */,
 				AA000009 /* CommunicationLog.swift in Sources */,

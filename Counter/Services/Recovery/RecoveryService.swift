@@ -621,7 +621,6 @@ actor RecoveryService {
             clients: clientBackups, pieces: pieceBackups,
             sessions: sessionBackups, sessionProgress: imageGroupBackups,
             workImages: workImageBackups,
-            pieceImages: nil, inspirationImages: nil,
             bookings: bookingBackups, agreements: agreementBackups,
             communicationLogs: commLogBackups, payments: paymentBackups,
             profiles: profileBackups, customSessionTypes: cstBackups,
@@ -910,26 +909,6 @@ actor RecoveryService {
             img.sessionProgress = wib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
             img.piece = wib.pieceBackupID.flatMap { pieceMap[$0] }
             img.client = wib.clientBackupID.flatMap { clientMap[$0] }
-            context.insert(img)
-        }
-
-        // Phase 6b: Legacy PieceImages (pre-V3 backups only)
-        for pib in backup.pieceImages ?? [] {
-            let category: ImageCategory = {
-                switch pib.category {
-                case "Inspiration": return .inspiration
-                case "Reference":   return .reference
-                default:            return .progress
-                }
-            }()
-            let img = WorkImage(
-                filePath: pib.filePath, fileName: pib.fileName,
-                notes: pib.notes, capturedAt: pib.capturedAt,
-                sortOrder: pib.sortOrder, isPrimary: pib.isPrimary,
-                category: category, tags: pib.tags
-            )
-            img.sessionProgress = pib.imageGroupBackupID.flatMap { imageGroupMap[$0] }
-            img.piece = pib.pieceBackupID.flatMap { pieceMap[$0] }
             context.insert(img)
         }
 
