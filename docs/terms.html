@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Terms of Service (DRAFT) &mdash; Counter</title>
+  <title>Terms of Service &mdash; Counter</title>
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -29,17 +28,8 @@
 
 <main class="legal">
 
-  <!-- ── DRAFT BANNER ── -->
-  <div class="draft-banner" role="alert">
-    <span class="draft-label">⚠ Draft &mdash; Do Not Publish</span>
-    <h2>This is an unreviewed first-pass draft</h2>
-    <p>It exists to give Counter a starting structure for its Terms of Service. <strong>Every commercial term, liability cap, and jurisdictional clause needs to be verified before publication.</strong> Specific items flagged for review are marked inline with <span class="flag">VERIFY</span> or <span class="flag">DECIDE</span> tags.</p>
-    <p>Legal review by a Canadian lawyer is strongly recommended before this is posted publicly or submitted to the App Store, especially the limitation of liability, indemnification, and dispute resolution sections.</p>
-    <p>Note: Counter's source code is licensed under the <strong>MIT License</strong>. These Terms govern use of the compiled application and the website, not your rights to the source code. The two are intentionally separate documents.</p>
-  </div>
-
   <h1>Terms of Service</h1>
-  <p class="legal-meta"><strong>Effective date:</strong> [TO BE SET ON PUBLICATION] &nbsp;·&nbsp; <strong>Last updated:</strong> 2026-04-13</p>
+  <p class="legal-meta"><strong>Effective date:</strong> 2026-05-17 &nbsp;·&nbsp; <strong>Last updated:</strong> 2026-05-17</p>
 
   <h2>1. Agreement</h2>
   <p>These Terms of Service ("Terms") form a legal agreement between you and <strong>Mickey Macdonald</strong>, an individual developer based in Calgary, Alberta, Canada ("we", "us", "Counter"), governing your use of:</p>
@@ -53,21 +43,20 @@
   <h2>2. Relationship to the MIT License</h2>
   <p>The source code for Counter is published under the <strong>MIT License</strong>. That license governs your rights to the <em>source code</em> &mdash; to read it, modify it, build your own version, and so on.</p>
   <p>These Terms govern your use of the <em>compiled binary distributed via the Apple App Store</em> and the <em>thecounterapp.ca</em> website. Nothing in these Terms restricts the rights granted to you by the MIT License with respect to the source code.</p>
-  <p><span class="flag">DECIDE</span> confirm you want this dual-track structure. If yes, this section is correct. If you'd rather treat the App Store binary as essentially the same as the source release, the ToS becomes much shorter.</p>
 
   <h2>3. Eligibility</h2>
   <p>You must be at least the age of majority in your jurisdiction (18 in Alberta) to use the App for business purposes. By using the Service you represent that you meet this requirement.</p>
 
   <h2>4. Your account and data</h2>
-  <p>Counter does not require you to create an account. All data you enter into the App is stored locally on your iPad. <strong>You are solely responsible for:</strong></p>
+  <p>Counter does not require you to create an account. All data you enter into the App is stored locally on your iPad in a SwiftData database. <strong>You are solely responsible for:</strong></p>
   <ul>
     <li>The accuracy of the data you enter</li>
-    <li>Backing up your data (the App provides an in-app recovery system; using it is your responsibility)</li>
+    <li>Backing up your data. The App includes an in-app recovery system that generates local backup files of your database; keeping those backup files safe and accessible is your responsibility</li>
     <li>Keeping your iPad physically secure and protected by a strong device passcode</li>
     <li>Complying with all laws applicable to the data you process, especially privacy and health-information laws</li>
     <li>Honoring requests from your clients to access, correct, or delete information you hold about them</li>
   </ul>
-  <p>We have no access to your data and cannot recover it for you if it is lost, corrupted, or deleted. <span class="flag">VERIFY</span> confirm this matches reality &mdash; the recovery service is local-only.</p>
+  <p>We have no access to your data and cannot recover it for you if it is lost, corrupted, or deleted. The recovery system is local-only; no backup data is transmitted to us or stored externally.</p>
 
   <h2>5. Acceptable use</h2>
   <p>You agree that you will not:</p>
@@ -75,36 +64,30 @@
     <li>Use the Service to violate any law or the rights of any third party</li>
     <li>Use the Service to store or process information you are not legally permitted to handle</li>
     <li>Reverse-engineer, decompile, or attempt to extract source code from the <em>compiled binary</em>, except (a) where the MIT-licensed source is already available to you, or (b) to the extent such restriction is prohibited by applicable law</li>
-    <li>Resell, sublicense, or commercially redistribute the compiled binary except as permitted by the App Store terms <span class="flag">DECIDE</span> confirm whether sideloading user-built MIT versions is fine — almost certainly yes — but the App Store binary is distributed under Apple's terms.</li>
+    <li>Resell or commercially redistribute the compiled App Store binary. The App Store binary is distributed under Apple's standard end-user license terms. If you wish to build and distribute your own version of Counter, you are free to do so under the terms of the MIT License from the source repository</li>
     <li>Use the Service in any way that could damage, disable, overburden, or impair it</li>
     <li>Misrepresent the Service as your own work or remove copyright notices</li>
   </ul>
 
   <h2>6. Intellectual property</h2>
+  <p>Counter's intellectual property operates under two separate tracks:</p>
   <ul>
-    <li>The <strong>Counter source code</strong> is licensed under the MIT License. See <code>LICENSE</code> in the source repository.</li>
-    <li>The <strong>Counter name, logo, icon, and branding</strong> are not covered by the MIT License and remain the property of Mickey Macdonald. You may not use them to promote derivative works or products without permission. <span class="flag">DECIDE</span> confirm you want trademark-style protection on the name and icon even though the code is MIT.</li>
-    <li>Content you create <em>inside</em> the App &mdash; your client records, gallery images, notes, templates &mdash; belongs to you. We claim no ownership of it.</li>
+    <li><strong>Source code:</strong> Licensed under the MIT License. You are free to read, modify, fork, and build your own version. See <code>LICENSE</code> in the source repository for the full terms.</li>
+    <li><strong>Brand and identity</strong> &mdash; the Counter name, logo, app icon, and associated visual identity: These are <em>not</em> covered by the MIT License and remain the property of Mickey Macdonald. They may not be used to promote derivative works, competing products, or any product not officially associated with Counter without prior written permission. If you build a fork from the MIT source, you must use a distinct name and identity; you may not ship it as "Counter" or use the Counter icon.</li>
+    <li><strong>Your content:</strong> Everything you create inside the App &mdash; client records, gallery images, notes, templates, waivers, agreements &mdash; belongs entirely to you. We claim no ownership of it whatsoever.</li>
   </ul>
 
-  <h2>7. Pricing and payments</h2>
-  <p><span class="flag">DECIDE</span> this entire section depends on your business model. Three common options:</p>
-  <ul>
-    <li><strong>Option A &mdash; Free, donations only:</strong> Counter is free to download and use. The App may include optional in-app donations to support continued development. Donations are non-refundable except as required by law and do not unlock additional features.</li>
-    <li><strong>Option B &mdash; One-time purchase:</strong> Counter is sold as a one-time purchase via the Apple App Store. The price is shown at the point of purchase.</li>
-    <li><strong>Option C &mdash; Subscription:</strong> Counter is offered as an auto-renewing subscription via the Apple App Store. You may cancel at any time through your Apple ID settings.</li>
-  </ul>
-  <p>For the draft, Option A is left in place because the website mentions a donation flow. <strong>Please replace this entire section with the correct option once you've decided.</strong></p>
-  <p>Counter is free to download and use. The App may include optional in-app donations to support continued development. Donations are processed by Apple under their standard App Store payment terms, are non-refundable except as required by law, and do not unlock additional features.</p>
+  <h2>7. Pricing and donations</h2>
+  <p>Counter is <strong>free to download and use</strong>. All features are available at no charge. There are no paywalls, subscriptions, or feature locks.</p>
+  <p>If you find Counter valuable, optional donations to support development are welcomed and deeply appreciated. Donations can be made through the <a href="donate.html">Support Us</a> page on this website. A Patreon page may be offered in the future; if so, it will be linked from the same page.</p>
+  <p>Donations are entirely voluntary, are not required to access any part of the App, and do not unlock additional features. See Section 11 for our policy on donation refunds in the event of significant data loss caused by an App update.</p>
 
   <h2>8. Updates</h2>
-  <p>We may release updates to the App from time to time. Updates may add, modify, or remove features. We are not obligated to maintain backward compatibility, and we may discontinue the Service at any time. <span class="flag">VERIFY</span> standard "we may stop at any time" clause &mdash; confirm comfort with it.</p>
-  <p>You are encouraged to keep the App updated. We are not responsible for problems caused by running an out-of-date version.</p>
+  <p>Counter is a <strong>stand-alone iPad application</strong>. Your data is stored in a local SwiftData database on your device and is not synced to any external server. While we make every effort to ensure new versions of the App are fully backwards compatible, significant structural updates may in rare cases affect existing database records. We will communicate any such breaking changes clearly in release notes before they are available to install.</p>
+  <p>We may release updates from time to time that add, modify, or remove features. We are not obligated to maintain any particular feature indefinitely, and we may discontinue the Service at any time. You are encouraged to keep the App updated. We are not responsible for problems caused by running an out-of-date version.</p>
 
   <h2>9. Third-party services</h2>
-  <p>The App is distributed through the <strong>Apple App Store</strong> and runs on <strong>Apple iPadOS</strong>. Your use of the App is also subject to Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a>.</p>
-  <p>The Website is hosted on <strong>GitHub Pages</strong>. Email is routed through <strong>Cloudflare</strong>. <span class="flag">VERIFY</span> These third parties have their own terms and privacy policies.</p>
-  <p>We are not responsible for the acts or omissions of any third-party service.</p>
+  <p>The App is distributed through the <strong>Apple App Store</strong> and runs on <strong>Apple iPadOS</strong>. Your use of the App is also subject to Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a>. The Website is hosted on <strong>GitHub Pages</strong>. Each of these third-party services operates under its own independent terms of service and privacy policies. We are not responsible for the acts or omissions of any third-party service.</p>
 
   <h2>10. Disclaimers</h2>
   <p>THE SERVICE IS PROVIDED <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION:</p>
@@ -116,8 +99,9 @@
     <li>THAT THE SERVICE WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE</li>
     <li>THAT DATA WILL BE PRESERVED OR RECOVERABLE</li>
   </ul>
-  <p>Counter is a tool for managing studio operations. <strong>It is not a substitute for professional legal, tax, accounting, or medical advice.</strong> Pricing, financial summaries, tax exports, intake forms, and waivers generated by the App are starting points only &mdash; you remain responsible for verifying their accuracy and legal sufficiency in your jurisdiction.</p>
-  <p><span class="flag">VERIFY</span> this disclaimer language is broad and should be reviewed by a lawyer. In some jurisdictions (notably Quebec and parts of the EU), some disclaimers may be unenforceable against consumers.</p>
+  <p>Counter is a tool for managing studio operations. <strong>It is not a substitute for professional legal, tax, accounting, or medical advice.</strong></p>
+  <p><strong>Waivers, consent forms, and agreements:</strong> Counter includes templates for consent forms, liability waivers, photo releases, and design approvals. These templates are provided as starting points only. They are not drafted by a lawyer and do not constitute legal advice. You are solely responsible for ensuring that any waiver, consent form, or agreement you use in your practice is legally sufficient for your jurisdiction, profession, and specific circumstances. We strongly recommend having any forms reviewed by a qualified legal professional before relying on them in your business.</p>
+  <p>Similarly, pricing summaries, financial exports, intake forms, and other generated documents are starting points only. You remain responsible for verifying their accuracy and legal sufficiency in your jurisdiction.</p>
 
   <h2>11. Limitation of liability</h2>
   <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL MICKEY MACDONALD BE LIABLE FOR ANY:</p>
@@ -128,7 +112,8 @@
     <li>DAMAGES ARISING FROM UNAUTHORIZED ACCESS TO YOUR DEVICE OR DATA</li>
     <li>DAMAGES ARISING FROM ANY CONDUCT OR CONTENT OF ANY THIRD PARTY</li>
   </ul>
-  <p>OUR TOTAL CUMULATIVE LIABILITY FOR ALL CLAIMS RELATING TO THE SERVICE WILL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU HAVE PAID US FOR THE SERVICE IN THE TWELVE MONTHS PRECEDING THE CLAIM, OR (B) <strong>CAD&nbsp;$50</strong>. <span class="flag">DECIDE</span> $50 is a placeholder cap. Discuss with a lawyer.</p>
+  <p>OUR TOTAL CUMULATIVE LIABILITY FOR ALL CLAIMS RELATING TO THE SERVICE WILL NOT EXCEED <strong>CAD&nbsp;$50</strong>. NO OTHER LIABILITY IS ASSUMED.</p>
+  <p><strong>Exception &mdash; Donation refunds for significant data loss:</strong> If a Counter update directly causes significant, unrecoverable loss of your data, you may request a refund of donations you have made to Counter in the twelve (12) months preceding the loss. Refund requests must be submitted to <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a> with a description of the data loss and the update involved. Refunds are limited to the lesser of the actual donations received in that period or CAD&nbsp;$50 in the aggregate. This exception does not expand our liability in any other respect.</p>
   <p>Some jurisdictions do not allow the exclusion or limitation of certain damages, so some of these limitations may not apply to you.</p>
 
   <h2>12. Indemnification</h2>
@@ -139,7 +124,6 @@
     <li>Your violation of any law or the rights of any third party</li>
     <li>The information you store or process using the App, including any breach of your clients' privacy</li>
   </ul>
-  <p><span class="flag">VERIFY</span> this is standard but should be reviewed.</p>
 
   <h2>13. Termination</h2>
   <p>You may stop using the Service at any time by uninstalling the App. We may suspend or terminate your access to the Website, or stop distributing the App, at any time and for any reason, including if you violate these Terms.</p>
@@ -147,7 +131,6 @@
 
   <h2>14. Governing law and disputes</h2>
   <p>These Terms are governed by the laws of the <strong>Province of Alberta, Canada</strong>, without regard to conflict-of-laws principles. You agree that any dispute arising from these Terms or the Service will be resolved exclusively in the courts of Alberta, Canada, and you consent to the personal jurisdiction of those courts.</p>
-  <p><span class="flag">VERIFY</span> defensible default for a solo Canadian developer. A lawyer may suggest arbitration instead, or a different choice-of-forum clause.</p>
 
   <h2>15. Changes to these Terms</h2>
   <p>We may update these Terms from time to time. When we do, we will update the "Last updated" date at the top. Material changes will be noted on our website. Continued use of the Service after a change indicates acceptance of the updated Terms.</p>
@@ -166,22 +149,6 @@
     Calgary, Alberta, Canada<br>
     Email: <a href="mailto:mickey@thecounterapp.ca">mickey@thecounterapp.ca</a>
   </p>
-
-  <!-- ── Review Checklist ── -->
-  <div class="review-checklist">
-    <h2>Draft review checklist</h2>
-    <ul>
-      <li>Decide on the business model in Section 7 (donations / one-time / subscription)</li>
-      <li>Decide on the liability cap in Section 11</li>
-      <li>Resolve every <span class="flag">VERIFY</span> and <span class="flag">DECIDE</span> tag</li>
-      <li>Have a Canadian lawyer review Sections 10, 11, 12, and 14 at minimum</li>
-      <li>Confirm the relationship to the MIT License in Section 2 matches your intent</li>
-      <li>Confirm trademark protection language in Section 6 matches your intent</li>
-      <li>Set a real "effective date"</li>
-      <li>Add link from Website footer and from in-app About / Settings screen</li>
-      <li>Make sure the link from Privacy Policy → ToS and ToS → Privacy Policy both work after publication</li>
-    </ul>
-  </div>
 
 </main>
 
