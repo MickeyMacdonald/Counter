@@ -1164,6 +1164,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1200,6 +1201,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
