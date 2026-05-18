@@ -800,14 +800,6 @@ actor RecoveryService {
             context.insert(obj)
         }
 
-        // Legacy: inspirationImages field from very old backups — insert as WorkImage
-        for img in backup.inspirationImages ?? [] {
-            let obj = WorkImage(filePath: img.filePath, fileName: img.fileName,
-                                notes: img.notes, capturedAt: img.capturedAt,
-                                category: .inspiration, tags: img.tags)
-            context.insert(obj)
-        }
-
         // Phase 2: Clients (no parent deps)
         var clientMap: [UUID: Client] = [:]
         for cb in backup.clients {
@@ -1195,8 +1187,7 @@ actor RecoveryService {
         backup.clients.count + backup.pieces.count + backup.sessions.count +
         backup.sessionProgress.count +
         (backup.workImages?.count ?? 0) +
-        (backup.pieceImages?.count ?? 0) +
-        (backup.inspirationImages?.count ?? 0) + backup.bookings.count +
+        backup.bookings.count +
         backup.agreements.count + backup.communicationLogs.count +
         backup.payments.count + backup.profiles.count +
         backup.customSessionTypes.count + backup.customEmailTemplates.count +
