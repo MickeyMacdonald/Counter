@@ -37,7 +37,6 @@ final class SessionProgress {
 }
 
 /// Work stages for session progress photos.
-/// Inspiration/reference images are now handled by PieceImageCategory on direct PieceImages.
 enum ImageStage: String, Codable, CaseIterable {
     case sketch = "Sketch"
     case lineart = "Lineart"

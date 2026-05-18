@@ -6,11 +6,10 @@ enum CounterSchemaV3: VersionedSchema {
 
     static var models: [any PersistentModel.Type] {
         [
-            // All V2 models, with PieceImage replaced by WorkImage.
             Client.self,
             Piece.self,
             SessionProgress.self,
-            WorkImage.self,        // Replaces PieceImage
+            WorkImage.self,
             Session.self,
             Agreement.self,
             CommunicationLog.self,

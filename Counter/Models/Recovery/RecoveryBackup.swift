@@ -12,20 +12,7 @@ struct RecoveryBackup: Codable {
     let pieces: [PieceBackup]
     let sessions: [SessionBackup]
     let sessionProgress: [SessionProgressBackup]
-
-    /// V3+: WorkImage is the current image model (replaces PieceImage).
-    /// Optional so that pre-V3 backups (which carry `pieceImages` instead) still decode.
     let workImages: [WorkImageBackup]?
-
-    /// Legacy (pre-V3): kept optional so old backup files still decode.
-    /// On restore, `workImages` is checked first; fall back to this only
-    /// when `workImages` is nil (old backup from a V1/V2 build).
-    let pieceImages: [PieceImageBackup]?
-
-    /// Legacy field — inspiration images are now stored with category `.inspiration`.
-    /// Kept optional so old backups still decode.
-    let inspirationImages: [PieceImageBackup]?
-
     let bookings: [BookingBackup]
     let agreements: [AgreementBackup]
     let communicationLogs: [CommunicationLogBackup]
@@ -277,42 +264,6 @@ struct WorkImageBackup: Codable {
     let healingStage: String?
     let source: String
     let tags: [String]
-}
-
-// MARK: - Legacy PieceImageBackup (pre-V3 backups only)
-
-struct PieceImageBackup: Codable {
-    let backupID: UUID
-    let imageGroupBackupID: UUID?
-    let pieceBackupID: UUID?
-    let filePath: String
-    let fileName: String
-    let notes: String
-    let capturedAt: Date
-    let sortOrder: Int
-    let isPrimary: Bool
-    let category: String?
-    let tags: [String]
-}
-
-// Custom decoder so the struct retains its synthesized memberwise init.
-// Legacy backups used a simpler PieceImageBackup without sortOrder/isPrimary/category —
-// decodeIfPresent with defaults keeps those old JSON entries decodable.
-extension PieceImageBackup {
-    init(from decoder: any Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        backupID           = try c.decode(UUID.self,   forKey: .backupID)
-        imageGroupBackupID = try c.decodeIfPresent(UUID.self,     forKey: .imageGroupBackupID)
-        pieceBackupID      = try c.decodeIfPresent(UUID.self,     forKey: .pieceBackupID)
-        filePath           = try c.decode(String.self, forKey: .filePath)
-        fileName           = try c.decode(String.self, forKey: .fileName)
-        notes              = try c.decode(String.self, forKey: .notes)
-        capturedAt         = try c.decode(Date.self,   forKey: .capturedAt)
-        sortOrder          = try c.decodeIfPresent(Int.self,      forKey: .sortOrder)  ?? 0
-        isPrimary          = try c.decodeIfPresent(Bool.self,     forKey: .isPrimary)  ?? false
-        category           = try c.decodeIfPresent(String.self,   forKey: .category)
-        tags               = try c.decodeIfPresent([String].self, forKey: .tags) ?? []
-    }
 }
 
 struct BookingBackup: Codable {
