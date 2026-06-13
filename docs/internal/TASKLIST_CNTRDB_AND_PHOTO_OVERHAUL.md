@@ -1,12 +1,12 @@
 ---
 title: Tasklist — `.cntrdb` SQLite Format & Photo Management Overhaul
-status: PROPOSED
-last_updated: 2026-05-09
+status: IN PROGRESS — Track 1 core shipped (`8e05f89`); tests + UTType outstanding; Track 2 not started
+last_updated: 2026-06-09
 ---
 
 # Tasklist — `.cntrdb` SQLite Format & Photo Management Overhaul
 
-> **Status:** Scoping document. Two related tracks: (1) introduce a SQLite-backed `.cntrdb` package format as a richer replacement/companion to the current JSON backup pipeline, and (2) overhaul the photo management subsystem so image records reference the same canonical schema, making the photo layer easier to reason about and migrate.
+> **Status (2026-06-09):** Track 1 phases 1.0–1.4 are substantially **shipped** in commit `8e05f89` (`Counter/Services/Cntrdb/`: `CntrdbSchema`, `CntrdbExporter`, `CntrdbImporter`, `CntrdbPackage`, plus an extracted `SQLiteService`), wired into Settings → Recovery. **Outstanding: Phase 1.1 UTType registration, Phase 1.5 migration-policy docs, and — most importantly — Phase 1.6 tests (none exist; import is destructive).** Track 2 (photo overhaul) has not started, except that `PieceImage` was removed entirely (`e76628d`), which resolves Phase 2.0's biggest open question. Two related tracks: (1) introduce a SQLite-backed `.cntrdb` package format as a richer replacement/companion to the current JSON backup pipeline, and (2) overhaul the photo management subsystem so image records reference the same canonical schema, making the photo layer easier to reason about and migrate.
 
 ---
 
@@ -36,75 +36,77 @@ The proposal: introduce a **public, app-owned SQLite schema** delivered as a `.c
 ### Phase 1.0 — Schema design & dependency choice
 
 - [x] Decide on SQLite library: **raw `sqlite3` C API** chosen. Trade-off: more boilerplate (~200 lines of wrapper) vs. zero external dependencies, no SwiftPM additions to the `.pbxproj`, no binary-size cost. The export/import path is one-shot (not a runtime DB), so the boilerplate is bounded and maintenance is local. GRDB remains an option for v2 if querying inside `.cntrdb` from app code becomes a real workflow.
-- [ ] Draft the public schema DDL covering all current models (see *Schema Coverage* below). Stable column names, snake_case, UUID primary keys, ISO8601 timestamps.
-- [ ] Add `_meta` table: `schema_version INTEGER`, `app_version TEXT`, `exported_at TEXT`, `source_device TEXT`, `notes TEXT`.
-- [ ] Define foreign-key constraints with `ON DELETE` semantics that match SwiftData cascade rules.
-- [ ] Write the schema as a single canonical SQL file checked into the repo (`Counter/Services/Cntrdb/Schema/v1.sql` or similar).
-- [ ] Add a unit test that asserts the DDL applies cleanly to an empty SQLite database.
+- [x] Draft the public schema DDL covering all current models (see *Schema Coverage* below). Stable column names, snake_case, UUID primary keys, ISO8601 timestamps. *(Shipped in `CntrdbSchema.swift` — 20 tables. **Exception: `booking_task_templates` is missing**, see Phase 1.4.)*
+- [x] Add `_meta` table: `schema_version INTEGER`, `app_version TEXT`, `exported_at TEXT`, `source_device TEXT`, `notes TEXT`.
+- [x] Define foreign-key constraints with `ON DELETE` semantics that match SwiftData cascade rules.
+- [x] Write the canonical schema DDL — lives as a Swift string in `CntrdbSchema.swift` rather than a standalone `.sql` file; acceptable, revisit only if external consumers need the raw file.
+- [ ] Add a unit test that asserts the DDL applies cleanly to an empty SQLite database. *(→ Phase 1.6)*
 
 ### Phase 1.1 — Package format & UTType
 
-- [ ] Register `com.counter.cntrdb` UTType in `Info.plist` with `LSItemContentTypes` declaring it as a package (folder bundle) conforming to `public.composite-content`.
-- [ ] Define `manifest.json` schema: format version, schema version, app version, created at, model counts, image counts, json/db sizes, SHA-256 checksum of `database.sqlite`.
-- [ ] Decide whether the package is the bare folder or a zipped `.cntrdb` (recommend bare folder for iOS, with optional `.cntrdb.zip` for AirDrop/email).
-- [ ] Confirm Files.app and the share sheet treat the package opaquely on iOS 17/18.
+- [ ] Register `com.counter.cntrdb` UTType in `Info.plist` with `LSItemContentTypes` declaring it as a package (folder bundle) conforming to `public.composite-content`. **(Still open — not declared in the project; Files.app treats the package as a plain folder.)**
+- [x] Define `manifest.json` schema: format version, schema version, app version, created at, model counts, image counts, sizes, SHA-256 checksum of `database.sqlite`. *(`CntrdbPackage.swift`)*
+- [x] Decide whether the package is the bare folder or a zipped `.cntrdb` — bare folder shipped.
+- [ ] Confirm Files.app and the share sheet treat the package opaquely on iOS 17/18. *(Blocked on UTType registration above.)*
 
 ### Phase 1.2 — Exporter
 
-- [ ] `CntrdbExporter` actor mirroring the structure of `RecoveryService`'s backup pipeline.
-- [ ] Per-model export functions reading from `ModelContext` and inserting into a fresh SQLite db.
-- [ ] Image copy step (re-use the logic from `RecoveryService` — copies `Documents/CounterImages/` into `Images/` inside the package).
-- [ ] Compute and write `manifest.json` with checksums.
-- [ ] Wire into Settings → Recovery view alongside the existing JSON backup button.
+- [x] `CntrdbExporter` actor mirroring the structure of `RecoveryService`'s backup pipeline.
+- [x] Per-model export functions reading from `ModelContext` and inserting into a fresh SQLite db.
+- [x] Image copy step (re-uses the logic from `RecoveryService`).
+- [x] Compute and write `manifest.json` with checksums.
+- [x] Wire into Settings → Recovery view alongside the existing JSON backup button.
 
 ### Phase 1.3 — Importer
 
-- [ ] `CntrdbImporter` actor mirroring `RecoveryService`'s restore phases.
-- [ ] Preflight checks: schema version compatibility, manifest checksum, image folder presence, image count match, empty-import refusal.
-- [ ] Auto-snapshot the current state to a pre-restore JSON backup before applying.
-- [ ] Phased insert respecting referential ordering (independent → clients → pieces → sessions → progress → images → agreements/logs → payments → bookings).
-- [ ] Image copy-in step.
-- [ ] Wire into Settings → Recovery view with `.fileImporter` and explicit confirmation alert.
+- [x] `CntrdbImporter` actor mirroring `RecoveryService`'s restore phases.
+- [x] Preflight checks: schema version compatibility, manifest checksum, image folder presence, image count match, empty-import refusal.
+- [x] Auto-snapshot the current state to a pre-restore JSON backup before applying.
+- [x] Phased insert respecting referential ordering (independent → clients → pieces → sessions → progress → images → agreements/logs → payments → bookings).
+- [x] Image copy-in step.
+- [x] Wire into Settings → Recovery view with `.fileImporter` and explicit confirmation alert.
 
 ### Phase 1.4 — Schema coverage checklist
 
 The schema must cover every `@Model` currently shipped. Track each one:
 
+> ⚠️ **Coverage gap found 2026-06-09:** `BookingTaskTemplate` is a live `@Model` registered in `CounterSchemaV8`, but it has **no table in the `.cntrdb` schema and no counterpart in the JSON `RecoveryBackup` either**. Any restore (JSON or `.cntrdb`) silently drops all booking task templates. Bookings only round-trip their *embedded* `checklist_overrides` / `custom_checklist_items` JSON columns. Fix in both pipelines.
+
 **Core**
-- [ ] `clients`
-- [ ] `pieces`
-- [ ] `sessions`
-- [ ] `bookings`
-- [ ] `booking_task_templates`
+- [x] `clients`
+- [x] `pieces`
+- [x] `sessions`
+- [x] `bookings`
+- [ ] `booking_task_templates` ⚠️ **missing — see note above (also missing from JSON backups)**
 
 **Configuration**
-- [ ] `user_profiles`
-- [ ] `agreements`
-- [ ] `email_templates`
+- [x] `user_profiles`
+- [x] `agreements`
+- [x] `email_templates`
 
 **Financial**
-- [ ] `payments`
-- [ ] `discounts`
-- [ ] `flash_price_tiers`
+- [x] `payments`
+- [x] `discounts`
+- [x] `flash_price_tiers`
 
 **Gallery**
-- [ ] `work_images`
-- [ ] `session_progress`
-- [ ] `piece_images` *(legacy — include for round-trip but mark deprecated)*
-- [ ] `gallery_groups`
+- [x] `work_images`
+- [x] `session_progress`
+- [x] ~~`piece_images`~~ *(obsolete — `PieceImage` model removed entirely in `e76628d`; no table needed)*
+- [x] `gallery_groups`
 
 **Scheduling**
-- [ ] `availability_slots`
-- [ ] `availability_overrides`
-- [ ] `session_categories`
-- [ ] `session_rate_configs`
+- [x] `availability_slots`
+- [x] `availability_overrides`
+- [x] `session_categories`
+- [x] `session_rate_configs`
 
 **Communication**
-- [ ] `communication_logs`
+- [x] `communication_logs`
 
 **Meta**
-- [ ] `_meta`
-- [ ] `_user_defaults` *(key/value snapshot of relevant `UserDefaults` keys, mirroring current JSON behavior)*
+- [x] `_meta`
+- [x] `_user_defaults` *(key/value snapshot of relevant `UserDefaults` keys, mirroring current JSON behavior)*
 
 ### Phase 1.5 — Versioning & migration policy
 
@@ -147,7 +149,7 @@ Today there are three overlapping image models — `WorkImage`, `PieceImage` (le
 
 - [ ] Inventory every read/write site touching `WorkImage`, `PieceImage`, `SessionProgress.images`. Map to current call sites.
 - [ ] Compare current SwiftData model fields to the proposed `.cntrdb` `work_images` schema. Resolve drift before locking the schema in Track 1.
-- [ ] Decide final fate of `PieceImage`: migration shim only, or full removal post-v1.0?
+- [x] Decide final fate of `PieceImage`: **removed entirely** (`e76628d` + `bd4f1ba`, 2026-05-17) — model deleted, schema migrated (V2→V3 dropped the table), remaining refs purged from `RecoveryService`.
 
 ### Phase 2.1 — Photo registry service
 

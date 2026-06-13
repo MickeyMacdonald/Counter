@@ -1,7 +1,7 @@
 ---
 title: Counter Version History & Roadmap
 status: INTERNAL — reconstructed from git history
-last_updated: 2026-05-16
+last_updated: 2026-06-09
 companion_doc: VERSIONING.md
 ---
 
@@ -129,9 +129,16 @@ The forward map is intentionally **version-grained**, not ticket-grained. Each v
 - **Pillar 3 test coverage** (2026-05-16): round-trip, integrity, recovery-mode, backwards-compat tests
 - Version surfaces unified: `MARKETING_VERSION 0.9.0`, `CFBundleVersion 9000`, About screen reads from bundle
 
-**Still open for 0.9.x patch line:**
+**Landed since (through 2026-05-17):**
+- Privacy Policy + ToS finalized and published at public URLs, effective 2026-05-17 (`0e47977`)
+- `.cntrdb` SQLite export/import + extracted `SQLiteService` (`8e05f89`) — untested; see TODO.md
+- `PieceImage` legacy model removed entirely (`e76628d`)
+
+**Still open for 0.9.x patch line (full list in `TODO.md` → "⭐ Next Up"):**
+- TestFlight build: run tests, archive, upload, App Store Connect listing
+- `BookingTaskTemplate` missing from both backup pipelines (found 2026-06-09)
+- `.cntrdb` import tests + UTType registration
 - `Drafting → initialDrafting` shim → formal `MigrationStage` (low urgency)
-- Privacy policy + ToS at public URLs
 - App Store screenshots, description, keywords
 
 ---
