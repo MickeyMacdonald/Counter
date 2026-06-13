@@ -3,11 +3,11 @@ import SwiftData
 
 enum TestContainerFactory {
 
-    /// An in-memory SwiftData container running the full V8 schema + migration plan.
+    /// An in-memory SwiftData container running the full V4 schema + migration plan.
     /// Safe to call from multiple tests — each call returns an independent container.
     @MainActor
     static func makeInMemory() throws -> ModelContainer {
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         return try ModelContainer(
             for: schema,
@@ -20,7 +20,7 @@ enum TestContainerFactory {
     /// deleting the file after use.
     @MainActor
     static func makeOnDisk(at url: URL) throws -> ModelContainer {
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, url: url)
         return try ModelContainer(
             for: schema,

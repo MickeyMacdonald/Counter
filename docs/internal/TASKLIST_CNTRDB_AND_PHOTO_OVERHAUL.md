@@ -70,7 +70,7 @@ The proposal: introduce a **public, app-owned SQLite schema** delivered as a `.c
 
 The schema must cover every `@Model` currently shipped. Track each one:
 
-> ⚠️ **Coverage gap found 2026-06-09:** `BookingTaskTemplate` is a live `@Model` registered in `CounterSchemaV8`, but it has **no table in the `.cntrdb` schema and no counterpart in the JSON `RecoveryBackup` either**. Any restore (JSON or `.cntrdb`) silently drops all booking task templates. Bookings only round-trip their *embedded* `checklist_overrides` / `custom_checklist_items` JSON columns. Fix in both pipelines.
+> ⚠️ **Coverage gap found 2026-06-09:** `BookingTaskTemplate` is a live `@Model` registered in `CounterSchemaV4`, but it has **no table in the `.cntrdb` schema and no counterpart in the JSON `RecoveryBackup` either**. Any restore (JSON or `.cntrdb`) silently drops all booking task templates. Bookings only round-trip their *embedded* `checklist_overrides` / `custom_checklist_items` JSON columns. Fix in both pipelines.
 
 **Core**
 - [x] `clients`

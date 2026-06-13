@@ -28,7 +28,7 @@ final class LaunchStateTests: XCTestCase {
 
     func testValidSchema_opensWithoutError() throws {
         // An in-memory container is the simplest proxy for a valid launch path.
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         XCTAssertNoThrow(
             try ModelContainer(
@@ -61,7 +61,7 @@ final class LaunchStateTests: XCTestCase {
         try garbage.write(to: storeURL)
 
         // Step 3: attempting to re-open the corrupted file must throw
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, url: storeURL)
         XCTAssertThrowsError(
             try ModelContainer(
@@ -83,7 +83,7 @@ final class LaunchStateTests: XCTestCase {
         let garbage = Data(repeating: 0xFF, count: 128)
         try garbage.write(to: storeURL)
 
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, url: storeURL)
 
         var launchState: CounterApp.LaunchState
@@ -108,7 +108,7 @@ final class LaunchStateTests: XCTestCase {
     // MARK: - LaunchState enum contracts
 
     func testLaunchState_ready_holdsContainer() throws {
-        let schema = Schema(versionedSchema: CounterSchemaV8.self)
+        let schema = Schema(versionedSchema: CounterSchemaV4.self)
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(
             for: schema,

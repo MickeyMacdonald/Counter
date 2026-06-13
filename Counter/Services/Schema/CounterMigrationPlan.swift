@@ -8,10 +8,16 @@
 //
 //  ## Current state
 //
-//  - V1: the 0.8.0 baseline. 17 models (no Discount, no PieceImage).
+//  - V1: the 0.8.0 baseline. 16 models (no Discount, no WorkImage).
 //  - V2: V1 + `Discount`. Additive-only.
-//  - V3: PieceImage dropped, WorkImage added. Lightweight (no live PieceImage rows).
-//  - V4–V8: additive-only lightweight stages.
+//  - V3: WorkImage added (PieceImage never shipped in live stores).
+//  - V4: V3 + `BookingTaskTemplate`. Current `VersionedSchema` cap.
+//
+//  Additive model changes after V4 (client flags, session event tags,
+//  booking cascade, notificationID) live on the `@Model` classes with
+//  inline defaults and are migrated automatically by SwiftData — they
+//  must NOT get new `VersionedSchema` entries with the same model list,
+//  or SwiftData throws "Duplicate version checksums detected" at launch.
 //
 //  ## The next transforming migration MUST add the willMigrate hook
 //
@@ -22,9 +28,9 @@
 //  ## Append-only — once a version ships, its position is permanent
 //
 //  Do NOT reorder, remove, or edit existing entries in `schemas` or
-//  `stages`. Adding a new version means appending to both. See
-//  `docs/internal/VERSIONING.md` for the Migration Safety Rule that
-//  this file is the load-bearing implementation of.
+//  `stages`. Adding a new version means appending to both — but only
+//  when the schema checksum actually changes (new model type, or
+//  version-specific nested models). See `docs/internal/VERSIONING.md`.
 //
 
 import Foundation
@@ -36,11 +42,7 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             CounterSchemaV1.self,
             CounterSchemaV2.self,
             CounterSchemaV3.self,
-            CounterSchemaV4.self,
-            CounterSchemaV5.self,
-            CounterSchemaV6.self,
-            CounterSchemaV7.self,
-            CounterSchemaV8.self
+            CounterSchemaV4.self
         ]
     }
 
@@ -56,10 +58,9 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
                 toVersion: CounterSchemaV2.self
             ),
 
-            // V2 → V3: PieceImage table dropped, WorkImage table added.
+            // V2 → V3: WorkImage table added.
             // No PieceImage records exist in any live store (shipped pre-App Store),
-            // so lightweight is safe: SwiftData drops the empty PieceImage table
-            // and creates WorkImage without touching any existing rows.
+            // so lightweight is safe.
             .lightweight(
                 fromVersion: CounterSchemaV2.self,
                 toVersion: CounterSchemaV3.self
@@ -70,40 +71,6 @@ enum CounterMigrationPlan: SchemaMigrationPlan {
             .lightweight(
                 fromVersion: CounterSchemaV3.self,
                 toVersion: CounterSchemaV4.self
-            ),
-
-            // V4 → V5: additive. Adds isStarred, isArchived, isBlacklisted, blacklistNote
-            // to Client. Lightweight is correct: new columns with defaults, no row transforms.
-            .lightweight(
-                fromVersion: CounterSchemaV4.self,
-                toVersion: CounterSchemaV5.self
-            ),
-
-            // V5 → V6: additive. Adds eventTags: [String] to Session.
-            // Lightweight is correct: new column with default [], no row transforms.
-            .lightweight(
-                fromVersion: CounterSchemaV5.self,
-                toVersion: CounterSchemaV6.self
-            ),
-
-            // V6 → V7: additive. Adds an explicit cascade relationship from
-            // Client.bookings → Booking so SwiftData deletes a client's bookings
-            // when the client is deleted. Previously Booking.client had the default
-            // nullify rule, leaving orphaned booking rows that could fault-crash the
-            // Sessions sidebar before the context saved. Lightweight is correct:
-            // no new columns — this is a relationship behaviour change only.
-            .lightweight(
-                fromVersion: CounterSchemaV6.self,
-                toVersion: CounterSchemaV7.self
-            ),
-
-            // V7 → V8: additive. Adds `notificationID: UUID` to Booking so that
-            // NotificationService can address UNNotificationRequests with a stable
-            // string ID independent of SwiftData's PersistentIdentifier type.
-            // Lightweight is correct: new column with a default UUID(), no row transforms.
-            .lightweight(
-                fromVersion: CounterSchemaV7.self,
-                toVersion: CounterSchemaV8.self
             )
         ]
     }

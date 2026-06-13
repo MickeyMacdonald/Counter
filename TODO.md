@@ -17,7 +17,7 @@ Last updated: 2026-06-09 *(synced against git history through `bd4f1ba`, 2026-05
 - [ ] **App Store assets** — 12.9" iPad screenshots, description + keywords, icon at required sizes, age rating questionnaire.
 
 ### 2. Backup coverage gap + `.cntrdb` testing
-- [ ] ⚠️ **`BookingTaskTemplate` is missing from BOTH backup pipelines** *(found during 2026-06-09 sync)* — it's a live `@Model` in `CounterSchemaV8`, but has no counterpart in `RecoveryBackup` (JSON) and no table in the `.cntrdb` schema. Any restore silently drops all booking task templates. Contradicts the "zero data loss" promise of the 0.9 theme — fix before TestFlight if feasible.
+- [ ] ⚠️ **`BookingTaskTemplate` is missing from BOTH backup pipelines** *(found during 2026-06-09 sync)* — it's a live `@Model` in `CounterSchemaV4`, but has no counterpart in `RecoveryBackup` (JSON) and no table in the `.cntrdb` schema. Any restore silently drops all booking task templates. Contradicts the "zero data loss" promise of the 0.9 theme — fix before TestFlight if feasible.
 - [ ] **`.cntrdb` Phase 1.6 tests** — import is destructive and has zero coverage. Round-trip (seed → export → wipe → import), manifest checksum tamper-refusal, image-count integrity, foreign-key orphan check. The JSON `RecoveryService` got exactly this treatment; `CntrdbImporter` (~1,100 lines) has none. See the cntrdb tasklist for the full test matrix.
 - [ ] **Decide: co-existence vs replacement** — does `.cntrdb` eventually replace JSON backups, or stay the "professional" format alongside the JSON safety net? Flagged in the cntrdb doc as "decide before v1.0."
 
@@ -40,12 +40,12 @@ Last updated: 2026-06-09 *(synced against git history through `bd4f1ba`, 2026-05
 
 > **Strategic decision (2026-04-14):** Data continuity is the dominant theme of `0.9.x-beta`. Counter holds real client data, including health notes, intake answers, and signed agreements. A single bricked launch on a real artist's iPad is a trust event we cannot recover from.
 >
-> **Status 2026-06-09: this theme is complete** except the low-urgency Drafting shim (highlighted above). Schema is at V8; see `Counter/Services/Schema/`.
+> **Status 2026-06-13: this theme is complete** except the low-urgency Drafting shim (highlighted above). Formal `VersionedSchema` cap is V4; later additive model changes migrate implicitly. See `Counter/Services/Schema/`.
 
 ### `[v0.8.x]` Foundation — schema versioning + recovery mode ✅ complete
 
 - [x] **`CounterSchemaV1`** — wrap the schema in a `VersionedSchema`; the seam every future migration plugs into.
-- [x] **`CounterMigrationPlan`** — `SchemaMigrationPlan`, now spanning V1 → V8.
+- [x] **`CounterMigrationPlan`** — `SchemaMigrationPlan`, spanning V1 → V4 (V5–V8 were redundant checksum duplicates; removed 2026-06-13).
 - [x] **Recovery Mode launch path** — no more `fatalError` when the `ModelContainer` can't open; routes to `RecoveryModeView`.
 - [x] **Force-trigger test** — `RecoveryStoreReset.corruptStoreForTesting()` + Settings → Recovery → Developer buttons. *(2026-05-10)*
 - [x] **All schema files registered in the Xcode target.** *(Verified 2026-05-10)*

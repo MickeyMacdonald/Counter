@@ -126,15 +126,11 @@
 		AA000203 /* CntrdbExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000203 /* CntrdbExporter.swift */; };
 		AA000204 /* CntrdbImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000204 /* CntrdbImporter.swift */; };
 		AA000210 /* SQLiteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000210 /* SQLiteService.swift */; };
-		AA000211 /* CounterSchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000211 /* CounterSchemaV5.swift */; };
 		AA000212 /* AdminClientManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000212 /* AdminClientManagementView.swift */; };
-		AA000213 /* CounterSchemaV6.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000213 /* CounterSchemaV6.swift */; };
 		AA000214 /* ArchiveViewPieces.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000214 /* ArchiveViewPieces.swift */; };
 		AA000215 /* ArchiveViewBookings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000215 /* ArchiveViewBookings.swift */; };
-		AA000216 /* CounterSchemaV7.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000216 /* CounterSchemaV7.swift */; };
 		AA000217 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000217 /* NotificationService.swift */; };
 		AA000218 /* SettingsViewNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000218 /* SettingsViewNotifications.swift */; };
-		AA000219 /* CounterSchemaV8.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000219 /* CounterSchemaV8.swift */; };
 		B652055E238D66134543503C /* LaunchStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ED92F817D93181683A94E4 /* LaunchStateTests.swift */; };
 		E044838D298E9FA8E0F80719 /* TestContainerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0EF21CE1C93928DBA56C4F /* TestContainerFactory.swift */; };
 /* End PBXBuildFile section */
@@ -271,15 +267,11 @@
 		AB000203 /* CntrdbExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbExporter.swift; sourceTree = "<group>"; };
 		AB000204 /* CntrdbImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CntrdbImporter.swift; sourceTree = "<group>"; };
 		AB000210 /* SQLiteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteService.swift; sourceTree = "<group>"; };
-		AB000211 /* CounterSchemaV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV5.swift; sourceTree = "<group>"; };
 		AB000212 /* AdminClientManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminClientManagementView.swift; sourceTree = "<group>"; };
-		AB000213 /* CounterSchemaV6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV6.swift; sourceTree = "<group>"; };
 		AB000214 /* ArchiveViewPieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewPieces.swift; sourceTree = "<group>"; };
 		AB000215 /* ArchiveViewBookings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewBookings.swift; sourceTree = "<group>"; };
-		AB000216 /* CounterSchemaV7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV7.swift; sourceTree = "<group>"; };
 		AB000217 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AB000218 /* SettingsViewNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewNotifications.swift; sourceTree = "<group>"; };
-		AB000219 /* CounterSchemaV8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaV8.swift; sourceTree = "<group>"; };
 		AC000001 /* Counter..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter..app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B365E80D888B6F318E1AD98F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -626,10 +618,6 @@
 				AB000095 /* CounterMigrationPlan.swift */,
 				AB000098 /* CounterSchemaV3.swift */,
 				AB000102 /* CounterSchemaV4.swift */,
-				AB000211 /* CounterSchemaV5.swift */,
-				AB000213 /* CounterSchemaV6.swift */,
-				AB000216 /* CounterSchemaV7.swift */,
-				AB000219 /* CounterSchemaV8.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -984,15 +972,11 @@
 				AA000210 /* SQLiteService.swift in Sources */,
 				AA000203 /* CntrdbExporter.swift in Sources */,
 				AA000204 /* CntrdbImporter.swift in Sources */,
-				AA000211 /* CounterSchemaV5.swift in Sources */,
 				AA000212 /* AdminClientManagementView.swift in Sources */,
-				AA000213 /* CounterSchemaV6.swift in Sources */,
 				AA000214 /* ArchiveViewPieces.swift in Sources */,
 				AA000215 /* ArchiveViewBookings.swift in Sources */,
-				AA000216 /* CounterSchemaV7.swift in Sources */,
 				AA000217 /* NotificationService.swift in Sources */,
 				AA000218 /* SettingsViewNotifications.swift in Sources */,
-				AA000219 /* CounterSchemaV8.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -119,7 +119,7 @@ The forward map is intentionally **version-grained**, not ticket-grained. Each v
 > Channel jump: Alpha → Beta. First TestFlight build. `CFBundleShortVersionString: 0.9.0`, `CFBundleVersion: 9000`.
 
 **Landed (Pillars 1 & 2 complete):**
-- Schema versioning V1–V8 with `CounterSchemaV8` + `CounterMigrationPlan`
+- Schema versioning V1–V4 with `CounterSchemaV4` + `CounterMigrationPlan` (V5–V8 removed 2026-06-13 — duplicate checksum crash; additive changes migrate implicitly)
 - Recovery Mode launch path — no more `fatalError` on container failure
 - Pre-migration auto-backup (V2→V3 custom stage)
 - Backup hardening: SHA-256 checksums, pre-restore snapshots, empty-restore guard, image-count verification
