@@ -6,46 +6,6 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>Custom01</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom01</string>
-			</dict>
-			<key>Custom02</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom02</string>
-			</dict>
-			<key>Custom03</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom03</string>
-			</dict>
-			<key>Custom04</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom04</string>
-			</dict>
-			<key>Custom05</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom05</string>
-			</dict>
-			<key>Custom06</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom06</string>
-			</dict>
-			<key>Custom07</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom07</string>
-			</dict>
-			<key>Custom08</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom08</string>
-			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
@@ -55,6 +15,11 @@
 			<dict>
 				<key>CFBundleIconName</key>
 				<string>CounterAppIconXmas</string>
+			</dict>
+			<key>Pride</key>
+			<dict>
+				<key>CFBundleIconName</key>
+				<string>CounterAppIconPride</string>
 			</dict>
 		</dict>
 	</dict>
@@ -62,46 +27,6 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>Custom01</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom01</string>
-			</dict>
-			<key>Custom02</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom02</string>
-			</dict>
-			<key>Custom03</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom03</string>
-			</dict>
-			<key>Custom04</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom04</string>
-			</dict>
-			<key>Custom05</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom05</string>
-			</dict>
-			<key>Custom06</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom06</string>
-			</dict>
-			<key>Custom07</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom07</string>
-			</dict>
-			<key>Custom08</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconCustom08</string>
-			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
@@ -111,6 +36,11 @@
 			<dict>
 				<key>CFBundleIconName</key>
 				<string>CounterAppIconXmas</string>
+			</dict>
+			<key>Pride</key>
+			<dict>
+				<key>CFBundleIconName</key>
+				<string>CounterAppIconPride</string>
 			</dict>
 		</dict>
 	</dict>

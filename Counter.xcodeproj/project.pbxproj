@@ -133,9 +133,7 @@
 		AA000218 /* SettingsViewNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000218 /* SettingsViewNotifications.swift */; };
 		AA000221 /* SettingsAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000221 /* SettingsAppIconView.swift */; };
 		AA000223 /* AppIconModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000223 /* AppIconModels.swift */; };
-		AA000224 /* AppIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000224 /* AppIconRenderer.swift */; };
 		AA000226 /* AppIconStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000226 /* AppIconStore.swift */; };
-		AA000227 /* AppIconEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000227 /* AppIconEditorView.swift */; };
 		B652055E238D66134543503C /* LaunchStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ED92F817D93181683A94E4 /* LaunchStateTests.swift */; };
 		E044838D298E9FA8E0F80719 /* TestContainerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0EF21CE1C93928DBA56C4F /* TestContainerFactory.swift */; };
 /* End PBXBuildFile section */
@@ -280,9 +278,7 @@
 		AB000221 /* SettingsAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAppIconView.swift; sourceTree = "<group>"; };
 		AB000222 /* AppIconInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppIconInfo.plist; sourceTree = "<group>"; };
 		AB000223 /* AppIconModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconModels.swift; sourceTree = "<group>"; };
-		AB000224 /* AppIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconRenderer.swift; sourceTree = "<group>"; };
 		AB000226 /* AppIconStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconStore.swift; sourceTree = "<group>"; };
-		AB000227 /* AppIconEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconEditorView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counterr..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counterr..app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B365E80D888B6F318E1AD98F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -319,7 +315,6 @@
 			children = (
 				790D133B2F871B4E00C31CE2 /* SettingsAboutView.swift */,
 				AB000221 /* SettingsAppIconView.swift */,
-				AB000227 /* AppIconEditorView.swift */,
 				790D13372F87126800C31CE2 /* SettingsAvailabilityView.swift */,
 				790D13352F87115D00C31CE2 /* SettingsClientModeView.swift */,
 				790D13322F87112D00C31CE2 /* SettingsProfileView.swift */,
@@ -756,7 +751,6 @@
 		AE000053 /* AppIcon */ = {
 			isa = PBXGroup;
 			children = (
-				AB000224 /* AppIconRenderer.swift */,
 				AB000226 /* AppIconStore.swift */,
 			);
 			path = AppIcon;
@@ -935,9 +929,7 @@
 				AA000062 /* BusinessLockView.swift in Sources */,
 				790D133C2F871B4E00C31CE2 /* SettingsAboutView.swift in Sources */,
 				AA000221 /* SettingsAppIconView.swift in Sources */,
-				AA000227 /* AppIconEditorView.swift in Sources */,
 				AA000223 /* AppIconModels.swift in Sources */,
-				AA000224 /* AppIconRenderer.swift in Sources */,
 				AA000226 /* AppIconStore.swift in Sources */,
 				AA000063 /* PieceListView.swift in Sources */,
 				AA000064 /* EmailTemplate.swift in Sources */,
