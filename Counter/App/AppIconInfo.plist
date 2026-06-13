@@ -4,43 +4,53 @@
 <dict>
 	<key>CFBundleIcons</key>
 	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+		</dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
 			<key>Pride</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconPride</string>
+				<string>AppIconPride</string>
 			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconUkraine</string>
+				<string>AppIconUkraine</string>
 			</dict>
 			<key>Xmas</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconXmas</string>
+				<string>AppIconHoliday</string>
 			</dict>
 		</dict>
 	</dict>
 	<key>CFBundleIcons~ipad</key>
 	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+		</dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
 			<key>Pride</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconPride</string>
+				<string>AppIconPride</string>
 			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconUkraine</string>
+				<string>AppIconUkraine</string>
 			</dict>
 			<key>Xmas</key>
 			<dict>
 				<key>CFBundleIconName</key>
-				<string>CounterAppIconXmas</string>
+				<string>AppIconHoliday</string>
 			</dict>
 		</dict>
 	</dict>

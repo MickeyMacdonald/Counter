@@ -3,21 +3,17 @@
     {
       "value" : {
         "linear-gradient" : [
-          "display-p3:0.894,0.012,0.012,1.00000",
-          "display-p3:1.000,0.549,0.000,1.00000",
-          "display-p3:1.000,0.929,0.000,1.00000",
-          "display-p3:0.000,0.502,0.149,1.00000",
-          "display-p3:0.000,0.302,1.000,1.00000",
-          "display-p3:0.459,0.031,0.529,1.00000"
+          "extended-srgb:1.00000,0.80000,0.00000,1.00000",
+          "extended-srgb:0.00000,0.53333,1.00000,1.00000"
         ],
         "orientation" : {
           "start" : {
-            "x" : 0,
-            "y" : 0.5
+            "x" : 0.5,
+            "y" : 1
           },
           "stop" : {
-            "x" : 1,
-            "y" : 0.5
+            "x" : 0.5,
+            "y" : 0.3
           }
         }
       }
@@ -25,24 +21,7 @@
     {
       "appearance" : "dark",
       "value" : {
-        "linear-gradient" : [
-          "display-p3:0.600,0.008,0.008,1.00000",
-          "display-p3:0.700,0.380,0.000,1.00000",
-          "display-p3:0.700,0.650,0.000,1.00000",
-          "display-p3:0.000,0.350,0.100,1.00000",
-          "display-p3:0.000,0.200,0.700,1.00000",
-          "display-p3:0.320,0.020,0.380,1.00000"
-        ],
-        "orientation" : {
-          "start" : {
-            "x" : 0,
-            "y" : 0.5
-          },
-          "stop" : {
-            "x" : 1,
-            "y" : 0.5
-          }
-        }
+        "solid" : "display-p3:0.72012,0.62795,0.27762,1.00000"
       }
     }
   ],
@@ -52,6 +31,9 @@
         {
           "blend-mode-specializations" : [
             {
+              "value" : "normal"
+            },
+            {
               "appearance" : "dark",
               "value" : "normal"
             }
@@ -59,19 +41,32 @@
           "fill-specializations" : [
             {
               "value" : {
-                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+                "linear-gradient" : [
+                  "extended-gray:1.00000,1.00000",
+                  "extended-gray:0.50000,1.00000"
+                ],
+                "orientation" : {
+                  "start" : {
+                    "x" : 0.5721784067991933,
+                    "y" : 0.524547619047619
+                  },
+                  "stop" : {
+                    "x" : 0.7611459233650245,
+                    "y" : 0.3184047619047619
+                  }
+                }
               }
             },
             {
               "appearance" : "dark",
               "value" : {
-                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+                "solid" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
               }
             },
             {
               "appearance" : "tinted",
               "value" : {
-                "solid" : "extended-gray:1.00000,1.00000"
+                "solid" : "extended-gray:0.50000,1.00000"
               }
             }
           ],
@@ -86,26 +81,44 @@
             {
               "idiom" : "square",
               "value" : true
+            },
+            {
+              "appearance" : "dark",
+              "idiom" : "square",
+              "value" : true
             }
           ],
+          "hidden" : false,
           "image-name" : "LogoDesignLightIcon.png",
           "name" : "LogoDesignLightIcon",
           "position" : {
             "scale" : 0.75,
             "translation-in-points" : [
               12.375,
-              -10.5390625
+              13.2578125
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "LogoDesign.png",
+          "name" : "LogoDesign",
+          "position" : {
+            "scale" : 0.65,
+            "translation-in-points" : [
+              0,
+              0
             ]
           }
         }
       ],
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.35
+        "opacity" : 0.5
       },
       "translucency" : {
         "enabled" : true,
-        "value" : 0.45
+        "value" : 0.5
       }
     }
   ],

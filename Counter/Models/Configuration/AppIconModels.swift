@@ -1,13 +1,12 @@
 import Foundation
 
-/// A built-in icon shipped in the asset catalog and registered in `AppIconInfo.plist`.
+/// A built-in icon shipped as an Icon Composer bundle and registered in `AppIconInfo.plist`.
 struct BuiltInAppIcon: Identifiable, Equatable, Codable {
     let id: String
     let displayName: String
     let subtitle: String
     /// Key passed to `setAlternateIconName`. `nil` restores the primary icon.
     let alternateName: String?
-    let assetSetName: String
     let thumbnailAssetName: String
 
     static let classic = BuiltInAppIcon(
@@ -15,7 +14,6 @@ struct BuiltInAppIcon: Identifiable, Equatable, Codable {
         displayName: "Classic",
         subtitle: "Default Counter icon",
         alternateName: nil,
-        assetSetName: "CounterAppIcon",
         thumbnailAssetName: "AppIconThumbClassic"
     )
 
@@ -26,7 +24,6 @@ struct BuiltInAppIcon: Identifiable, Equatable, Codable {
             displayName: "Ukraine",
             subtitle: "Blue and yellow",
             alternateName: "Ukraine",
-            assetSetName: "CounterAppIconUkraine",
             thumbnailAssetName: "AppIconThumbUkraine"
         ),
         BuiltInAppIcon(
@@ -34,7 +31,6 @@ struct BuiltInAppIcon: Identifiable, Equatable, Codable {
             displayName: "Holiday",
             subtitle: "Seasonal",
             alternateName: "Xmas",
-            assetSetName: "CounterAppIconXmas",
             thumbnailAssetName: "AppIconThumbXmas"
         ),
         BuiltInAppIcon(
@@ -42,7 +38,6 @@ struct BuiltInAppIcon: Identifiable, Equatable, Codable {
             displayName: "Pride",
             subtitle: "Rainbow",
             alternateName: "Pride",
-            assetSetName: "CounterAppIconPride",
             thumbnailAssetName: "AppIconThumbPride"
         )
     ]
