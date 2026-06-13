@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
+import UIKit
 
 // MARK: - Recovery View
 
@@ -31,6 +32,8 @@ struct SettingsViewRecovery: View {
     @State private var isExportingCntrdb = false
     @State private var isImportingCntrdb = false
     @State private var lastCntrdbExportURL: URL?
+    @State private var showCntrdbExportPicker = false
+    @State private var pendingCntrdbExportURL: URL?
     @State private var showCntrdbImportPicker = false
     @State private var pendingCntrdbImportURL: URL?
     @State private var showCntrdbImportConfirm = false
@@ -77,9 +80,18 @@ struct SettingsViewRecovery: View {
         } message: {
             Text(errorMessage)
         }
-        // .cntrdb file picker — uses UTType.folder because we have not yet
-        // registered com.counter.cntrdb in Info.plist. Validation in
-        // performCntrdbImport rejects folders that aren't actual packages.
+        // Export save panel — builds the package in Documents first, then
+        // presents UIDocumentPickerViewController to copy it to a user-chosen
+        // Files location. SwiftUI's fileExporter cannot reliably export folder
+        // bundles staged in tmp.
+        .sheet(isPresented: $showCntrdbExportPicker, onDismiss: handleCntrdbExportPickerDismiss) {
+            if let url = pendingCntrdbExportURL {
+                CntrdbDocumentExportPicker(url: url, onComplete: handleCntrdbExportCompletion)
+            }
+        }
+        // Import picker — uses UTType.folder because com.counter.cntrdb is not
+        // yet registered in Info.plist. Validation in performCntrdbImport
+        // rejects folders that aren't actual packages.
         .fileImporter(
             isPresented: $showCntrdbImportPicker,
             allowedContentTypes: [.folder],
@@ -234,7 +246,7 @@ struct SettingsViewRecovery: View {
         Section {
             // Export
             Button {
-                Task { await performCntrdbExport() }
+                Task { await prepareCntrdbExport() }
             } label: {
                 HStack {
                     Label("Export to .cntrdb…", systemImage: "square.and.arrow.up.on.square")
@@ -266,7 +278,7 @@ struct SettingsViewRecovery: View {
         } header: {
             Text("Database File (.cntrdb)")
         } footer: {
-            Text(".cntrdb is a portable database file you can share, archive, or move between devices. Importing replaces all current data — a safety snapshot is taken first so you can roll back.")
+            Text("Export opens a save panel so you can place the .cntrdb file in iCloud Drive, On My iPad, or any connected location. Importing replaces all current data — a safety snapshot is taken first so you can roll back.")
         }
     }
 
@@ -421,12 +433,13 @@ struct SettingsViewRecovery: View {
 
     // MARK: - Cntrdb actions
 
-    /// Writes a fresh `.cntrdb` package into Documents/Counter Exports/
-    /// and stashes the URL so the ShareLink row can pick it up.
-    /// Files-app-visible because UIFileSharingEnabled is set on the bundle.
-    private func performCntrdbExport() async {
+    /// Builds a fresh `.cntrdb` package in Documents, then presents the
+    /// system export picker so the user chooses a Files location.
+    private func prepareCntrdbExport() async {
         isExportingCntrdb = true
         defer { isExportingCntrdb = false }
+
+        removePendingCntrdbExport()
 
         do {
             let fm = FileManager.default
@@ -448,11 +461,46 @@ struct SettingsViewRecovery: View {
                 notes: nil
             )
 
-            lastCntrdbExportURL = url
+            pendingCntrdbExportURL = url
+            showCntrdbExportPicker = true
         } catch {
             errorMessage = error.localizedDescription
             showError = true
         }
+    }
+
+    private func handleCntrdbExportCompletion(_ result: Result<URL, Error>) {
+        showCntrdbExportPicker = false
+
+        switch result {
+        case .success:
+            // asCopy: true leaves the Documents staging copy for Share Last Export.
+            lastCntrdbExportURL = pendingCntrdbExportURL
+            pendingCntrdbExportURL = nil
+        case .failure(let error):
+            let nsError = error as NSError
+            if nsError.domain == NSCocoaErrorDomain, nsError.code == NSUserCancelledError {
+                removePendingCntrdbExport()
+                return
+            }
+            removePendingCntrdbExport()
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+
+    /// Swipe-to-dismiss on the export sheet should discard the unused staging copy.
+    private func handleCntrdbExportPickerDismiss() {
+        guard showCntrdbExportPicker == false, pendingCntrdbExportURL != nil else { return }
+        removePendingCntrdbExport()
+    }
+
+    /// Removes an unused staging export from Documents.
+    private func removePendingCntrdbExport() {
+        if let url = pendingCntrdbExportURL {
+            try? FileManager.default.removeItem(at: url)
+        }
+        pendingCntrdbExportURL = nil
     }
 
     /// Validates the user-picked folder, asks the importer to do the
@@ -495,6 +543,48 @@ struct SettingsViewRecovery: View {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
         return formatter.string(fromByteCount: Int64(bytes))
+    }
+}
+
+// MARK: - Cntrdb document export picker
+
+/// Presents the system Files save panel for a folder bundle already on disk.
+/// `asCopy: true` copies to the user-chosen location and leaves the staging
+/// copy in Documents for Share Last Export.
+private struct CntrdbDocumentExportPicker: UIViewControllerRepresentable {
+    let url: URL
+    let onComplete: (Result<URL, Error>) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onComplete: onComplete)
+    }
+
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let picker = UIDocumentPickerViewController(forExporting: [url], asCopy: true)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+
+    final class Coordinator: NSObject, UIDocumentPickerDelegate {
+        let onComplete: (Result<URL, Error>) -> Void
+
+        init(onComplete: @escaping (Result<URL, Error>) -> Void) {
+            self.onComplete = onComplete
+        }
+
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            if let destination = urls.first {
+                onComplete(.success(destination))
+            } else {
+                onComplete(.failure(CntrdbError.exportFailed("No export destination was selected.")))
+            }
+        }
+
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            onComplete(.failure(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError)))
+        }
     }
 }
 
