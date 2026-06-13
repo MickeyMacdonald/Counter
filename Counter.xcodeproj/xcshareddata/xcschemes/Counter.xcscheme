@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2630"
+   LastUpgradeVersion = "2650"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AF000001"
-               BuildableName = "Counter..app"
+               BuildableName = "Counterr..app"
                BlueprintName = "Counter"
-               ReferencedContainer = "container:CountePreAlpha.xcodeproj">
+               ReferencedContainer = "container:Counter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AF000001"
-            BuildableName = "Counter..app"
+            BuildableName = "Counterr..app"
             BlueprintName = "Counter"
-            ReferencedContainer = "container:CountePreAlpha.xcodeproj">
+            ReferencedContainer = "container:Counter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AF000001"
-            BuildableName = "Counter..app"
+            BuildableName = "Counterr..app"
             BlueprintName = "Counter"
-            ReferencedContainer = "container:CountePreAlpha.xcodeproj">
+            ReferencedContainer = "container:Counter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

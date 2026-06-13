@@ -109,11 +109,7 @@ actor CntrdbImporter {
         //    actor in one shot), then wipe and insert.
         let payload = try readAllRows(db: db)
 
-        try await MainActor.run {
-            try wipeAllData(context: context)
-            try insertAll(payload, context: context)
-            try context.save()
-        }
+        try await applyImportedPayload(payload, context: context)
 
         // 10. Replace Documents/CounterImages with the package's Images/.
         try restoreImages(from: pkg.imagesURL, expectedCount: manifest.imageCount)
@@ -767,6 +763,13 @@ actor CntrdbImporter {
     }
 
     // MARK: - Wipe (parallels RecoveryService.wipeAllData)
+
+    @MainActor
+    private func applyImportedPayload(_ payload: Payload, context: ModelContext) throws {
+        try wipeAllData(context: context)
+        try insertAll(payload, context: context)
+        try context.save()
+    }
 
     @MainActor
     private func wipeAllData(context: ModelContext) throws {

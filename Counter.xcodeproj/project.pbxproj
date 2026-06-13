@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -150,7 +150,7 @@
 		0A0EF21CE1C93928DBA56C4F /* TestContainerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestContainerFactory.swift; sourceTree = "<group>"; };
 		3CBF1FB065436E68F310E1F8 /* BackupFixtures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupFixtures.swift; sourceTree = "<group>"; };
 		506926CF9C61518902D54DCC /* RecoveryServiceIntegrityTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecoveryServiceIntegrityTests.swift; sourceTree = "<group>"; };
-		55DBBE81B5481D82EF6CC1BB /* CounterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		55DBBE81B5481D82EF6CC1BB /* .xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = .xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		790D13322F87112D00C31CE2 /* SettingsProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfileView.swift; sourceTree = "<group>"; };
 		790D13352F87115D00C31CE2 /* SettingsClientModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsClientModeView.swift; sourceTree = "<group>"; };
 		790D13372F87126800C31CE2 /* SettingsAvailabilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAvailabilityView.swift; sourceTree = "<group>"; };
@@ -272,25 +272,21 @@
 		AB000215 /* ArchiveViewBookings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewBookings.swift; sourceTree = "<group>"; };
 		AB000217 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AB000218 /* SettingsViewNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewNotifications.swift; sourceTree = "<group>"; };
-		AC000001 /* Counter..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter..app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC000001 /* Counterr..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counterr..app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B365E80D888B6F318E1AD98F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AD000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E378C26CA6D4798C54B49002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				438DDC1D8007C003437B028F /* Foundation.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -304,7 +300,6 @@
 				01C381ED907EACF3F8933A40 /* RecoveryServiceRoundTripTests.swift */,
 				A0ED92F817D93181683A94E4 /* LaunchStateTests.swift */,
 			);
-			name = CounterTests;
 			path = CounterTests;
 			sourceTree = "<group>";
 		};
@@ -372,7 +367,6 @@
 				3CBF1FB065436E68F310E1F8 /* BackupFixtures.swift */,
 				0A0EF21CE1C93928DBA56C4F /* TestContainerFactory.swift */,
 			);
-			name = Helpers;
 			path = Helpers;
 			sourceTree = "<group>";
 		};
@@ -493,8 +487,8 @@
 		AE000010 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AC000001 /* Counter..app */,
-				55DBBE81B5481D82EF6CC1BB /* CounterTests.xctest */,
+				AC000001 /* Counterr..app */,
+				55DBBE81B5481D82EF6CC1BB /* .xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -769,7 +763,7 @@
 			);
 			name = CounterTests;
 			productName = CounterTests;
-			productReference = 55DBBE81B5481D82EF6CC1BB /* CounterTests.xctest */;
+			productReference = 55DBBE81B5481D82EF6CC1BB /* .xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		AF000001 /* Counter */ = {
@@ -782,11 +776,9 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = Counter;
 			productName = Counter;
-			productReference = AC000001 /* Counter..app */;
+			productReference = AC000001 /* Counterr..app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -797,15 +789,14 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					AF000001 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
-			buildConfigurationList = AG000001 /* Build configuration list for PBXProject "CountePreAlpha" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = AG000001 /* Build configuration list for PBXProject "Counter" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -813,6 +804,7 @@
 				Base,
 			);
 			mainGroup = AE000001;
+			preferredProjectObjectVersion = 100;
 			productRefGroup = AE000010 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -826,27 +818,22 @@
 /* Begin PBXResourcesBuildPhase section */
 		92F0FB451914A08A5346797B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AF000003 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				7983542D2FB17C49002307EC /* PrivacyInfo.xcprivacy in Resources */,
 				AA000020 /* Assets.xcassets in Resources */,
 				AA000021 /* Preview Assets.xcassets in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		27481C607BA1901965F420DB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				9EF7D8796A24F090C2A5DF0F /* RecoveryBackupCodableTests.swift in Sources */,
 				43E63BD0A7A44BDB8A41C46A /* RecoveryServiceIntegrityTests.swift in Sources */,
@@ -855,11 +842,9 @@
 				9733C61BC0FA4B23297ADB94 /* BackupFixtures.swift in Sources */,
 				E044838D298E9FA8E0F80719 /* TestContainerFactory.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AF000002 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				AA000001 /* CounterApp.swift in Sources */,
 				AA000002 /* ContentView.swift in Sources */,
@@ -978,7 +963,6 @@
 				AA000217 /* NotificationService.swift in Sources */,
 				AA000218 /* SettingsViewNotifications.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -992,10 +976,9 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		60FB84E90450E57E4A0FDED1 /* Debug */ = {
+		60FB84E90450E57E4A0FDED1 /* Debug configuration for PBXNativeTarget "CounterTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
@@ -1004,14 +987,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counter.app/Counter";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counterr.app/Counterr";
 			};
 			name = Debug;
 		};
-		942C35FA7E9C03EED53B5736 /* Release */ = {
+		942C35FA7E9C03EED53B5736 /* Release configuration for PBXNativeTarget "CounterTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
@@ -1020,12 +1002,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counter.app/Counter";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counterr.app/Counterr";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		AG000002 /* Debug */ = {
+		AG000002 /* Debug configuration for PBXProject "Counter" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1071,7 +1053,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1081,7 +1063,7 @@
 			};
 			name = Debug;
 		};
-		AG000004 /* Release */ = {
+		AG000004 /* Release configuration for PBXProject "Counter" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1121,7 +1103,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1130,21 +1112,21 @@
 			};
 			name = Release;
 		};
-		AG000005 /* Debug */ = {
+		AG000005 /* Debug configuration for PBXNativeTarget "Counter" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = CounterAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9000;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1157,8 +1139,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
-				PRODUCT_NAME = Counter.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.counter.app;
+				PRODUCT_NAME = Counterr.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1167,21 +1149,22 @@
 			};
 			name = Debug;
 		};
-		AG000006 /* Release */ = {
+		AG000006 /* Release configuration for PBXNativeTarget "Counter" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = CounterAppIcon;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9000;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Counter uses the camera to photograph tattoo progress, references, and inspiration.";
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Counter uses Face ID to unlock business features when Client Mode is enabled.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Counter reads your photo library to import reference and progress images for your pieces.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1194,8 +1177,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app;
-				PRODUCT_NAME = Counter.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.counter.app;
+				PRODUCT_NAME = Counterr.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1210,28 +1193,25 @@
 		70AFFE3EFE99710988A61069 /* Build configuration list for PBXNativeTarget "CounterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				942C35FA7E9C03EED53B5736 /* Release */,
-				60FB84E90450E57E4A0FDED1 /* Debug */,
+				942C35FA7E9C03EED53B5736 /* Release configuration for PBXNativeTarget "CounterTests" */,
+				60FB84E90450E57E4A0FDED1 /* Debug configuration for PBXNativeTarget "CounterTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AG000001 /* Build configuration list for PBXProject "CountePreAlpha" */ = {
+		AG000001 /* Build configuration list for PBXProject "Counter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AG000002 /* Debug */,
-				AG000004 /* Release */,
+				AG000002 /* Debug configuration for PBXProject "Counter" */,
+				AG000004 /* Release configuration for PBXProject "Counter" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		AG000003 /* Build configuration list for PBXNativeTarget "Counter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AG000005 /* Debug */,
-				AG000006 /* Release */,
+				AG000005 /* Debug configuration for PBXNativeTarget "Counter" */,
+				AG000006 /* Release configuration for PBXNativeTarget "Counter" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

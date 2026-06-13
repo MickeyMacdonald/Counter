@@ -96,9 +96,7 @@ actor RecoveryService {
         folderPrefix: String
     ) async throws -> BackupMetadata {
         // 1. Serialize all models on the main actor (ModelContext requirement)
-        let backup = try await MainActor.run {
-            try serializeAllModels(context: context)
-        }
+        let backup = try await serializeAllModels(context: context)
 
         // 2. Encode to JSON
         let encoder = JSONEncoder()
@@ -265,11 +263,7 @@ actor RecoveryService {
         //    for ModelContext). If this throws, the pre-restore snapshot
         //    from step 7 still exists and the user can re-run restore
         //    against it from Settings → Recovery.
-        try await MainActor.run {
-            try wipeAllData(context: context)
-            try deserializeAndInsert(backup, context: context)
-            try context.save()
-        }
+        try await applyRestoredBackup(backup, context: context)
 
         // 9. Restore images and verify the post-copy file count matches
         //    what the metadata claimed. A mismatch means the destination
@@ -326,6 +320,13 @@ actor RecoveryService {
     }
 
     // MARK: - Serialization
+
+    @MainActor
+    private func applyRestoredBackup(_ backup: RecoveryBackup, context: ModelContext) throws {
+        try wipeAllData(context: context)
+        try deserializeAndInsert(backup, context: context)
+        try context.save()
+    }
 
     @MainActor
     private func serializeAllModels(context: ModelContext) throws -> RecoveryBackup {

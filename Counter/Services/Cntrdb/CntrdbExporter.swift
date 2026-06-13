@@ -56,18 +56,12 @@ actor CntrdbExporter {
         //    RecoveryService.serializeAllModels (also @MainActor).
         let totalCount: Int
         do {
-            totalCount = try await MainActor.run { [self] in
-                let s = try Self.takeSnapshot(context: context)
-                guard s.totalCount > 0 else {
-                    throw CntrdbError.exportFailed("Store is empty — refusing to export an empty .cntrdb.")
-                }
-                try db.transaction {
-                    try Self.writeMeta(db: db, sourceDevice: sourceDevice, notes: notes)
-                    try Self.writeUserDefaults(db: db)
-                    try self.writeAllModels(db: db, snapshot: s)
-                }
-                return s.totalCount
-            }
+            totalCount = try await exportModelsToDatabase(
+                context: context,
+                db: db,
+                sourceDevice: sourceDevice,
+                notes: notes
+            )
             db.close()
         } catch {
             db.close()
@@ -115,6 +109,25 @@ actor CntrdbExporter {
     }
 
     // MARK: Snapshot
+
+    @MainActor
+    private func exportModelsToDatabase(
+        context: ModelContext,
+        db: SQLiteConnection,
+        sourceDevice: String?,
+        notes: String?
+    ) throws -> Int {
+        let s = try Self.takeSnapshot(context: context)
+        guard s.totalCount > 0 else {
+            throw CntrdbError.exportFailed("Store is empty — refusing to export an empty .cntrdb.")
+        }
+        try db.transaction {
+            try Self.writeMeta(db: db, sourceDevice: sourceDevice, notes: notes)
+            try Self.writeUserDefaults(db: db)
+            try writeAllModels(db: db, snapshot: s)
+        }
+        return s.totalCount
+    }
 
     /// Live snapshot of the store at export time. Holds direct references to
     /// SwiftData objects (so we can read computed-but-stored fields) plus
