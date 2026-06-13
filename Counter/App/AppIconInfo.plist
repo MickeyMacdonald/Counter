@@ -6,6 +6,11 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>Pride</key>
+			<dict>
+				<key>CFBundleIconName</key>
+				<string>CounterAppIconPride</string>
+			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
@@ -15,11 +20,6 @@
 			<dict>
 				<key>CFBundleIconName</key>
 				<string>CounterAppIconXmas</string>
-			</dict>
-			<key>Pride</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconPride</string>
 			</dict>
 		</dict>
 	</dict>
@@ -27,6 +27,11 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>Pride</key>
+			<dict>
+				<key>CFBundleIconName</key>
+				<string>CounterAppIconPride</string>
+			</dict>
 			<key>Ukraine</key>
 			<dict>
 				<key>CFBundleIconName</key>
@@ -36,11 +41,6 @@
 			<dict>
 				<key>CFBundleIconName</key>
 				<string>CounterAppIconXmas</string>
-			</dict>
-			<key>Pride</key>
-			<dict>
-				<key>CFBundleIconName</key>
-				<string>CounterAppIconPride</string>
 			</dict>
 		</dict>
 	</dict>

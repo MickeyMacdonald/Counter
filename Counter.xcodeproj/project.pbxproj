@@ -279,7 +279,7 @@
 		AB000222 /* AppIconInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppIconInfo.plist; sourceTree = "<group>"; };
 		AB000223 /* AppIconModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconModels.swift; sourceTree = "<group>"; };
 		AB000226 /* AppIconStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconStore.swift; sourceTree = "<group>"; };
-		AC000001 /* Counterr..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counterr..app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC000001 /* Counter..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter..app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B365E80D888B6F318E1AD98F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
@@ -497,7 +497,7 @@
 		AE000010 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AC000001 /* Counterr..app */,
+				AC000001 /* Counter..app */,
 				55DBBE81B5481D82EF6CC1BB /* .xctest */,
 			);
 			name = Products;
@@ -797,7 +797,7 @@
 			);
 			name = Counter;
 			productName = Counter;
-			productReference = AC000001 /* Counterr..app */;
+			productReference = AC000001 /* Counter..app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1009,7 +1009,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counterr.app/Counterr";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counter..app/Counter.";
 			};
 			name = Debug;
 		};
@@ -1024,7 +1024,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.counterprealpha.app.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counterr.app/Counterr";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Counter..app/Counter.";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1141,8 +1141,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9002;
+				CURRENT_PROJECT_VERSION = 9005;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
+				DEVELOPMENT_TEAM = KFYTN6G853;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/App/AppIconInfo.plist;
@@ -1162,8 +1163,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.counter.app;
-				PRODUCT_NAME = Counterr.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.thecounterapp.app;
+				PRODUCT_NAME = Counter.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1179,8 +1180,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9002;
+				CURRENT_PROJECT_VERSION = 9005;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
+				DEVELOPMENT_TEAM = KFYTN6G853;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/App/AppIconInfo.plist;
@@ -1200,8 +1202,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.9.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.counter.app;
-				PRODUCT_NAME = Counterr.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.thecounterapp.app;
+				PRODUCT_NAME = Counter.;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;

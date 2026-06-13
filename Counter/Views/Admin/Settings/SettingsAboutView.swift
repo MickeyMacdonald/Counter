@@ -26,7 +26,7 @@ struct SettingsAboutView: View {
             Section {
                 LabeledContent("Version", value: appVersion)
                 LabeledContent("Build", value: buildNumber)
-                LabeledContent("Channel", value: "Beta")
+                LabeledContent("Stage", value: "Beta")
             }
         }
         .listStyle(.insetGrouped)
