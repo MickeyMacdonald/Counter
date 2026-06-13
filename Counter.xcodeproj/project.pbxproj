@@ -131,6 +131,11 @@
 		AA000215 /* ArchiveViewBookings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000215 /* ArchiveViewBookings.swift */; };
 		AA000217 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000217 /* NotificationService.swift */; };
 		AA000218 /* SettingsViewNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000218 /* SettingsViewNotifications.swift */; };
+		AA000221 /* SettingsAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000221 /* SettingsAppIconView.swift */; };
+		AA000223 /* AppIconModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000223 /* AppIconModels.swift */; };
+		AA000224 /* AppIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000224 /* AppIconRenderer.swift */; };
+		AA000226 /* AppIconStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000226 /* AppIconStore.swift */; };
+		AA000227 /* AppIconEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000227 /* AppIconEditorView.swift */; };
 		B652055E238D66134543503C /* LaunchStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ED92F817D93181683A94E4 /* LaunchStateTests.swift */; };
 		E044838D298E9FA8E0F80719 /* TestContainerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0EF21CE1C93928DBA56C4F /* TestContainerFactory.swift */; };
 /* End PBXBuildFile section */
@@ -272,6 +277,12 @@
 		AB000215 /* ArchiveViewBookings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewBookings.swift; sourceTree = "<group>"; };
 		AB000217 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AB000218 /* SettingsViewNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewNotifications.swift; sourceTree = "<group>"; };
+		AB000221 /* SettingsAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAppIconView.swift; sourceTree = "<group>"; };
+		AB000222 /* AppIconInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppIconInfo.plist; sourceTree = "<group>"; };
+		AB000223 /* AppIconModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconModels.swift; sourceTree = "<group>"; };
+		AB000224 /* AppIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconRenderer.swift; sourceTree = "<group>"; };
+		AB000226 /* AppIconStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconStore.swift; sourceTree = "<group>"; };
+		AB000227 /* AppIconEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconEditorView.swift; sourceTree = "<group>"; };
 		AC000001 /* Counterr..app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counterr..app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B365E80D888B6F318E1AD98F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -307,6 +318,8 @@
 			isa = PBXGroup;
 			children = (
 				790D133B2F871B4E00C31CE2 /* SettingsAboutView.swift */,
+				AB000221 /* SettingsAppIconView.swift */,
+				AB000227 /* AppIconEditorView.swift */,
 				790D13372F87126800C31CE2 /* SettingsAvailabilityView.swift */,
 				790D13352F87115D00C31CE2 /* SettingsClientModeView.swift */,
 				790D13322F87112D00C31CE2 /* SettingsProfileView.swift */,
@@ -398,6 +411,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000001 /* CounterApp.swift */,
+				AB000222 /* AppIconInfo.plist */,
 				AB000002 /* ContentView.swift */,
 				AB000084 /* AppNavigationCoordinator.swift */,
 				790D133F2F871FAA00C31CE2 /* WelcomeSetupView.swift */,
@@ -477,6 +491,7 @@
 				AE000026 /* Recovery */,
 				AE000050 /* Cntrdb */,
 				AE000051 /* SQLite */,
+				AE000053 /* AppIcon */,
 				AE000027 /* Preview */,
 				AB000099 /* PermissionService.swift */,
 				AB000217 /* NotificationService.swift */,
@@ -689,6 +704,7 @@
 				AB000034 /* UserProfile.swift */,
 				AB000064 /* EmailTemplate.swift */,
 				AB000008 /* Agreement.swift */,
+				AB000223 /* AppIconModels.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -735,6 +751,15 @@
 				AB000215 /* ArchiveViewBookings.swift */,
 			);
 			path = Archive;
+			sourceTree = "<group>";
+		};
+		AE000053 /* AppIcon */ = {
+			isa = PBXGroup;
+			children = (
+				AB000224 /* AppIconRenderer.swift */,
+				AB000226 /* AppIconStore.swift */,
+			);
+			path = AppIcon;
 			sourceTree = "<group>";
 		};
 		E4E51EBDD83CB8EC6CD28186 /* iOS */ = {
@@ -909,6 +934,11 @@
 				AA000061 /* BusinessLockManager.swift in Sources */,
 				AA000062 /* BusinessLockView.swift in Sources */,
 				790D133C2F871B4E00C31CE2 /* SettingsAboutView.swift in Sources */,
+				AA000221 /* SettingsAppIconView.swift in Sources */,
+				AA000227 /* AppIconEditorView.swift in Sources */,
+				AA000223 /* AppIconModels.swift in Sources */,
+				AA000224 /* AppIconRenderer.swift in Sources */,
+				AA000226 /* AppIconStore.swift in Sources */,
 				AA000063 /* PieceListView.swift in Sources */,
 				AA000064 /* EmailTemplate.swift in Sources */,
 				AA000065 /* SettingsViewEmailTemplateEditor.swift in Sources */,
@@ -1119,10 +1149,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9000;
+				CURRENT_PROJECT_VERSION = 9002;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/App/AppIconInfo.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
@@ -1153,14 +1184,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = CounterAppIcon;
-				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9000;
+				CURRENT_PROJECT_VERSION = 9002;
 				DEVELOPMENT_ASSET_PATHS = "\"Counter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/App/AppIconInfo.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Counter;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";

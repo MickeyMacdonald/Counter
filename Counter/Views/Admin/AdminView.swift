@@ -15,6 +15,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case schedule       = "schedule"
     case rates          = "rates"
     case about          = "about"
+    case appIcon        = "appIcon"
     case recovery       = "recovery"
     case support        = "support"
     case clientMode     = "clientMode"
@@ -43,6 +44,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .schedule:         "Schedule"
         case .rates:            "Rates"
         case .about:            "About"
+        case .appIcon:          "App Icon"
         case .recovery:         "Recovery"
         case .support:          "Support Counter"
         case .clientMode:       "Client Mode"
@@ -62,7 +64,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 
     var adminFilter: AdminFilter {
         switch self {
-        case .profile, .emailTemplates, .about, .recovery, .support,
+        case .profile, .emailTemplates, .about, .appIcon, .recovery, .support,
              .clientMode, .pieces, .rates, .schedule, .taskTemplates, .notifications:
             return .settings
         case .statistics, .trends, .financial, .reports, .paymentHistory:
@@ -77,6 +79,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .profile:          "person.crop.circle"
         case .emailTemplates:   "envelope.open.fill"
         case .about:            "info.circle"
+        case .appIcon:          "app.badge"
         case .support:          "heart.fill"
         case .clientRecords:    "person.text.rectangle.fill"
         case .statistics:       "chart.bar.fill"
@@ -112,7 +115,7 @@ struct SettingsView: View {
     private static let settingsItems:  [SettingsCategory] = [
         .profile, .pieces, .clientMode, .emailTemplates,
         .schedule, .taskTemplates, .notifications, .rates,
-        .about, .recovery, .support,
+        .about, .appIcon, .recovery, .support,
     ]
     private static let analyticsItems: [SettingsCategory] = [
         .statistics, .trends, .financial, .reports, .paymentHistory,
@@ -199,6 +202,8 @@ struct SettingsView: View {
             SettingsViewEmailTemplates()
         case .about:
             SettingsAboutView()
+        case .appIcon:
+            SettingsAppIconView()
         case .statistics:
             SettingsStatisticsView()
         case .schedule:

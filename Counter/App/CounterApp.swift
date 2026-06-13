@@ -53,6 +53,7 @@ struct CounterApp: App {
                         SeedDataService.seedIfNeeded(context: container.mainContext)
                         let ctx = container.mainContext
                         Task { await NotificationService.shared.syncAll(context: ctx) }
+                        Task { @MainActor in await AppIconStore.shared.syncStoredSelectionIfNeeded() }
                     }
                     .modelContainer(container)
             case .recoveryMode(let error):

@@ -1,0 +1,118 @@
+{
+  "fill-specializations" : [
+    {
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.894,0.012,0.012,1.00000",
+          "display-p3:1.000,0.549,0.000,1.00000",
+          "display-p3:1.000,0.929,0.000,1.00000",
+          "display-p3:0.000,0.502,0.149,1.00000",
+          "display-p3:0.000,0.302,1.000,1.00000",
+          "display-p3:0.459,0.031,0.529,1.00000"
+        ],
+        "orientation" : {
+          "start" : {
+            "x" : 0,
+            "y" : 0.5
+          },
+          "stop" : {
+            "x" : 1,
+            "y" : 0.5
+          }
+        }
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.600,0.008,0.008,1.00000",
+          "display-p3:0.700,0.380,0.000,1.00000",
+          "display-p3:0.700,0.650,0.000,1.00000",
+          "display-p3:0.000,0.350,0.100,1.00000",
+          "display-p3:0.000,0.200,0.700,1.00000",
+          "display-p3:0.320,0.020,0.380,1.00000"
+        ],
+        "orientation" : {
+          "start" : {
+            "x" : 0,
+            "y" : 0.5
+          },
+          "stop" : {
+            "x" : 1,
+            "y" : 0.5
+          }
+        }
+      }
+    }
+  ],
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "blend-mode-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : "normal"
+            }
+          ],
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:1.00000,1.00000"
+              }
+            }
+          ],
+          "glass-specializations" : [
+            {
+              "value" : true
+            },
+            {
+              "appearance" : "tinted",
+              "value" : false
+            },
+            {
+              "idiom" : "square",
+              "value" : true
+            }
+          ],
+          "image-name" : "LogoDesignLightIcon.png",
+          "name" : "LogoDesignLightIcon",
+          "position" : {
+            "scale" : 0.75,
+            "translation-in-points" : [
+              12.375,
+              -10.5390625
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.35
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.45
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
