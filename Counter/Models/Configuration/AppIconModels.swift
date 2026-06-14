@@ -1,6 +1,7 @@
 import Foundation
 
-/// A built-in icon shipped as an Icon Composer bundle and registered in `AppIconInfo.plist`.
+/// A built-in icon shipped as an Icon Composer `.icon` bundle and registered via the
+/// target's `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES` build setting.
 struct BuiltInAppIcon: Identifiable, Equatable, Codable {
     let id: String
     let displayName: String
@@ -23,21 +24,21 @@ struct BuiltInAppIcon: Identifiable, Equatable, Codable {
             id: "ukraine",
             displayName: "Ukraine",
             subtitle: "Blue and yellow",
-            alternateName: "Ukraine",
+            alternateName: "AppIconUkraine",
             thumbnailAssetName: "AppIconThumbUkraine"
         ),
         BuiltInAppIcon(
             id: "xmas",
             displayName: "Holiday",
             subtitle: "Seasonal",
-            alternateName: "Xmas",
+            alternateName: "AppIconHoliday",
             thumbnailAssetName: "AppIconThumbXmas"
         ),
         BuiltInAppIcon(
             id: "pride",
             displayName: "Pride",
             subtitle: "Rainbow",
-            alternateName: "Pride",
+            alternateName: "AppIconPride",
             thumbnailAssetName: "AppIconThumbPride"
         )
     ]
