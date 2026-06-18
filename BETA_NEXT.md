@@ -7,7 +7,8 @@ _Last updated: 2026-06-09_
 
 - [ ] **Run test suite** — open project in Xcode, pick any iPad simulator, hit `⌘U`. Fix any compile errors that surface (type names, enum cases).
 - [ ] **Archive & upload to TestFlight** — `Any iPad Device (arm64)` → Product → Archive → Distribute App → TestFlight & App Store.
-- [ ] **App Store Connect** — confirm app record exists for `com.counterprealpha.app`; add the published Privacy Policy / ToS URLs to the listing; add internal testers once build processes.
+- [ ] **App Store Connect** — confirm app record exists for `com.thecounterapp.app` (the live bundle ID); add the published Privacy Policy / ToS URLs to the listing; add internal testers once build processes.
+- [ ] **Deprecate legacy bundle IDs** — `com.counterprealpha.app` and `com.countercm.app` are retired; remove/deprecate their App Store Connect app records and unregister the App IDs in the Developer portal.
 - [ ] **App Store assets** — 12.9" screenshots, description, keywords, age rating.
 
 ## Done since last update (2026-05-17)

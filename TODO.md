@@ -13,7 +13,8 @@ Last updated: 2026-06-09 *(synced against git history through `bd4f1ba`, 2026-05
 ### 1. Ship the TestFlight build *(the critical path — everything gating beta is done except these mechanical steps)*
 - [ ] **Run the test suite** — open in Xcode, any iPad simulator, `⌘U`; fix anything that surfaces. *(Unblocked since 2026-05-16.)*
 - [ ] **Archive & upload** — `Any iPad Device (arm64)` → Product → Archive → Distribute App → TestFlight & App Store.
-- [ ] **App Store Connect** — confirm the app record for `com.counterprealpha.app`; add the published Privacy Policy / ToS URLs to the listing; add internal testers once the build processes.
+- [ ] **App Store Connect** — confirm the app record for `com.thecounterapp.app` (the live bundle ID); add the published Privacy Policy / ToS URLs to the listing; add internal testers once the build processes.
+- [ ] **Deprecate legacy bundle IDs** — `com.counterprealpha.app` and `com.countercm.app` are retired; remove/deprecate their App Store Connect app records and unregister the App IDs in the Developer portal.
 - [ ] **App Store assets** — 12.9" iPad screenshots, description + keywords, icon at required sizes, age rating questionnaire.
 
 ### 2. Backup coverage gap + `.cntrdb` testing
